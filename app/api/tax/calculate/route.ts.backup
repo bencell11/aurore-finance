@@ -1,0 +1,212 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { TaxProfileService } from '@/lib/services/tax/tax-profile.service';
+import { createClient } from '@supabase/supabase-js';
+
+const taxProfileService = new TaxProfileService();
+
+/**
+ * POST /api/tax/calculate
+ * Calcule les impôts basés sur le profil fiscal
+ */
+export async function POST(request: NextRequest) {
+  try {
+    // Vérification de l'authentification
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: request.headers.get('Authorization') || ''
+          }
+        }
+      }
+    );
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Non authentifié' },
+        { status: 401 }
+      );
+    }
+    
+    const body = await request.json();
+    const year = body.year || new Date().getFullYear();
+    
+    // Récupération du profil
+    const profile = await taxProfileService.getTaxProfile(user.id);
+    
+    if (!profile) {
+      return NextResponse.json(
+        { error: 'Profil fiscal non trouvé. Veuillez d\'abord compléter votre profil.' },
+        { status: 404 }
+      );
+    }
+    
+    // Calcul des impôts
+    const calculation = await taxProfileService.calculateTax(profile.id, year);
+    
+    // Identification des optimisations possibles
+    const optimizations = identifyOptimizations(profile, calculation);
+    
+    return NextResponse.json({
+      calculation,
+      optimizations,
+      summary: {
+        totalTaxDue: calculation.totalTax,
+        effectiveRate: `${calculation.effectiveRate.toFixed(2)}%`,
+        marginalRate: `${calculation.marginalRate.toFixed(2)}%`,
+        potentialSavings: optimizations.reduce((sum, opt) => sum + opt.savingAmount, 0)
+      }
+    });
+    
+  } catch (error) {
+    console.error('Erreur lors du calcul fiscal:', error);
+    return NextResponse.json(
+      { error: 'Erreur lors du calcul' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * GET /api/tax/calculate/history
+ * Récupère l'historique des calculs fiscaux
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: request.headers.get('Authorization') || ''
+          }
+        }
+      }
+    );
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Non authentifié' },
+        { status: 401 }
+      );
+    }
+    
+    // Récupération du profil
+    const profile = await taxProfileService.getTaxProfile(user.id);
+    
+    if (!profile) {
+      return NextResponse.json(
+        { calculations: [] },
+        { status: 200 }
+      );
+    }
+    
+    // Récupération de l'historique des calculs
+    const { data: calculations, error } = await supabase
+      .from('tax_calculations')
+      .select('*')
+      .eq('tax_profile_id', profile.id)
+      .order('year', { ascending: false });
+    
+    if (error) {
+      throw error;
+    }
+    
+    return NextResponse.json({
+      calculations: calculations || []
+    });
+    
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'historique:', error);
+    return NextResponse.json(
+      { error: 'Erreur serveur' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * Identifie les optimisations fiscales possibles
+ */
+function identifyOptimizations(profile: any, calculation: any): any[] {
+  const optimizations = [];
+  const year = new Date().getFullYear();
+  
+  // Vérification du 3e pilier
+  const maxPillar3a = 7056; // Montant 2024
+  const currentPillar3a = profile.deductions?.savingsContributions?.pillar3a || 0;
+  
+  if (currentPillar3a < maxPillar3a) {
+    const additionalAmount = maxPillar3a - currentPillar3a;
+    const savingAmount = additionalAmount * (calculation.marginalRate / 100);
+    
+    optimizations.push({
+      type: 'pillar3a',
+      title: 'Optimisation 3e pilier A',
+      description: `Vous pouvez encore verser ${additionalAmount.toLocaleString('fr-CH')} CHF dans votre 3e pilier cette année`,
+      savingAmount: Math.round(savingAmount),
+      priority: 'high',
+      deadline: `31 décembre ${year}`
+    });
+  }
+  
+  // Vérification des rachats LPP
+  if (profile.personalInfo?.age > 40 && calculation.taxableIncome > 100000) {
+    optimizations.push({
+      type: 'lpp_buyback',
+      title: 'Rachats de prévoyance (2e pilier)',
+      description: 'Les rachats dans votre caisse de pension sont entièrement déductibles',
+      savingAmount: 5000, // Estimation
+      priority: 'medium',
+      action: 'Demander un calcul de rachat à votre caisse de pension'
+    });
+  }
+  
+  // Frais professionnels
+  const professionalExpenses = profile.deductions?.professionalExpenses || {};
+  const totalProfExpenses = Object.values(professionalExpenses).reduce((sum: number, val: any) => sum + (val || 0), 0);
+  
+  if (totalProfExpenses < profile.incomeData?.mainEmployment?.grossSalary * 0.03) {
+    optimizations.push({
+      type: 'professional_expenses',
+      title: 'Frais professionnels',
+      description: 'Vous pourriez augmenter vos déductions de frais professionnels',
+      savingAmount: 800, // Estimation
+      priority: 'low',
+      action: 'Conserver tous les justificatifs (transports, repas, formation)'
+    });
+  }
+  
+  // Donations
+  if (!profile.deductions?.donationsAmount || profile.deductions.donationsAmount < 100) {
+    optimizations.push({
+      type: 'donations',
+      title: 'Donations déductibles',
+      description: 'Les dons aux œuvres d\'utilité publique sont déductibles jusqu\'à 20% du revenu',
+      savingAmount: 300, // Estimation
+      priority: 'low'
+    });
+  }
+  
+  // Assurance vie
+  if (profile.personalInfo?.civilStatus === 'married' && profile.personalInfo?.numberOfChildren > 0) {
+    if (!profile.deductions?.insurancePremiums?.lifeInsurance) {
+      optimizations.push({
+        type: 'life_insurance',
+        title: 'Assurance vie déductible',
+        description: 'Les primes d\'assurance vie sont partiellement déductibles',
+        savingAmount: 400,
+        priority: 'low'
+      });
+    }
+  }
+  
+  return optimizations;
+}

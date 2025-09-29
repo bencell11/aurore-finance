@@ -1,0 +1,202 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { TaxProfileService } from '@/lib/services/tax/tax-profile.service';
+import { TaxSecurityService } from '@/lib/services/tax/security.service';
+import { createClient } from '@supabase/supabase-js';
+
+const taxProfileService = new TaxProfileService();
+
+/**
+ * GET /api/tax/profile
+ * Récupère le profil fiscal de l'utilisateur connecté
+ */
+export async function GET(request: NextRequest) {
+  try {
+    // Vérification de l'authentification
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: request.headers.get('Authorization') || ''
+          }
+        }
+      }
+    );
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Non authentifié' },
+        { status: 401 }
+      );
+    }
+    
+    // Récupération du profil
+    const profile = await taxProfileService.getTaxProfile(user.id);
+    
+    if (!profile) {
+      return NextResponse.json(
+        { message: 'Profil fiscal non trouvé' },
+        { status: 404 }
+      );
+    }
+    
+    // Anonymisation pour l'envoi
+    const anonymizedProfile = TaxSecurityService.anonymizeForAI(profile);
+    
+    return NextResponse.json({
+      profile: anonymizedProfile,
+      completionStatus: profile.completionStatus
+    });
+    
+  } catch (error) {
+    console.error('Erreur lors de la récupération du profil fiscal:', error);
+    return NextResponse.json(
+      { error: 'Erreur serveur' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST /api/tax/profile
+ * Crée ou met à jour le profil fiscal
+ */
+export async function POST(request: NextRequest) {
+  try {
+    // Vérification de l'authentification
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: request.headers.get('Authorization') || ''
+          }
+        }
+      }
+    );
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Non authentifié' },
+        { status: 401 }
+      );
+    }
+    
+    // Récupération des données
+    const body = await request.json();
+    
+    // Validation des données
+    if (!body.personalInfo?.canton) {
+      return NextResponse.json(
+        { error: 'Le canton est requis' },
+        { status: 400 }
+      );
+    }
+    
+    // Nettoyage des entrées
+    const sanitizedData = {
+      ...body,
+      personalInfo: {
+        ...body.personalInfo,
+        commune: TaxSecurityService.sanitizeInput(body.personalInfo.commune || '')
+      }
+    };
+    
+    // Création/mise à jour du profil
+    const profile = await taxProfileService.upsertTaxProfile(user.id, sanitizedData);
+    
+    return NextResponse.json({
+      message: 'Profil fiscal mis à jour avec succès',
+      profileId: profile.id,
+      completionStatus: profile.completionStatus
+    });
+    
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du profil fiscal:', error);
+    return NextResponse.json(
+      { error: 'Erreur serveur' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PUT /api/tax/profile
+ * Met à jour une section spécifique du profil
+ */
+export async function PUT(request: NextRequest) {
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: request.headers.get('Authorization') || ''
+          }
+        }
+      }
+    );
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Non authentifié' },
+        { status: 401 }
+      );
+    }
+    
+    const body = await request.json();
+    const { section, data } = body;
+    
+    // Validation de la section
+    const validSections = ['personalInfo', 'incomeData', 'deductions', 'assets', 'realEstate'];
+    if (!validSections.includes(section)) {
+      return NextResponse.json(
+        { error: 'Section invalide' },
+        { status: 400 }
+      );
+    }
+    
+    // Récupération du profil existant
+    let profile = await taxProfileService.getTaxProfile(user.id);
+    
+    // Création du profil s'il n'existe pas
+    if (!profile) {
+      profile = await taxProfileService.upsertTaxProfile(user.id, {
+        personalInfo: {
+          canton: 'ZH', // Canton par défaut
+          civilStatus: 'single',
+          numberOfChildren: 0
+        }
+      });
+    }
+    
+    // Mise à jour de la section spécifique
+    const updatedData = {
+      ...profile,
+      [section]: data
+    };
+    
+    const updatedProfile = await taxProfileService.upsertTaxProfile(user.id, updatedData);
+    
+    return NextResponse.json({
+      message: `Section ${section} mise à jour avec succès`,
+      completionStatus: updatedProfile.completionStatus
+    });
+    
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la section:', error);
+    return NextResponse.json(
+      { error: 'Erreur serveur' },
+      { status: 500 }
+    );
+  }
+}
