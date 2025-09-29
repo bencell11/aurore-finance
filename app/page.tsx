@@ -25,6 +25,7 @@ import {
   Eye,
   ArrowRight,
 } from "lucide-react";
+import { AdminNavLink } from "@/components/navigation/AdminNavLink";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -119,6 +120,7 @@ export default function HomePage() {
             >
               Contact
             </a>
+            <AdminNavLink />
           </nav>
         </div>
       </header>
