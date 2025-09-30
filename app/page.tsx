@@ -27,9 +27,6 @@ import {
   Shield,
 } from "lucide-react";
 import { AdminNavLink } from "@/components/navigation/AdminNavLink";
-import { FloatingElements } from "@/components/animations/FloatingElements";
-import { AnimatedSection } from "@/components/animations/AnimatedSection";
-import { TypewriterEffect } from "@/components/animations/TypewriterEffect";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -104,20 +101,13 @@ export default function HomePage() {
     }
   };
 
-  const typewriterTexts = [
-    "votre nouveau compagnon financier",
-    "des conseils IA personnalisés",
-    "une gestion simplifiée",
-    "l'optimisation automatique"
-  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
-      <FloatingElements />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       
       {/* Message d'accès restreint */}
       {showAccessMessage && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-bounce-in">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
           <div className="bg-orange-100 border border-orange-300 text-orange-800 px-6 py-3 rounded-lg shadow-lg">
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
@@ -131,7 +121,7 @@ export default function HomePage() {
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center hover-glow">
+            <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
               <Calculator className="h-5 w-5 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900">
@@ -163,24 +153,21 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <AnimatedSection className="py-20 px-6" delay={200}>
+      <section className="py-20 px-6">
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            <TypewriterEffect 
-              texts={typewriterTexts}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent gradient-animated"
-            />
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Aurore Finance
+            </span>
           </h1>
 
-          <AnimatedSection delay={800} animation="fade-in">
-            <h2 className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto">
-              Rejoignez la liste d'attente et soyez parmi les premiers à tester
-              Aurore Finance en version bêta.
-            </h2>
-          </AnimatedSection>
+          <h2 className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto">
+            Rejoignez la liste d'attente et soyez parmi les premiers à tester
+            Aurore Finance en version bêta.
+          </h2>
 
           {/* Formulaire d'inscription */}
-          <AnimatedSection delay={1200} animation="scale-up" className="max-w-lg mx-auto mb-8">
+          <div className="max-w-lg mx-auto mb-8">
             <form onSubmit={handleJoinWaitlist} className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Input
@@ -189,12 +176,12 @@ export default function HomePage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="flex-1 h-12 text-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 hover-lift"
+                  className="flex-1 h-12 text-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
                 <Button
                   type="submit"
                   disabled={subscribed || isSubmitting}
-                  className="h-12 px-8 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50 hover-glow animate-pulse-glow"
+                  className="h-12 px-8 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white disabled:opacity-50"
                 >
                   {subscribed ? (
                     <>
@@ -209,7 +196,7 @@ export default function HomePage() {
                 </Button>
               </div>
             </form>
-          </AnimatedSection>
+          </div>
 
           {error && (
             <div className="max-w-lg mx-auto mb-4">
@@ -227,22 +214,20 @@ export default function HomePage() {
             </div>
           )}
 
-          <AnimatedSection delay={1600} animation="fade-in">
-            <p className="text-gray-500 text-sm">
-              Déjà plus de{" "}
-              <span className="font-semibold text-blue-600 animate-pulse">
-                {waitlistCount} personnes
-              </span>{" "}
-              inscrites. Rejoignez le mouvement.
-            </p>
-          </AnimatedSection>
+          <p className="text-gray-500 text-sm">
+            Déjà plus de{" "}
+            <span className="font-semibold text-blue-600">
+              {waitlistCount} personnes
+            </span>{" "}
+            inscrites. Rejoignez le mouvement.
+          </p>
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* Section Problème / Promesse */}
-      <AnimatedSection className="py-20 px-6 bg-white">
+      <section className="py-20 px-6 bg-white">
         <div className="container mx-auto max-w-5xl">
-          <AnimatedSection delay={300} className="text-center mb-16">
+          <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               La gestion de vos finances n'a jamais été aussi simple.
             </h2>
@@ -252,50 +237,44 @@ export default function HomePage() {
               tableau de bord, une boussole, et des conseils concrets pour
               atteindre vos objectifs.
             </p>
-          </AnimatedSection>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <AnimatedSection delay={600} animation="slide-left">
-              <Card className="border-blue-100 hover:shadow-lg transition-shadow duration-300 text-center hover-lift">
-                <CardHeader className="pb-4">
-                  <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 hover-glow">
-                    <BarChart3 className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-gray-900">
-                    Visualisez l'ensemble de vos comptes en un seul endroit
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            </AnimatedSection>
+            <Card className="border-blue-100 hover:shadow-lg transition-shadow duration-300 text-center">
+              <CardHeader className="pb-4">
+                <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="h-8 w-8 text-white" />
+                </div>
+                <CardTitle className="text-xl text-gray-900">
+                  Visualisez l'ensemble de vos comptes en un seul endroit
+                </CardTitle>
+              </CardHeader>
+            </Card>
 
-            <AnimatedSection delay={800} animation="scale-up">
-              <Card className="border-purple-100 hover:shadow-lg transition-shadow duration-300 text-center hover-lift">
-                <CardHeader className="pb-4">
-                  <div className="h-16 w-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 hover-glow">
-                    <Brain className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-gray-900">
-                    Recevez des recommandations personnalisées grâce à l'IA
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            </AnimatedSection>
+            <Card className="border-purple-100 hover:shadow-lg transition-shadow duration-300 text-center">
+              <CardHeader className="pb-4">
+                <div className="h-16 w-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Brain className="h-8 w-8 text-white" />
+                </div>
+                <CardTitle className="text-xl text-gray-900">
+                  Recevez des recommandations personnalisées grâce à l'IA
+                </CardTitle>
+              </CardHeader>
+            </Card>
 
-            <AnimatedSection delay={1000} animation="slide-right">
-              <Card className="border-green-100 hover:shadow-lg transition-shadow duration-300 text-center hover-lift">
-                <CardHeader className="pb-4">
-                  <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 hover-glow">
-                    <Globe className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-gray-900">
-                    Rejoignez une communauté ambitieuse qui partage vos valeurs
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            </AnimatedSection>
+            <Card className="border-green-100 hover:shadow-lg transition-shadow duration-300 text-center">
+              <CardHeader className="pb-4">
+                <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Globe className="h-8 w-8 text-white" />
+                </div>
+                <CardTitle className="text-xl text-gray-900">
+                  Rejoignez une communauté ambitieuse qui partage vos valeurs
+                </CardTitle>
+              </CardHeader>
+            </Card>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* Section Mockup / Visuel Concept */}
       <section className="py-20 px-6 bg-gradient-to-br from-blue-50 to-purple-50">
