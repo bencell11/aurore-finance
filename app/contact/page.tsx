@@ -4,6 +4,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowLeft, Mail, MapPin, Phone } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact - Aurore Finance",
+  description: "Contactez l'équipe d'Aurore Finance pour toute question ou demande d'information",
+};
 
 export default function ContactPage() {
   return (

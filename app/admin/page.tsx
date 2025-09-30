@@ -2,6 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowLeft, Users, Settings, BarChart3, Shield } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Administration - Aurore Finance",
+  description: "Panneau d'administration Aurore Finance",
+};
 
 export default function AdminPage() {
   return (
