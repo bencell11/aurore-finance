@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowLeft, Users, Settings, BarChart3, Shield } from "lucide-react";
+import { ArrowLeft, Users, Settings, BarChart3, Shield, Mail } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -140,6 +140,26 @@ export default function AdminPage() {
               <Button asChild className="w-full bg-purple-600 hover:bg-purple-700">
                 <Link href="/assistant-fiscal">
                   Assistant Fiscal
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Test Emails */}
+          <Card className="hover:shadow-lg transition-shadow border-orange-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5 text-orange-600" />
+                Test Emails
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Diagnostiquer les problèmes d'emails
+              </p>
+              <Button asChild className="w-full bg-orange-600 hover:bg-orange-700">
+                <Link href="/admin/test-emails">
+                  Test Emails
                 </Link>
               </Button>
             </CardContent>
