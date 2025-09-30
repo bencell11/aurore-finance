@@ -23,6 +23,7 @@ const PUBLIC_ROUTES = [
   '/confidentialite',
   '/contact',
   '/admin/login',
+  '/admin/login-simple',
   '/api/waitlist',
   '/api/test-email',
   '/api/admin/auth',
@@ -70,7 +71,7 @@ export async function middleware(request: NextRequest) {
     if (!hasAdminAccess) {
       // Rediriger vers la page de login admin
       const url = request.nextUrl.clone();
-      url.pathname = '/admin/login';
+      url.pathname = '/admin/login-simple';
       url.searchParams.set('return', pathname);
       return NextResponse.redirect(url);
     }
