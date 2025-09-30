@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { checkAdminAccess } from './middleware/admin-auth';
+import { verify } from 'jsonwebtoken';
 
 // Routes protégées (nécessitent un accès admin)
 const PROTECTED_ROUTES = [
@@ -14,11 +14,51 @@ const PROTECTED_ROUTES = [
 // Routes admin uniquement
 const ADMIN_ROUTES = [
   '/admin',
-  '/api/admin',
 ];
+
+// Routes publiques (pas de vérification)
+const PUBLIC_ROUTES = [
+  '/',
+  '/mentions-legales',
+  '/confidentialite',
+  '/contact',
+  '/admin/login',
+  '/api/waitlist',
+  '/api/test-email',
+  '/api/admin/auth',
+];
+
+function checkAdminAccess(request: NextRequest): boolean {
+  try {
+    // Vérifier le token dans les cookies ou localStorage (via header)
+    const authHeader = request.headers.get('authorization');
+    const cookieToken = request.cookies.get('admin_token')?.value;
+    const token = authHeader?.replace('Bearer ', '') || cookieToken;
+    
+    if (!token) {
+      return false;
+    }
+
+    const jwtSecret = process.env.JWT_SECRET || 'default-secret-key';
+    const decoded = verify(token, jwtSecret) as any;
+    
+    return decoded.admin === true;
+  } catch (error) {
+    return false;
+  }
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Ignorer les routes publiques
+  const isPublicRoute = PUBLIC_ROUTES.some(route => 
+    pathname === route || pathname.startsWith(route)
+  );
+  
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
   
   // Vérifier si c'est une route protégée
   const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
@@ -28,10 +68,10 @@ export async function middleware(request: NextRequest) {
     const hasAdminAccess = checkAdminAccess(request);
     
     if (!hasAdminAccess) {
-      // Rediriger vers la page d'accueil avec un message
+      // Rediriger vers la page de login admin
       const url = request.nextUrl.clone();
-      url.pathname = '/';
-      url.searchParams.set('access', 'restricted');
+      url.pathname = '/admin/login';
+      url.searchParams.set('return', pathname);
       return NextResponse.redirect(url);
     }
   }
