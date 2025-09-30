@@ -324,7 +324,7 @@ export default function HomePage() {
                           <div className="w-3 h-3 bg-green-400 rounded-full"></div>
                         </div>
                         <div className="bg-white rounded px-3 py-1 text-xs text-gray-600 ml-4">
-                          aurorefinances.ch/assistant-fiscal
+                          aurorefinances.com/assistant-fiscal
                         </div>
                       </div>
                     </div>
