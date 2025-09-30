@@ -25,6 +25,7 @@ import {
   Eye,
   ArrowRight,
   Shield,
+  FileText,
 } from "lucide-react";
 import { AdminNavLink } from "@/components/navigation/AdminNavLink";
 
@@ -308,36 +309,112 @@ export default function HomePage() {
             </div>
 
             <div className="relative">
-              <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 shadow-2xl">
-                <div className="bg-white rounded-2xl p-6 min-h-96">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                      <Smartphone className="h-4 w-4 text-white" />
+              {/* MacBook Pro Frame */}
+              <div className="bg-gray-800 rounded-t-2xl p-4 shadow-2xl">
+                {/* MacBook Screen Bezel */}
+                <div className="bg-black rounded-lg p-1">
+                  {/* Screen Content */}
+                  <div className="bg-white rounded-lg overflow-hidden min-h-96">
+                    {/* Browser Tab Bar */}
+                    <div className="bg-gray-100 p-3 border-b">
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                          <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                          <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        </div>
+                        <div className="bg-white rounded px-3 py-1 text-xs text-gray-600 ml-4">
+                          aurorefinances.ch/assistant-fiscal
+                        </div>
+                      </div>
                     </div>
-                    <h4 className="font-semibold text-gray-900">
-                      Tableau de bord
-                    </h4>
-                  </div>
 
-                  <div className="space-y-4">
-                    <div className="h-4 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full"></div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="h-20 bg-blue-50 rounded-lg"></div>
-                      <div className="h-20 bg-purple-50 rounded-lg"></div>
+                    {/* App Interface */}
+                    <div className="p-6">
+                      {/* Header */}
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <FileText className="h-4 w-4 text-white" />
+                          </div>
+                          <h3 className="font-semibold text-gray-900">Assistant Fiscal IA</h3>
+                        </div>
+                        <div className="flex gap-2">
+                          <div className="h-6 w-16 bg-green-100 rounded-full flex items-center justify-center">
+                            <span className="text-xs text-green-700 font-medium">75%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Cards Grid */}
+                      <div className="grid grid-cols-3 gap-3 mb-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Calculator className="h-4 w-4 text-blue-600" />
+                            <span className="text-xs font-medium text-blue-900">Revenus</span>
+                          </div>
+                          <div className="text-lg font-bold text-blue-900">CHF 95,000</div>
+                        </div>
+                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <BarChart3 className="h-4 w-4 text-purple-600" />
+                            <span className="text-xs font-medium text-purple-900">Impôts</span>
+                          </div>
+                          <div className="text-lg font-bold text-purple-900">CHF 12,450</div>
+                        </div>
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            <span className="text-xs font-medium text-green-900">Économies</span>
+                          </div>
+                          <div className="text-lg font-bold text-green-900">CHF 3,200</div>
+                        </div>
+                      </div>
+
+                      {/* Chat Interface Preview */}
+                      <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Brain className="h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium text-gray-700">Assistant IA</span>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="bg-blue-100 text-blue-900 rounded-lg p-2 text-xs max-w-xs">
+                            Basé sur votre profil, vous pourriez économiser CHF 3,200 en optimisant vos déductions fiscales.
+                          </div>
+                          <div className="flex gap-2">
+                            <button className="text-xs bg-white border rounded px-2 py-1 text-gray-600">Voir les détails</button>
+                            <button className="text-xs bg-blue-600 text-white rounded px-2 py-1">Appliquer</button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Progress Bars */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs text-gray-600">
+                          <span>Profil fiscal complété</span>
+                          <span>75%</span>
+                        </div>
+                        <div className="h-2 bg-gray-200 rounded-full">
+                          <div className="h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full w-3/4"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="h-6 bg-gray-100 rounded-full w-3/4"></div>
-                    <div className="h-6 bg-gray-100 rounded-full w-1/2"></div>
-                    <div className="h-32 bg-gradient-to-t from-blue-50 to-purple-50 rounded-lg"></div>
                   </div>
                 </div>
               </div>
 
-              {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 h-16 w-16 bg-green-400 rounded-full flex items-center justify-center shadow-lg">
-                <CheckCircle2 className="h-8 w-8 text-white" />
+              {/* MacBook Base */}
+              <div className="bg-gray-700 h-4 rounded-b-2xl"></div>
+
+              {/* Floating Badges */}
+              <div className="absolute -top-4 -right-4 h-12 w-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                <Shield className="h-6 w-6 text-white" />
               </div>
-              <div className="absolute -bottom-4 -left-4 h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                <Brain className="h-6 w-6 text-white" />
+              <div className="absolute -bottom-2 -left-4 h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                <Brain className="h-5 w-5 text-white" />
+              </div>
+              <div className="absolute top-1/2 -right-8 h-8 w-8 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                <Smartphone className="h-4 w-4 text-white" />
               </div>
             </div>
           </div>
