@@ -52,10 +52,18 @@ export default function HomePage() {
   useEffect(() => {
     const fetchWaitlistCount = async () => {
       try {
-        const response = await fetch('/api/waitlist');
+        // Essayer d'abord l'API Supabase
+        const response = await fetch('/api/waitlist/supabase');
         if (response.ok) {
           const data = await response.json();
           setWaitlistCount(data.waitlistCount);
+        } else {
+          // Fallback sur l'ancienne API
+          const fallbackResponse = await fetch('/api/waitlist');
+          if (fallbackResponse.ok) {
+            const data = await fallbackResponse.json();
+            setWaitlistCount(data.waitlistCount);
+          }
         }
       } catch (error) {
         console.error('Erreur chargement compteur:', error);
@@ -73,7 +81,8 @@ export default function HomePage() {
     setError("");
 
     try {
-      const response = await fetch('/api/waitlist', {
+      // Essayer d'abord avec Supabase (qui enverra l'email automatiquement)
+      const response = await fetch('/api/waitlist/supabase', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +102,28 @@ export default function HomePage() {
           setSubscribed(false);
         }, 5000);
       } else {
-        setError(data.error || 'Une erreur est survenue');
+        // Si erreur avec Supabase, essayer l'ancienne méthode
+        const fallbackResponse = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+        
+        const fallbackData = await fallbackResponse.json();
+        
+        if (fallbackResponse.ok) {
+          setSubscribed(true);
+          setWaitlistCount(fallbackData.waitlistCount);
+          setEmail("");
+          
+          setTimeout(() => {
+            setSubscribed(false);
+          }, 5000);
+        } else {
+          setError(fallbackData.error || data.error || 'Une erreur est survenue');
+        }
       }
     } catch (error) {
       setError('Erreur de connexion. Veuillez réessayer.');
