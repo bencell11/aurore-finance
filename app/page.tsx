@@ -32,7 +32,7 @@ import { AdminNavLink } from "@/components/navigation/AdminNavLink";
 export default function HomePage() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [waitlistCount, setWaitlistCount] = useState(267);
+  const [waitlistCount, setWaitlistCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [showAccessMessage, setShowAccessMessage] = useState(false);

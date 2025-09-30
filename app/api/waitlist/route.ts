@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 
 // Simuler une base de données simple (en production, utiliser une vraie DB)
 let waitlistEmails = new Set<string>();
-let waitlistCount = 267; // Valeur initiale
+let waitlistCount = 0; // Valeur initiale
 
 export async function POST(request: NextRequest) {
   try {

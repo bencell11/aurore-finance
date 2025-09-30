@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           success: true,
           message: 'Inscription simulée en mode démo',
-          waitlistCount: waitlist.count + 267
+          waitlistCount: waitlist.count
         });
       } catch {
         // Créer le fichier s'il n'existe pas
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           success: true,
           message: 'Inscription simulée en mode démo',
-          waitlistCount: 268
+          waitlistCount: 1
         });
       }
     }
@@ -90,10 +90,15 @@ export async function POST(request: NextRequest) {
           console.error('Erreur mise à jour utilisateur:', updateError);
         }
         
+        // Compter le vrai nombre d'inscrits
+        const { count } = await supabase
+          .from('waitlist')
+          .select('*', { count: 'exact', head: true });
+        
         return NextResponse.json({
           success: true,
           message: 'Vous êtes déjà inscrit sur la liste d\'attente',
-          waitlistCount: 300 // Estimation
+          waitlistCount: count || 1
         });
       }
       
@@ -130,7 +135,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Inscription réussie! Un email de confirmation a été envoyé.',
-      waitlistCount: totalCount + 267
+      waitlistCount: totalCount
     });
 
   } catch (error) {
@@ -151,9 +156,9 @@ export async function GET() {
         const fs = (await import('fs/promises')).default;
         const data = await fs.readFile('./waitlist-demo.json', 'utf-8');
         const waitlist = JSON.parse(data);
-        return NextResponse.json({ waitlistCount: waitlist.count + 267 });
+        return NextResponse.json({ waitlistCount: waitlist.count });
       } catch {
-        return NextResponse.json({ waitlistCount: 267 });
+        return NextResponse.json({ waitlistCount: 0 });
       }
     }
 
@@ -164,10 +169,10 @@ export async function GET() {
       .select('*', { count: 'exact', head: true });
 
     return NextResponse.json({
-      waitlistCount: (count || 0) + 267
+      waitlistCount: count || 0
     });
   } catch (error) {
     console.error('Erreur récupération compteur:', error);
-    return NextResponse.json({ waitlistCount: 267 });
+    return NextResponse.json({ waitlistCount: 0 });
   }
 }
