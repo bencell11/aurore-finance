@@ -130,19 +130,19 @@ export default function HomePage() {
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <a
-              href="#mentions"
+              href="/mentions-legales"
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Mentions légales
             </a>
             <a
-              href="#privacy"
+              href="/confidentialite"
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Confidentialité
             </a>
             <a
-              href="#contact"
+              href="/contact"
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Contact
@@ -427,15 +427,15 @@ export default function HomePage() {
 
             <div className="flex items-center gap-8 text-sm text-gray-400">
               <a
-                href="#mentions"
+                href="/mentions-legales"
                 className="hover:text-white transition-colors"
               >
                 Mentions légales
               </a>
-              <a href="#privacy" className="hover:text-white transition-colors">
+              <a href="/confidentialite" className="hover:text-white transition-colors">
                 Politique de confidentialité
               </a>
-              <a href="#contact" className="hover:text-white transition-colors">
+              <a href="/contact" className="hover:text-white transition-colors">
                 Contact
               </a>
             </div>
