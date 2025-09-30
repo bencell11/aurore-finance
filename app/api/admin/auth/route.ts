@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken';
 // Mot de passe admin (en production, à mettre dans les variables d'environnement)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'aurore2025';
 
+
 // Emails admin autorisés (optionnel)
 const ADMIN_EMAILS = [
   'admin@aurorefinances.com',
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     if (!isValidPassword) {
       console.log('❌ Tentative de connexion admin échouée:', { 
-        password: password.substring(0, 3) + '***',
+        passwordLength: password.length,
         timestamp: new Date().toISOString(),
         ip: request.headers.get('x-forwarded-for') || 'unknown'
       });
@@ -50,7 +51,6 @@ export async function POST(request: NextRequest) {
 
     // Générer un token JWT
     const jwtSecret = process.env.JWT_SECRET || 'default-secret-key';
-    const expiresIn = '24h'; // 24 heures
     const expiresAt = Date.now() + (24 * 60 * 60 * 1000);
 
     const token = sign(
@@ -59,8 +59,7 @@ export async function POST(request: NextRequest) {
         email: email || 'admin',
         exp: Math.floor(expiresAt / 1000)
       },
-      jwtSecret,
-      { expiresIn }
+      jwtSecret
     );
 
     console.log('✅ Connexion admin réussie:', {

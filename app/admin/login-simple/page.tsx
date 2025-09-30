@@ -133,16 +133,6 @@ export default function SimpleAdminLogin() {
           </button>
         </form>
 
-        <div style={{ 
-          marginTop: '1.5rem', 
-          padding: '1rem',
-          backgroundColor: '#f9fafb',
-          borderRadius: '6px'
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
-            <strong>Mot de passe par défaut :</strong> aurore2025
-          </p>
-        </div>
 
         <div style={{ marginTop: '1rem', textAlign: 'center' }}>
           <a 
