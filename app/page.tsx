@@ -156,7 +156,7 @@ export default function HomePage() {
               <Calculator className="h-5 w-5 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900">
-              Aurore Finance
+              Aurore Finances
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
@@ -188,13 +188,13 @@ export default function HomePage() {
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Aurore Finance
+              Aurore Finances
             </span>
           </h1>
 
           <h2 className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto">
             Rejoignez la liste d'attente et soyez parmi les premiers à tester
-            Aurore Finance en version bêta.
+            Aurore Finances en version bêta.
           </h2>
 
           {/* Formulaire d'inscription */}
@@ -529,7 +529,7 @@ export default function HomePage() {
               <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <Calculator className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold">Aurore Finance</span>
+              <span className="text-xl font-bold">Aurore Finances</span>
             </div>
 
             <div className="flex items-center gap-8 text-sm text-gray-400">
@@ -549,7 +549,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2025 Aurore Finance. Tous droits réservés.</p>
+            <p>&copy; 2025 Aurore Finances. Tous droits réservés.</p>
           </div>
         </div>
       </footer>

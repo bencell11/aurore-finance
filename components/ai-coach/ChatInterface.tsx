@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/hooks/useAuth';
+// import { useAuth } from '@/lib/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -56,7 +56,26 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ compact = false }: ChatInterfaceProps) {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
+  
+  // Vérifier l'authentification admin
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const adminToken = localStorage.getItem('admin_token');
+      const userData = localStorage.getItem('aurore_auth_user');
+      
+      setIsAuthenticated(!!adminToken);
+      if (userData) {
+        try {
+          setUser(JSON.parse(userData));
+        } catch (error) {
+          console.error('Erreur parse user data:', error);
+        }
+      }
+    }
+  }, []);
   
   // Récupérer les données complètes du localStorage
   const getUserData = () => {
@@ -340,7 +359,7 @@ export default function ChatInterface({ compact = false }: ChatInterfaceProps) {
               <Bot className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold">Coach IA Aurore Finance</h3>
+              <h3 className="font-semibold">Coach IA Aurore Finances</h3>
               <p className="text-sm opacity-90">Conseiller financier expert en Suisse</p>
             </div>
             <div className="ml-auto">

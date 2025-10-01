@@ -5,8 +5,8 @@ import { ArrowLeft, Users, Settings, BarChart3, Shield, Mail } from "lucide-reac
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Administration - Aurore Finance",
-  description: "Panneau d'administration Aurore Finance",
+  title: "Administration - Aurore Finances",
+  description: "Panneau d'administration Aurore Finances",
 };
 
 export default function AdminPage() {
@@ -21,7 +21,7 @@ export default function AdminPage() {
             </Link>
           </Button>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Administration</h1>
-          <p className="text-gray-600">Panneau d'administration Aurore Finance</p>
+          <p className="text-gray-600">Panneau d'administration Aurore Finances</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

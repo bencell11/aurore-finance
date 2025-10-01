@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Politique de Confidentialité - Aurore Finance",
-  description: "Politique de confidentialité et protection des données d'Aurore Finance",
+  title: "Politique de Confidentialité - Aurore Finances",
+  description: "Politique de confidentialité et protection des données d'Aurore Finances",
 };
 
 export default function ConfidentialitePage() {
@@ -27,7 +27,7 @@ export default function ConfidentialitePage() {
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-900">Introduction</h2>
             <p>
-              Aurore Finance accorde une grande importance à la protection de vos données personnelles. 
+              Aurore Finances accorde une grande importance à la protection de vos données personnelles. 
               Cette politique de confidentialité explique comment nous collectons, utilisons et 
               protégeons vos informations personnelles.
             </p>

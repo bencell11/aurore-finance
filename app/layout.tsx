@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aurore Finance - Conseiller financier IA pour la Suisse",
+  title: "Aurore Finances - Conseiller financier IA pour la Suisse",
   description: "Optimisez vos finances avec notre conseiller IA spécialisé dans le système financier suisse. Simulateurs, conseils personnalisés et suivi d'objectifs.",
 };
 

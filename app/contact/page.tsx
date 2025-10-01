@@ -7,8 +7,8 @@ import { ArrowLeft, Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact - Aurore Finance",
-  description: "Contactez l'équipe d'Aurore Finance pour toute question ou demande d'information",
+  title: "Contact - Aurore Finances",
+  description: "Contactez l'équipe d'Aurore Finances pour toute question ou demande d'information",
 };
 
 export default function ContactPage() {

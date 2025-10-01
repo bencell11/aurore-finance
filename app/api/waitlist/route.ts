@@ -66,7 +66,7 @@ async function sendConfirmationEmail(email: string) {
   try {
     const emailSent = await sendEmailWithFallback({
       to: email,
-      subject: '🎉 Bienvenue dans la liste d\'attente Aurore Finance !',
+      subject: '🎉 Bienvenue dans la liste d\'attente Aurore Finances !',
       html: generateConfirmationEmailHTML(email)
     });
 
@@ -87,7 +87,7 @@ async function sendThankYouEmail(email: string) {
   try {
     const emailSent = await sendEmailWithFallback({
       to: email,
-      subject: '💙 Merci de nous faire confiance - Aurore Finance',
+      subject: '💙 Merci de nous faire confiance - Aurore Finances',
       html: generateThankYouEmailHTML(email)
     });
 
@@ -111,7 +111,7 @@ async function sendEmailWithFallback({ to, subject, html }: { to: string, subjec
     try {
       const resend = new Resend(resendKey);
       await resend.emails.send({
-        from: 'Aurore Finance <noreply@aurore-finance.com>',
+        from: 'Aurore Finances <noreply@aurore-finance.com>',
         to: [to],
         subject,
         html
@@ -138,7 +138,7 @@ async function sendEmailWithFallback({ to, subject, html }: { to: string, subjec
       });
 
       await transporter.sendMail({
-        from: `"Aurore Finance" <${gmailUser}>`,
+        from: `"Aurore Finances" <${gmailUser}>`,
         to: to,
         subject: subject,
         html: html
@@ -197,7 +197,7 @@ function generateConfirmationEmailHTML(email: string): string {
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bienvenue chez Aurore Finance</title>
+        <title>Bienvenue chez Aurore Finances</title>
       </head>
       <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1f2937; max-width: 600px; margin: 0 auto; padding: 0; background-color: #f9fafb;">
         
@@ -205,7 +205,7 @@ function generateConfirmationEmailHTML(email: string): string {
         <div style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); padding: 40px 20px; text-align: center; border-radius: 0 0 20px 20px;">
           <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px);">
             <h1 style="color: white; margin: 0; font-size: 32px; font-weight: 700;">🎉 Bienvenue ${firstName} !</h1>
-            <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 18px;">Votre place est réservée chez Aurore Finance</p>
+            <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 18px;">Votre place est réservée chez Aurore Finances</p>
           </div>
         </div>
         
@@ -216,7 +216,7 @@ function generateConfirmationEmailHTML(email: string): string {
             <h2 style="color: #1e293b; margin-top: 0; font-size: 24px; font-weight: 600;">Merci de nous faire confiance ! 🚀</h2>
             <p style="font-size: 16px; color: #4b5563; margin-bottom: 20px;">Bonjour ${firstName},</p>
             <p style="font-size: 16px; color: #4b5563; margin-bottom: 20px;">
-              Nous sommes <strong>ravis</strong> de vous compter parmi les pionniers d'Aurore Finance ! 
+              Nous sommes <strong>ravis</strong> de vous compter parmi les pionniers d'Aurore Finances ! 
               Vous faites maintenant partie d'une communauté exclusive de ${waitlistCount} visionnaires qui façonneront l'avenir de la gestion financière personnelle.
             </p>
             
@@ -270,9 +270,9 @@ function generateConfirmationEmailHTML(email: string): string {
         <!-- Footer -->
         <div style="background: #f8fafc; padding: 30px 20px; text-align: center; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 14px;">
           <div style="margin-bottom: 15px;">
-            <strong style="color: #1e293b; font-size: 16px;">Aurore Finance</strong>
+            <strong style="color: #1e293b; font-size: 16px;">Aurore Finances</strong>
           </div>
-          <p style="margin: 8px 0;">© 2025 Aurore Finance. Tous droits réservés.</p>
+          <p style="margin: 8px 0;">© 2025 Aurore Finances. Tous droits réservés.</p>
           <p style="margin: 8px 0;">Vous recevez cet email car vous vous êtes inscrit(e) à notre liste d'attente.</p>
           <p style="margin: 15px 0 0 0; font-size: 12px; color: #9ca3af;">
             Email envoyé à : ${email}
@@ -374,7 +374,7 @@ function generateThankYouEmailHTML(email: string): string {
               Merci de nous accompagner dans cette aventure !"</strong>
             </p>
             <p style="text-align: right; color: #6b7280; margin: 15px 0 0 0; font-size: 14px;">
-              — L'équipe Aurore Finance 💙
+              — L'équipe Aurore Finances 💙
             </p>
           </div>
           
@@ -383,7 +383,7 @@ function generateThankYouEmailHTML(email: string): string {
         <!-- Footer -->
         <div style="background: #1f2937; color: white; padding: 30px 20px; text-align: center; border-radius: 20px 20px 0 0;">
           <div style="margin-bottom: 15px;">
-            <strong style="font-size: 18px;">💙 Aurore Finance</strong>
+            <strong style="font-size: 18px;">💙 Aurore Finances</strong>
           </div>
           <p style="margin: 8px 0; opacity: 0.8;">Votre nouveau compagnon financier alimenté par l'IA</p>
           <p style="margin: 15px 0 0 0; font-size: 12px; opacity: 0.6;">

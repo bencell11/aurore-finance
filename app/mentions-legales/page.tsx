@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mentions Légales - Aurore Finance",
-  description: "Mentions légales et informations juridiques d'Aurore Finance",
+  title: "Mentions Légales - Aurore Finances",
+  description: "Mentions légales et informations juridiques d'Aurore Finances",
 };
 
 export default function MentionsLegalesPage() {
@@ -27,7 +27,7 @@ export default function MentionsLegalesPage() {
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-900">Informations sur l'entreprise</h2>
             <p>
-              <strong>Nom de l'entreprise :</strong> Aurore Finance<br />
+              <strong>Nom de l'entreprise :</strong> Aurore Finances<br />
               <strong>Forme juridique :</strong> [À compléter]<br />
               <strong>Adresse :</strong> [À compléter]<br />
               <strong>Pays :</strong> Suisse<br />
@@ -51,7 +51,7 @@ export default function MentionsLegalesPage() {
             <h2 className="text-xl font-semibold text-gray-900">Propriété intellectuelle</h2>
             <p>
               Le contenu de ce site (textes, images, graphismes, logo, icônes, sons, logiciels) 
-              est la propriété exclusive d'Aurore Finance, à l'exception des marques, logos ou 
+              est la propriété exclusive d'Aurore Finances, à l'exception des marques, logos ou 
               contenus appartenant à d'autres sociétés partenaires ou auteurs.
             </p>
 
@@ -68,7 +68,7 @@ export default function MentionsLegalesPage() {
             <p>
               Les liens hypertextes mis en place dans le cadre du présent site web en direction 
               d'autres ressources présentes sur le réseau Internet ne sauraient engager la 
-              responsabilité d'Aurore Finance.
+              responsabilité d'Aurore Finances.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-900">Collecte de données</h2>
