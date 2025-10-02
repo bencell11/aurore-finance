@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
   Book, 
   GraduationCap, 
@@ -37,9 +38,13 @@ import {
   X,
   ChevronDown,
   Clock,
-  Eye
+  Eye,
+  Hash,
+  ExternalLink,
+  Lightbulb,
+  Link as LinkIcon
 } from 'lucide-react';
-import { getArticlesByCategory } from '@/lib/data/tax-articles';
+import { getArticlesByCategory, getArticleBySlug } from '@/lib/data/tax-articles';
 
 // Structure des thématiques fiscales
 const thematiques = [
@@ -54,7 +59,7 @@ const thematiques = [
       { id: 'principes', titre: 'Principes d\'imposition', articles: 1, slug: 'principes-imposition' },
       { id: 'types-impots', titre: 'Types d\'impôts', articles: 1, slug: 'types-impots' },
       { id: 'domicile', titre: 'Domicile fiscal', articles: 1, slug: 'domicile-fiscal' },
-      { id: 'baremes', titre: 'Barèmes et progressivité', articles: 0, slug: null }
+      { id: 'baremes', titre: 'Barèmes et progressivité', articles: 1, slug: 'baremes-progressivite' }
     ]
   },
   {
@@ -63,11 +68,11 @@ const thematiques = [
     icon: User,
     description: 'Tout sur vos impôts personnels',
     sousThemes: [
-      { id: 'salaires', titre: 'Salaires et revenus', articles: 12 },
-      { id: 'deductions', titre: 'Déductions fiscales', articles: 15 },
-      { id: 'fortune', titre: 'Impôt sur la fortune', articles: 6 },
-      { id: 'rentes', titre: 'Rentes AVS/LPP', articles: 8 },
-      { id: 'immobilier', titre: 'Revenus immobiliers', articles: 9 }
+      { id: 'salaires', titre: 'Salaires et revenus', articles: 1, slug: 'revenus-imposables-salaries' },
+      { id: 'deductions', titre: 'Déductions fiscales', articles: 1, slug: 'deductions-fiscales-principales' },
+      { id: 'fortune', titre: 'Impôt sur la fortune', articles: 1, slug: 'impot-fortune-personnes-physiques' },
+      { id: 'rentes', titre: 'Rentes AVS/LPP', articles: 1, slug: 'rentes-avs-lpp-imposition' },
+      { id: 'immobilier', titre: 'Revenus immobiliers', articles: 1, slug: 'revenus-immobiliers-personnes-physiques' }
     ]
   },
   {
@@ -76,11 +81,11 @@ const thematiques = [
     icon: Building,
     description: 'Fiscalité professionnelle',
     sousThemes: [
-      { id: 'statut', titre: 'Statut fiscal', articles: 7 },
-      { id: 'formes-juridiques', titre: 'Formes juridiques', articles: 5 },
-      { id: 'tva', titre: 'TVA', articles: 10 },
-      { id: 'benefices', titre: 'Imposition du bénéfice', articles: 8 },
-      { id: 'dirigeant', titre: 'Rémunération dirigeant', articles: 6 }
+      { id: 'statut', titre: 'Statut fiscal', articles: 1, slug: 'statut-independant-criteres' },
+      { id: 'formes-juridiques', titre: 'Formes juridiques', articles: 1, slug: 'formes-juridiques-entreprises' },
+      { id: 'tva', titre: 'TVA', articles: 1, slug: 'tva-assujettissement-entreprises' },
+      { id: 'benefices', titre: 'Imposition du bénéfice', articles: 1, slug: 'imposition-benefice-entreprises' },
+      { id: 'dirigeant', titre: 'Rémunération dirigeant', articles: 0, slug: null }
     ]
   },
   {
@@ -89,11 +94,11 @@ const thematiques = [
     icon: PiggyBank,
     description: 'Optimiser votre patrimoine',
     sousThemes: [
-      { id: 'immobilier', titre: 'Biens immobiliers', articles: 11 },
-      { id: 'titres', titre: 'Titres et valeurs', articles: 9 },
-      { id: 'crypto', titre: 'Cryptomonnaies', articles: 7 },
-      { id: 'prevoyance', titre: 'Prévoyance (2e/3e pilier)', articles: 12 },
-      { id: 'luxe', titre: 'Biens de luxe', articles: 4 }
+      { id: 'immobilier', titre: 'Biens immobiliers', articles: 1, slug: 'valeur-locative-residence' },
+      { id: 'titres', titre: 'Titres et valeurs', articles: 0, slug: null },
+      { id: 'crypto', titre: 'Cryptomonnaies', articles: 0, slug: null },
+      { id: 'prevoyance', titre: 'Prévoyance (2e/3e pilier)', articles: 0, slug: null },
+      { id: 'luxe', titre: 'Biens de luxe', articles: 0, slug: null }
     ]
   },
   {
@@ -102,10 +107,10 @@ const thematiques = [
     icon: Globe,
     description: 'Frontaliers et expatriés',
     sousThemes: [
-      { id: 'frontaliers', titre: 'Frontaliers', articles: 8 },
-      { id: 'cdi', titre: 'Conventions double imposition', articles: 6 },
-      { id: 'expatries', titre: 'Expatriés/Impatriés', articles: 7 },
-      { id: 'comptes-etrangers', titre: 'Comptes étrangers', articles: 5 }
+      { id: 'frontaliers', titre: 'Frontaliers', articles: 1, slug: 'frontaliers-imposition' },
+      { id: 'cdi', titre: 'Conventions double imposition', articles: 0, slug: null },
+      { id: 'expatries', titre: 'Expatriés/Impatriés', articles: 0, slug: null },
+      { id: 'comptes-etrangers', titre: 'Comptes étrangers', articles: 0, slug: null }
     ]
   },
   {
@@ -114,10 +119,10 @@ const thematiques = [
     icon: FileText,
     description: 'Remplir sa déclaration',
     sousThemes: [
-      { id: 'outils', titre: 'Outils en ligne', articles: 6 },
-      { id: 'documents', titre: 'Documents nécessaires', articles: 8 },
-      { id: 'calendrier', titre: 'Calendrier fiscal', articles: 4 },
-      { id: 'taxation', titre: 'Taxation et corrections', articles: 5 }
+      { id: 'declaration', titre: 'Délais et procédures', articles: 1, slug: 'declaration-impots-delais' },
+      { id: 'documents', titre: 'Documents nécessaires', articles: 0, slug: null },
+      { id: 'calendrier', titre: 'Calendrier fiscal', articles: 0, slug: null },
+      { id: 'taxation', titre: 'Taxation et corrections', articles: 0, slug: null }
     ]
   },
   {
@@ -126,10 +131,10 @@ const thematiques = [
     icon: TrendingUp,
     description: 'Réduire légalement vos impôts',
     sousThemes: [
-      { id: 'planification', titre: 'Planification annuelle', articles: 6 },
-      { id: 'strategies', titre: 'Stratégies de réduction', articles: 10 },
-      { id: '3e-pilier', titre: 'Optimisation 3e pilier', articles: 8 },
-      { id: 'succession', titre: 'Planification successorale', articles: 7 }
+      { id: 'strategies', titre: 'Stratégies d\'optimisation', articles: 1, slug: 'optimisation-fiscale-legale' },
+      { id: 'planification', titre: 'Planification annuelle', articles: 0, slug: null },
+      { id: '3e-pilier', titre: 'Optimisation 3e pilier', articles: 0, slug: null },
+      { id: 'succession', titre: 'Planification successorale', articles: 0, slug: null }
     ]
   },
   {
@@ -138,10 +143,10 @@ const thematiques = [
     icon: MapPin,
     description: 'Votre canton en détail',
     sousThemes: [
-      { id: 'vaud', titre: 'Vaud', articles: 12 },
-      { id: 'geneve', titre: 'Genève', articles: 11 },
-      { id: 'zurich', titre: 'Zurich', articles: 10 },
-      { id: 'comparatif', titre: 'Comparatif intercantonal', articles: 5 }
+      { id: 'comparatif', titre: 'Comparatif intercantonal', articles: 1, slug: 'comparatif-fiscal-cantonal' },
+      { id: 'vaud', titre: 'Vaud', articles: 0, slug: null },
+      { id: 'geneve', titre: 'Genève', articles: 0, slug: null },
+      { id: 'zurich', titre: 'Zurich', articles: 0, slug: null }
     ]
   }
 ];
@@ -291,6 +296,125 @@ ${selectedTheme ? `Je vois que vous consultez le thème "${selectedTheme.titre}"
   );
 }
 
+// Composant pour afficher un article complet
+function ArticleDisplay({ slug }: { slug: string }) {
+  const article = getArticleBySlug(slug);
+  
+  if (!article) {
+    return (
+      <div className="p-4 text-center text-gray-500">
+        Article non trouvé
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* En-tête article */}
+      <div className="border-b pb-4">
+        <div className="flex items-center justify-between mb-3">
+          <Badge variant="secondary">{article.category}</Badge>
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <Clock className="h-4 w-4" />
+            <span>5 min</span>
+          </div>
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{article.title}</h2>
+        <p className="text-gray-600">{article.description}</p>
+      </div>
+
+      {/* Contenu article */}
+      <div className="space-y-6">
+        {article.sections.map((section, idx) => (
+          <div key={idx} className="space-y-4">
+            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <Hash className="h-5 w-5 text-blue-600" />
+              {section.title}
+            </h3>
+            
+            {/* Contenu de section */}
+            <div className="space-y-4 text-gray-700 leading-relaxed">
+              {section.content.split('\n').map((paragraph, pIdx) => (
+                paragraph.trim() && (
+                  <p key={pIdx} className="text-sm">
+                    {paragraph}
+                  </p>
+                )
+              ))}
+            </div>
+
+            {/* Points clés */}
+            {section.keyPoints && (
+              <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4 text-blue-600" />
+                  Points clés à retenir
+                </h4>
+                <ul className="space-y-1">
+                  {section.keyPoints.map((point, kIdx) => (
+                    <li key={kIdx} className="flex items-start gap-2 text-sm">
+                      <ChevronRight className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Exemple pratique */}
+            {section.example && (
+              <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-green-600" />
+                  Exemple pratique
+                </h4>
+                <p className="text-sm text-gray-700">{section.example}</p>
+              </div>
+            )}
+
+            {/* Avertissement */}
+            {section.warning && (
+              <div className="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-yellow-600" />
+                  Attention
+                </h4>
+                <p className="text-sm text-gray-700">{section.warning}</p>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Références légales */}
+        {article.legalReferences && article.legalReferences.length > 0 && (
+          <div className="mt-6 pt-6 border-t">
+            <h4 className="font-semibold mb-3 flex items-center gap-2">
+              <LinkIcon className="h-4 w-4 text-purple-600" />
+              Références légales
+            </h4>
+            <ul className="space-y-2">
+              {article.legalReferences.map((ref, idx) => (
+                <li key={idx} className="flex items-center gap-2 text-sm">
+                  <FileText className="h-3 w-3 text-gray-400" />
+                  <a
+                    href={ref.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline flex items-center gap-1"
+                  >
+                    {ref.title}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Composant principal
 export default function EducationFiscalePage() {
   const [selectedTheme, setSelectedTheme] = useState<any>(null);
@@ -352,172 +476,72 @@ export default function EducationFiscalePage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Onglet Thématiques */}
+          {/* Onglet Thématiques avec articles intégrés */}
           <TabsContent value="themes" className="space-y-6">
-            {selectedTheme ? (
-              // Vue détaillée d'un thème
-              <div>
-                <Button
-                  variant="ghost"
-                  onClick={() => setSelectedTheme(null)}
-                  className="mb-4"
-                >
-                  ← Retour aux thématiques
-                </Button>
+            <div className="space-y-6">
+              {filteredThemes.map((theme) => {
+                const Icon = theme.icon;
+                const articles = getArticlesByCategory(theme.titre);
                 
-                <Card>
-                  <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
-                    <div className="flex items-center gap-3">
-                      {selectedTheme.icon && <selectedTheme.icon className="h-8 w-8 text-blue-600" />}
-                      <div>
-                        <CardTitle className="text-2xl">{selectedTheme.titre}</CardTitle>
-                        <CardDescription className="text-lg mt-1">
-                          {selectedTheme.description}
-                        </CardDescription>
+                return (
+                  <Card key={theme.id} className="overflow-hidden">
+                    <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
+                          <Icon className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-xl">{theme.titre}</CardTitle>
+                          <CardDescription className="text-base">
+                            {theme.description}
+                          </CardDescription>
+                        </div>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="space-y-6">
-                      {/* Articles disponibles pour cette catégorie */}
-                      {(() => {
-                        const articles = getArticlesByCategory(selectedTheme.titre);
-                        return articles.length > 0 ? (
-                          <div>
-                            <h3 className="text-xl font-bold mb-4">Articles disponibles</h3>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              {articles.map((article) => (
-                                <Card 
-                                  key={article.slug}
-                                  className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-blue-500"
-                                  onClick={() => window.open(`/education-fiscale/articles/${article.slug}`, '_blank')}
-                                >
-                                  <CardHeader className="pb-3">
-                                    <div className="flex items-center justify-between mb-2">
-                                      <Badge variant="secondary">{article.subcategory}</Badge>
-                                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                                        <Clock className="h-3 w-3" />
-                                        <span>5 min</span>
-                                      </div>
-                                    </div>
-                                    <CardTitle className="text-lg">{article.title}</CardTitle>
-                                    <CardDescription className="text-sm text-gray-600">
-                                      {article.description}
-                                    </CardDescription>
-                                  </CardHeader>
-                                  <CardContent>
-                                    <Button className="w-full" variant="outline">
-                                      <BookOpen className="h-4 w-4 mr-2" />
-                                      Lire l'article
-                                    </Button>
-                                  </CardContent>
-                                </Card>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="grid md:grid-cols-2 gap-4">
-                            {selectedTheme.sousThemes.map((sousTheme: any) => (
-                              <Card 
-                                key={sousTheme.id}
-                                className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-blue-500"
-                              >
-                                <CardHeader className="pb-3">
-                                  <div className="flex items-center justify-between">
-                                    <CardTitle className="text-lg">{sousTheme.titre}</CardTitle>
-                                    <Badge variant={sousTheme.articles > 0 ? "default" : "secondary"}>
-                                      {sousTheme.articles > 0 ? `${sousTheme.articles} article${sousTheme.articles > 1 ? 's' : ''}` : 'Bientôt disponible'}
-                                    </Badge>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="space-y-0">
+                        {theme.sousThemes.map((sousTheme: any) => (
+                          <Collapsible key={sousTheme.id}>
+                            <CollapsibleTrigger asChild>
+                              <div className="w-full p-4 text-left hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <ChevronRight className="h-4 w-4 text-gray-400 transition-transform group-data-[state=open]:rotate-90" />
+                                    <span className="font-medium">{sousTheme.titre}</span>
                                   </div>
-                                </CardHeader>
-                                <CardContent>
-                                  {sousTheme.slug ? (
-                                    <Button 
-                                      className="w-full" 
-                                      variant="outline"
-                                      onClick={() => window.open(`/education-fiscale/articles/${sousTheme.slug}`, '_blank')}
-                                    >
-                                      <BookOpen className="h-4 w-4 mr-2" />
-                                      Lire l'article
-                                    </Button>
-                                  ) : (
-                                    <Button className="w-full" variant="outline" disabled>
-                                      <BookOpen className="h-4 w-4 mr-2" />
-                                      Bientôt disponible
-                                    </Button>
-                                  )}
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
-                        );
-                      })()}
-                    </div>
-
-                    {/* Suggestions de lecture */}
-                    <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-                      <h3 className="font-semibold mb-3 flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-blue-600" />
-                        Articles recommandés pour vous
-                      </h3>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-sm">
-                          <ChevronRight className="h-4 w-4 text-gray-400" />
-                          <span>Comment optimiser vos déductions fiscales</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <ChevronRight className="h-4 w-4 text-gray-400" />
-                          <span>Guide complet du 3e pilier</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <ChevronRight className="h-4 w-4 text-gray-400" />
-                          <span>Fiscalité des cryptomonnaies en 2024</span>
-                        </div>
+                                  <div className="flex items-center gap-2">
+                                    {sousTheme.articles > 0 ? (
+                                      <Badge variant="default">
+                                        {sousTheme.articles} article{sousTheme.articles > 1 ? 's' : ''}
+                                      </Badge>
+                                    ) : (
+                                      <Badge variant="secondary">Bientôt disponible</Badge>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <div className="p-6 bg-gray-50">
+                                {sousTheme.slug ? (
+                                  <ArticleDisplay slug={sousTheme.slug} />
+                                ) : (
+                                  <div className="text-center py-8 text-gray-500">
+                                    <BookOpen className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                                    <p className="text-lg font-medium">Article en préparation</p>
+                                    <p className="text-sm">Ce contenu sera bientôt disponible</p>
+                                  </div>
+                                )}
+                              </div>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        ))}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              // Liste des thématiques
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredThemes.map((theme) => {
-                  const Icon = theme.icon;
-                  return (
-                    <Card
-                      key={theme.id}
-                      className="hover:shadow-xl transition-all cursor-pointer transform hover:scale-105"
-                      onClick={() => setSelectedTheme(theme)}
-                    >
-                      <CardHeader>
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
-                            <Icon className="h-6 w-6 text-blue-600" />
-                          </div>
-                          <CardTitle className="text-lg">{theme.titre}</CardTitle>
-                        </div>
-                        <CardDescription>{theme.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {theme.sousThemes.slice(0, 3).map((st) => (
-                            <div key={st.id} className="flex items-center justify-between text-sm">
-                              <span className="text-gray-600">{st.titre}</span>
-                              <Badge variant="outline">{st.articles}</Badge>
-                            </div>
-                          ))}
-                          {theme.sousThemes.length > 3 && (
-                            <p className="text-sm text-blue-600 font-medium pt-2">
-                              + {theme.sousThemes.length - 3} autres sous-thèmes
-                            </p>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </TabsContent>
 
           {/* Onglet Parcours guidés */}

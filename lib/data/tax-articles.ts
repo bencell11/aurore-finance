@@ -602,6 +602,1116 @@ Les implications vont au-delà des impôts : assurances sociales, droit de vote,
     previousArticle: { slug: 'types-impots', title: 'Types d\'impôts' },
     nextArticle: { slug: 'baremes-progressivite', title: 'Barèmes et progressivité' },
     lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== BARÈMES ET PROGRESSIVITÉ ==========
+  {
+    slug: 'baremes-progressivite',
+    title: 'Barèmes et progressivité de l\'impôt',
+    description: 'Comprendre les barèmes d\'imposition, la progressivité, les taux marginaux et effectifs en Suisse',
+    category: 'Introduction à la fiscalité suisse',
+    subcategory: 'Barèmes et progressivité',
+    content: '',
+    sections: [
+      {
+        id: 'principe-progressivite',
+        title: 'Le principe de progressivité',
+        content: `La progressivité de l'impôt signifie que le taux d'imposition augmente avec le niveau de revenu. Ce principe découle de la capacité contributive : plus le revenu est élevé, plus la capacité à contribuer aux charges publiques est importante.
+
+La progressivité repose sur l'idée que les premiers francs de revenu servent à couvrir les besoins vitaux (nourriture, logement, santé) et doivent donc être peu ou pas imposés. Les revenus supplémentaires permettent un niveau de vie plus confortable et peuvent supporter une imposition plus élevée.
+
+En Suisse, tous les niveaux (Confédération, cantons, communes) appliquent des barèmes progressifs pour l'impôt sur le revenu des personnes physiques. Seul l'impôt sur le bénéfice des personnes morales suit un taux proportionnel.
+
+La progressivité peut être directe (barème à tranches) ou indirecte (via les déductions). Elle peut aussi être linéaire, dégressive ou plafonnée selon les choix politiques de chaque niveau de collectivité.`,
+        keyPoints: [
+          'Taux croissant avec le niveau de revenu',
+          'Basé sur le principe de capacité contributive',
+          'Préservation du minimum vital',
+          'Application à tous les niveaux en Suisse',
+          'Différentes formes de progressivité possibles'
+        ],
+        example: 'Avec un revenu de 50\'000 CHF, on peut payer 8% d\'impôt effectif, mais avec 150\'000 CHF, le taux effectif peut atteindre 25%, illustrant la progressivité.'
+      },
+      {
+        id: 'taux-marginal-effectif',
+        title: 'Taux marginal vs taux effectif',
+        content: `Le taux marginal représente l'impôt payé sur le dernier franc gagné. C'est le taux qui s'applique à la tranche de revenu la plus élevée selon le barème progressif. Il détermine l'incitation fiscale marginale au travail ou à l'épargne.
+
+Le taux effectif (ou moyen) correspond à l'impôt total divisé par le revenu total. Il est toujours inférieur au taux marginal dans un système progressif, car les tranches inférieures sont imposées à des taux plus faibles.
+
+Cette distinction est cruciale pour la prise de décision économique. Le taux marginal influence les choix d'activité supplémentaire (heures supplémentaires, bonus), tandis que le taux effectif mesure la charge fiscale globale.
+
+Dans les cantons suisses, le taux marginal peut atteindre 40-45% pour les très hauts revenus (combinant fédéral, cantonal et communal), mais le taux effectif reste généralement bien inférieur, même pour les contribuables aisés.`,
+        keyPoints: [
+          'Taux marginal = impôt sur dernier franc gagné',
+          'Taux effectif = charge fiscale moyenne globale',
+          'Taux effectif toujours < taux marginal',
+          'Influence différente sur décisions économiques',
+          'Taux marginaux suisses jusqu\'à 40-45%'
+        ],
+        example: 'Un contribuable avec 200\'000 CHF de revenu peut avoir un taux marginal de 35% mais un taux effectif de 20%, car ses premiers revenus sont imposés à des taux plus faibles.'
+      },
+      {
+        id: 'baremes-cantonaux',
+        title: 'Diversité des barèmes cantonaux',
+        content: `Chaque canton suisse dispose de sa souveraineté pour fixer ses barèmes d'imposition, créant une grande diversité de systèmes. Certains cantons privilégient des taux modérés avec une progressivité douce, d'autres acceptent des taux plus élevés pour financer des services publics étoffés.
+
+Les cantons compétitifs comme Zoug ou Nidwald appliquent des barèmes plafonnés rapidement, évitant une progressivité excessive sur les hauts revenus. À l'inverse, des cantons comme Genève ou le Jura maintiennent une forte progressivité jusqu'aux revenus très élevés.
+
+La structure des barèmes varie aussi : certains utilisent de nombreuses tranches pour une progressivité fine, d'autres préfèrent des tranches larges. Le point de départ de l'imposition (seuil d'exonération) diffère également significativement.
+
+Les coefficients communaux viennent multiplier l'impôt cantonal, ajoutant une couche de variation. Une commune peut avoir un coefficient de 0.8 (réduction de 20%) ou 1.5 (majoration de 50%) selon ses besoins financiers et ses choix politiques.`,
+        keyPoints: [
+          'Souveraineté cantonale sur les barèmes',
+          'Stratégies différentes : compétitivité vs services',
+          'Variation structure : tranches et seuils',
+          'Coefficients communaux multiplicateurs',
+          'Grande diversité entre 26 systèmes'
+        ],
+        warning: 'Un taux cantonal apparemment attractif peut être pénalisé par un coefficient communal élevé. Il faut toujours analyser la charge fiscale totale.'
+      },
+      {
+        id: 'effets-economiques',
+        title: 'Effets économiques de la progressivité',
+        content: `La progressivité a des effets redistributifs évidents : elle réduit les inégalités de revenus nets par rapport aux revenus bruts. Cet effet redistributif est voulu politiquement pour assurer une certaine cohésion sociale.
+
+L'effet sur les incitations au travail est plus débattu. Des taux marginaux élevés peuvent décourager l'effort supplémentaire, créer des trappes à inactivité ou inciter à la délocalisation. C'est pourquoi certains cantons plafonnent leurs barèmes.
+
+La progression à froid constitue un problème technique : l'inflation pousse les contribuables vers des tranches supérieures sans amélioration de pouvoir d'achat réel. Certains cantons indexent leurs barèmes pour corriger cet effet.
+
+Les effets de seuil peuvent créer des situations où une augmentation de revenu brut conduit à une diminution de revenu net. Les systèmes modernes tentent de lisser ces effets par des mécanismes d'atténuation.`,
+        keyPoints: [
+          'Effet redistributif voulu politiquement',
+          'Impact sur incitations au travail débattu',
+          'Progression à froid due à l\'inflation',
+          'Effets de seuil problématiques',
+          'Mécanismes correcteurs nécessaires'
+        ],
+        example: 'Un bonus de 5\'000 CHF peut ne rapporter que 2\'500 CHF nets si le taux marginal est de 50%, questionnant la motivation à l\'effort supplémentaire.'
+      },
+      {
+        id: 'optimisation-baremes',
+        title: 'Optimisation face aux barèmes',
+        content: `La connaissance des barèmes permet diverses stratégies d'optimisation légale. L'étalement des revenus sur plusieurs années évite les effets de la progressivité sur les revenus exceptionnels comme les bonus ou plus-values.
+
+Le splitting familial permet de répartir certains revenus entre conjoints pour bénéficier deux fois des tranches inférieures. Cette technique est particulièrement efficace quand un conjoint a des revenus nuls ou faibles.
+
+Le timing des déductions peut être optimisé : concentrer les déductions les années à hauts revenus (taux marginal élevé) et étaler les revenus les années à déductions importantes maximise l'avantage fiscal.
+
+Le choix du canton de domicile reste l'optimisation la plus efficace pour les contribuables mobiles. Les différences de barèmes peuvent représenter des économies substantielles, particulièrement pour les hauts revenus où la progressivité joue pleinement.`,
+        keyPoints: [
+          'Étalement revenus évite forte progressivité',
+          'Splitting conjugal optimise tranches inférieures',
+          'Timing déductions selon taux marginal',
+          'Choix domicile fiscal crucial',
+          'Optimisation légale permise et encadrée'
+        ],
+        warning: 'Les stratégies d\'optimisation doivent avoir une substance économique réelle et ne pas constituer un abus de droit fiscal.'
+      }
+    ],
+    keywords: ['barèmes', 'progressivité', 'taux marginal', 'taux effectif', 'optimisation'],
+    relatedConcepts: [
+      { slug: 'principes-imposition', title: 'Principes d\'imposition' },
+      { slug: 'comparatif-fiscal-cantonal', title: 'Comparatif cantonal' },
+      { slug: 'optimisation-fiscale-legale', title: 'Optimisation fiscale' }
+    ],
+    legalReferences: [
+      { title: 'LIFD - Barème fédéral', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_214' },
+      { title: 'Statistiques fiscales AFC', url: 'https://www.estv.admin.ch/' }
+    ],
+    previousArticle: { slug: 'domicile-fiscal', title: 'Domicile fiscal' },
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== FISCALITÉ DES PERSONNES PHYSIQUES ==========
+  {
+    slug: 'revenus-imposables-salaries',
+    title: 'Les revenus imposables des salariés',
+    description: 'Comprendre tous les éléments du salaire soumis à l\'impôt : salaire de base, avantages, bonus et éléments accessoires',
+    category: 'Fiscalité des personnes physiques',
+    subcategory: 'Revenus salariés',
+    content: '',
+    sections: [
+      {
+        id: 'salaire-base',
+        title: 'Salaire de base et éléments fixes',
+        content: `Le salaire de base constitue l'élément principal du revenu imposable. Il comprend le salaire mensuel, les gratifications convenues contractuellement (13e salaire, bonus garantis) et tous les versements réguliers effectués par l'employeur.
+
+Les éléments fixes incluent également les allocations pour enfants versées par l'employeur (distinctes des allocations familiales de l'AVS), les indemnités de résidence, les primes de fonction et toute rémunération liée au statut du salarié.
+
+La périodicité du versement n'influence pas l'imposition : qu'il soit versé mensuellement, trimestriellement ou annuellement, tout élément de rémunération contractuel est imposable dans l'année de perception selon le principe de l'encaissement.`,
+        keyPoints: [
+          'Salaire mensuel intégralement imposable',
+          '13e salaire et bonus contractuels inclus',
+          'Allocations employeur distinctes AVS',
+          'Imposition selon principe d\'encaissement',
+          'Périodicité sans influence sur l\'imposabilité'
+        ]
+      },
+      {
+        id: 'avantages-nature',
+        title: 'Avantages en nature',
+        content: `Les avantages en nature constituent un complément de salaire imposable évalué à leur valeur vénale. Le principe est simple : tout ce qui profite au salarié et qui, normalement, représenterait une dépense personnelle, constitue un avantage imposable.
+
+La voiture de service utilisée privativement est l'avantage le plus fréquent. L'évaluation se fait soit selon les frais effectifs (carburant, assurance, amortissement) soit forfaitairement à 0.8% de la valeur d'achat neuve par mois. Le choix de la méthode appartient à l'employeur mais doit être appliqué de manière cohérente.
+
+Le logement gratuit ou à prix réduit est évalué à sa valeur locative selon les prix du marché local. Une réduction de 20% peut être appliquée si l'occupation du logement présente un intérêt pour l'employeur (concierge, gardien).
+
+Les repas gratuits ou subventionnés sont imposables au-delà de la contribution du salarié. L'administration fiscale accepte généralement une valeur forfaitaire de 15 CHF par repas principal.`,
+        keyPoints: [
+          'Évaluation à la valeur vénale',
+          'Voiture : 0.8% valeur neuve/mois ou frais réels',
+          'Logement : valeur locative moins 20% si justifié',
+          'Repas : 15 CHF/repas principal',
+          'Application cohérente des méthodes d\'évaluation'
+        ],
+        example: 'Une voiture d\'entreprise achetée 50\'000 CHF représente un avantage de 400 CHF/mois (50\'000 x 0.8%), soit 4\'800 CHF imposables par an si utilisée privativement.'
+      },
+      {
+        id: 'bonus-variables',
+        title: 'Bonus et éléments variables',
+        content: `Les bonus et gratifications variables sont imposables même s'ils ne sont pas contractuellement garantis. Peu importe qu'ils dépendent des résultats de l'entreprise ou de la performance individuelle, ils constituent un revenu de l'activité salariée.
+
+Les stock-options et plans d'actionnariat salarié sont imposables au moment de l'attribution si elles peuvent être exercées immédiatement, ou au moment de l'exercice si elles sont soumises à des conditions (vesting). La valeur imposable correspond à la différence entre la valeur de marché et le prix d'exercice.
+
+Les commissions et primes de vente s'imposent selon le principe de l'encaissement. Les provisions pour commissions futures ne sont pas déductibles du côté du salarié, contrairement aux entreprises.
+
+Les indemnités de départ et golden parachutes sont imposables, mais peuvent bénéficier d'une imposition privilégiée si elles indemnisent une perte réelle de revenus futurs.`,
+        keyPoints: [
+          'Bonus imposables même non garantis',
+          'Stock-options : à l\'attribution ou exercice',
+          'Commissions selon principe d\'encaissement',
+          'Indemnités de départ imposables',
+          'Imposition privilégiée possible selon circonstances'
+        ]
+      }
+    ],
+    keywords: ['salaire', 'revenus', 'avantages nature', 'bonus', 'stock-options'],
+    relatedConcepts: [
+      { slug: 'certificat-salaire', title: 'Certificat de salaire' },
+      { slug: 'deductions-professionnelles', title: 'Déductions professionnelles' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 17 (Revenus d\'activité)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_17' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  {
+    slug: 'deductions-fiscales-principales',
+    title: 'Les principales déductions fiscales',
+    description: 'Guide complet des déductions autorisées : sociales, professionnelles, familiales et 3e pilier',
+    category: 'Fiscalité des personnes physiques',
+    subcategory: 'Déductions',
+    content: '',
+    sections: [
+      {
+        id: 'deductions-sociales',
+        title: 'Déductions sociales obligatoires',
+        content: `Les cotisations aux assurances sociales obligatoires sont intégralement déductibles car elles réduisent la capacité contributive sans être librement choisies. Cette déduction suit le principe que seul le revenu net disponible doit être imposé.
+
+Les cotisations AVS/AI/APG représentent 5.3% du salaire (partagées avec l'employeur) jusqu'à un maximum de 148'200 CHF en 2024. Au-delà, aucune cotisation n'est due, donc aucune déduction n'est possible.
+
+L'assurance-chômage prélève 1.1% sur la partie du salaire jusqu'à 148'200 CHF, puis 0.5% entre 148'200 et 315'000 CHF. La part salarié est entièrement déductible.
+
+Les cotisations LPP (2e pilier) sont déductibles selon les montants effectivement versés, dans la limite des maximums légaux. Le montant varie selon l'âge et le salaire, avec des taux de 7%, 10%, 15% ou 18%.`,
+        keyPoints: [
+          'AVS/AI/APG : 5.3% jusqu\'à 148\'200 CHF',
+          'Chômage : 1.1% puis 0.5% selon tranches',
+          'LPP selon âge et salaire coordonné',
+          'Déduction intégrale des montants versés',
+          'Aucune déduction au-delà des maximums'
+        ]
+      },
+      {
+        id: 'frais-professionnels',
+        title: 'Frais professionnels déductibles',
+        content: `Les frais professionnels réduisent le revenu imposable car ils sont nécessaires à l'obtention du revenu. Ils doivent être effectifs, justifiés et proportionnés. La plupart des cantons appliquent une déduction forfaitaire, mais les frais effectifs peuvent être déclarés s'ils sont supérieurs.
+
+Les frais de transport entre domicile et lieu de travail sont déductibles selon les coûts des transports publics ou, si l'usage de la voiture est nécessaire, selon un barème kilométrique (environ 0.70 CHF/km en 2024). Les frais de parking au lieu de travail sont inclus.
+
+Les repas pris hors du domicile en raison de l'activité professionnelle sont déductibles à hauteur de 15 CHF par repas principal. Cette déduction nécessite que le retour au domicile soit impossible ou déraisonnable.
+
+La formation continue liée à l'activité professionnelle est déductible sans limite, à condition qu'elle maintienne ou améliore les qualifications nécessaires à l'exercice de l'activité actuelle. La formation pour une nouvelle orientation professionnelle n'est généralement pas déductible.`,
+        keyPoints: [
+          'Forfait cantonal ou frais effectifs si supérieurs',
+          'Transport : transports publics ou 0.70 CHF/km',
+          'Repas : 15 CHF si retour domicile impossible',
+          'Formation continue sans limite si liée au poste',
+          'Justification et proportionnalité requises'
+        ],
+        example: 'Un salarié habitant à 25 km de son bureau peut déduire 25 x 2 x 0.70 x 220 jours = 7\'700 CHF de frais de transport annuels.'
+      },
+      {
+        id: 'troisieme-pilier',
+        title: '3e pilier : optimisation fiscale',
+        content: `Le 3e pilier A constitue l'une des déductions fiscales les plus avantageuses. Les versements sont intégralement déductibles du revenu imposable, et le capital fructifie à l'abri de l'impôt jusqu'au retrait.
+
+Pour 2024, le maximum déductible est de 7'056 CHF pour les salariés affiliés à une caisse de pension. Les indépendants sans 2e pilier peuvent déduire jusqu'à 35'280 CHF (20% du revenu net).
+
+Le timing du versement est crucial : il doit intervenir avant le 31 décembre pour être déductible dans l'année fiscale. Un versement le 2 janvier n'est déductible que l'année suivante.
+
+Le retrait anticipé est possible pour l'achat d'un logement en propriété, le remboursement d'hypothèques, le départ définitif de Suisse ou le passage à l'indépendance. Dans ces cas, l'avoir est imposé séparément à un taux privilégié.`,
+        keyPoints: [
+          '7\'056 CHF maximum pour salariés en 2024',
+          '35\'280 CHF pour indépendants sans LPP',
+          'Versement avant 31 décembre obligatoire',
+          'Retrait anticipé possible selon conditions',
+          'Imposition privilégiée au retrait'
+        ],
+        warning: 'Un retrait pour l\'achat immobilier crée une dette fiscale latente : le montant retiré devra être re-imposé si la propriété est vendue dans les 3 ans.'
+      }
+    ],
+    keywords: ['déductions', '3e pilier', 'frais professionnels', 'cotisations sociales'],
+    relatedConcepts: [
+      { slug: 'revenus-imposables-salaries', title: 'Revenus imposables' },
+      { slug: 'calcul-impot-revenu', title: 'Calcul de l\'impôt' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 33 (Déductions)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_33' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== AUTRES ARTICLES FISCALITÉ PERSONNES PHYSIQUES ==========
+  {
+    slug: 'impot-fortune-personnes-physiques',
+    title: 'L\'impôt sur la fortune des personnes physiques',
+    description: 'Comprendre l\'imposition de la fortune : calcul, évaluation des biens et stratégies d\'optimisation',
+    category: 'Fiscalité des personnes physiques',
+    subcategory: 'Impôt sur la fortune',
+    content: '',
+    sections: [
+      {
+        id: 'principe-impot-fortune',
+        title: 'Principe de l\'impôt sur la fortune',
+        content: `L'impôt sur la fortune constitue une spécificité suisse de plus en plus rare dans le monde. Seuls les cantons et communes le prélèvent (pas la Confédération), sur la fortune nette au 31 décembre. Cette fortune nette correspond aux actifs moins les dettes justifiées.
+
+L'impôt frappe la substance même du patrimoine, indépendamment des revenus qu'elle génère. Cette approche vise à faire contribuer les détenteurs de patrimoine aux charges publiques, même si leurs actifs ne produisent pas de revenus courants.
+
+Les taux varient fortement entre cantons, généralement entre 0.1% et 1% de la fortune nette. Ces taux peuvent paraître faibles, mais ils s'appliquent sur la valeur totale du patrimoine et s'ajoutent à l'impôt sur les revenus éventuels de ce patrimoine.
+
+L'évaluation de la fortune se fait selon des règles précises : valeur vénale pour l'immobilier, cours de bourse pour les titres cotés, valeur intrinsèque pour les participations non cotées. Cette évaluation peut parfois créer des difficultés pratiques.`,
+        keyPoints: [
+          'Impôt cantonal et communal uniquement',
+          'Fortune nette au 31 décembre',
+          'Taux entre 0.1% et 1% selon cantons',
+          'Indépendant des revenus générés',
+          'Évaluation selon règles précises'
+        ]
+      },
+      {
+        id: 'evaluation-patrimoine',
+        title: 'Évaluation des différents actifs',
+        content: `L'immobilier est évalué à sa valeur vénale, généralement basée sur la valeur d'assurance incendie majorée d'un coefficient. Cette évaluation peut être contestée si elle s'écarte significativement de la valeur de marché réelle.
+
+Les titres cotés sont évalués au cours du 31 décembre ou au cours moyen des derniers 30 jours de négociation. Pour les participations importantes, des décotes peuvent s'appliquer pour tenir compte de l'illiquidité.
+
+Les liquidités (comptes bancaires, CCP) sont prises à leur valeur nominale. Les créances sont évaluées à leur valeur probable de recouvrement. Les biens mobiliers (meubles, véhicules) sont généralement évalués forfaitairement.
+
+Les dettes déductibles incluent les hypothèques, crédits bancaires et autres dettes justifiées. Attention : seules les dettes ayant une contrepartie économique réelle sont déductibles. Les dettes fictives ou excessives sont rejetées.`,
+        keyPoints: [
+          'Immobilier : valeur vénale (assurance + coefficient)',
+          'Titres : cours 31 décembre ou moyenne 30 jours',
+          'Liquidités à valeur nominale',
+          'Dettes justifiées déductibles',
+          'Contrôle réalité économique des dettes'
+        ],
+        warning: 'Une dette contractée sans justification économique (par exemple pour acquérir des actifs exonérés) peut être requalifiée et refusée en déduction.'
+      },
+      {
+        id: 'optimisation-fortune',
+        title: 'Stratégies d\'optimisation',
+        content: `Le choix du canton de domicile représente l'optimisation principale. Certains cantons n'imposent pas la fortune jusqu'à un certain seuil (Nidwald : 200'000 CHF), d'autres ont des taux très modérés.
+
+La structuration du patrimoine peut réduire l'impôt : privilégier les actifs générant des revenus imposables plutôt que de la plus-value exonérée, répartir la fortune entre conjoints, utiliser des structures de détention appropriées.
+
+Le timing des opérations patrimoniales influence l'imposition : ventes et achats immobiliers, constitution ou dissolution de sociétés, donations entre époux. Une planification minutieuse peut éviter des pics d'imposition.
+
+L'endettement stratégique permet de réduire la fortune nette imposable. Cependant, les intérêts payés doivent avoir une justification économique et l'endettement ne doit pas être purement artificiel.`,
+        keyPoints: [
+          'Choix canton : seuils et taux variables',
+          'Structuration patrimoine optimale',
+          'Timing opérations patrimoniales',
+          'Endettement stratégique encadré',
+          'Éviter pics d\'imposition temporaires'
+        ],
+        example: 'Un déménagement de Genève (taux 0.55%) vers Zoug (taux 0.14%) sur une fortune de 2 millions CHF économise environ 8\'200 CHF d\'impôt annuel.'
+      }
+    ],
+    keywords: ['impôt fortune', 'patrimoine', 'évaluation', 'optimisation', 'cantons'],
+    relatedConcepts: [
+      { slug: 'valeur-locative-residence', title: 'Valeur locative' },
+      { slug: 'comparatif-fiscal-cantonal', title: 'Comparatif cantonal' }
+    ],
+    legalReferences: [
+      { title: 'LHID Art. 13 (Impôt sur la fortune)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1256_1256_1256/fr#art_13' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  {
+    slug: 'rentes-avs-lpp-imposition',
+    title: 'Imposition des rentes AVS, AI et LPP',
+    description: 'Comprendre l\'imposition des rentes du 1er et 2e pilier : règles, déductions et optimisation',
+    category: 'Fiscalité des personnes physiques',
+    subcategory: 'Rentes',
+    content: '',
+    sections: [
+      {
+        id: 'principe-imposition-rentes',
+        title: 'Principe d\'imposition des rentes',
+        content: `Les rentes du 1er pilier (AVS/AI) et du 2e pilier (LPP) sont intégralement imposables comme revenu au moment de leur perception. Cette imposition suit le principe de l'imposition différée : les cotisations étaient déductibles pendant la vie active, les prestations sont imposables à la retraite.
+
+Les rentes AVS/AI bénéficient d'un régime légèrement privilégié avec des déductions spécifiques dans la plupart des cantons. Ces déductions visent à tenir compte de la situation particulière des rentiers et de leurs revenus généralement plus modestes.
+
+Les rentes LPP sont imposées intégralement, sans déduction particulière au niveau fédéral, mais certains cantons accordent des allègements. Le montant imposable correspond à la rente annuelle effectivement perçue.
+
+Les prestations en capital du 2e pilier (liquidation de la LPP en une fois) bénéficient d'une imposition privilégiée séparée, distincte des autres revenus. Cette imposition séparée évite l'effet de la progressivité sur ces montants importants.`,
+        keyPoints: [
+          'Rentes AVS/AI/LPP intégralement imposables',
+          'Principe d\'imposition différée',
+          'Déductions spécifiques pour AVS/AI',
+          'Capitaux LPP imposés séparément',
+          'Éviter effets progressivité sur capitaux'
+        ]
+      },
+      {
+        id: 'deductions-rentiers',
+        title: 'Déductions spécifiques aux rentiers',
+        content: `Les rentiers AVS/AI bénéficient de déductions particulières dans la plupart des cantons. Ces déductions peuvent être forfaitaires (montant fixe) ou proportionnelles (pourcentage de la rente). Elles visent à alléger la charge fiscale de cette catégorie de contribuables.
+
+Les frais médicaux et de maladie sont souvent plus facilement déductibles pour les rentiers, avec des seuils d'admission plus favorables. L'âge et la situation de santé justifient cette approche différenciée.
+
+Les primes d'assurance-maladie obligatoire restent déductibles après la retraite, constituant souvent une déduction importante pour les rentiers. Certains cantons accordent des déductions supplémentaires pour les primes complémentaires.
+
+Le 3e pilier A reste déductible jusqu'à l'âge de la retraite ordinaire AVS (64 ans pour les femmes, 65 pour les hommes), permettant une optimisation fiscale continue. Au-delà, seuls les versements de rattrapage dans le 3e pilier B restent possibles dans certaines conditions.`,
+        keyPoints: [
+          'Déductions forfaitaires ou proportionnelles',
+          'Frais médicaux facilités',
+          'Primes maladie déductibles',
+          '3e pilier A jusqu\'à retraite AVS',
+          'Seuils plus favorables selon âge'
+        ]
+      },
+      {
+        id: 'optimisation-retraite',
+        title: 'Optimisation fiscale à la retraite',
+        content: `La planification de la retraite doit intégrer l'aspect fiscal des prestations. Le choix entre rente et capital pour la LPP a des implications fiscales importantes : la rente est imposée annuellement, le capital une seule fois mais à un taux privilégié.
+
+L'étalement des retraits du 3e pilier sur plusieurs années permet d'optimiser la progressivité. Plutôt qu'un retrait unique, des retraits échelonnés réduisent l'impact fiscal global, particulièrement si d'autres revenus diminuent à la retraite.
+
+La répartition des revenus entre conjoints reste possible à la retraite pour optimiser la progressivité. Les rentes peuvent parfois être attribuées différemment, et les revenus de capitaux répartis par donations entre époux.
+
+Le choix du canton de domicile à la retraite mérite réflexion : les besoins changent (moins d'écoles, plus de soins), et un canton avec une fiscalité favorable aux rentiers peut devenir attractif.`,
+        keyPoints: [
+          'Choix rente vs capital LPP crucial',
+          'Étalement retraits 3e pilier',
+          'Répartition revenus entre conjoints',
+          'Choix canton spécifique retraités',
+          'Planification globale nécessaire'
+        ],
+        example: 'Un capital LPP de 500\'000 CHF peut être imposé une fois à 5% (25\'000 CHF) plutôt qu\'une rente de 20\'000 CHF/an imposée 25 ans à 15% (75\'000 CHF total).'
+      }
+    ],
+    keywords: ['rentes', 'AVS', 'LPP', 'retraite', 'imposition différée'],
+    relatedConcepts: [
+      { slug: 'deductions-fiscales-principales', title: 'Déductions fiscales' },
+      { slug: 'troisieme-pilier-optimisation', title: '3e pilier' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 22 (Prestations prévoyance)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_22' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  {
+    slug: 'revenus-immobiliers-personnes-physiques',
+    title: 'Les revenus immobiliers des personnes physiques',
+    description: 'Imposition des revenus locatifs, valeur locative et déductions immobilières',
+    category: 'Fiscalité des personnes physiques',
+    subcategory: 'Revenus immobiliers',
+    content: '',
+    sections: [
+      {
+        id: 'revenus-locatifs',
+        title: 'Imposition des revenus locatifs',
+        content: `Les revenus locatifs sont intégralement imposables comme revenus immobiliers. Le montant imposable correspond aux loyers effectivement perçus, y compris les charges répercutées aux locataires et les accessoires (places de parc, caves).
+
+Les loyers non perçus (créances irrécouvrables) peuvent être déduits s'ils sont définitivement perdus et si les démarches de recouvrement ont été entreprises. Une simple difficulté temporaire ne justifie pas la déduction.
+
+Les sous-locations et Airbnb constituent aussi des revenus imposables. Pour les locations de courte durée, il faut tenir compte des frais proportionnellement plus élevés (nettoyage, gestion, usure accélérée).
+
+La location à des proches (famille, sociétés liées) doit se faire à des conditions de marché. Un loyer inférieur au prix du marché peut être requalifié, avec imposition de la valeur locative de la différence.`,
+        keyPoints: [
+          'Loyers intégralement imposables',
+          'Créances irrécouvrables déductibles',
+          'Sous-locations et Airbnb inclus',
+          'Locations proches à prix marché',
+          'Charges répercutées imposables'
+        ]
+      },
+      {
+        id: 'charges-deductibles',
+        title: 'Charges déductibles',
+        content: `Les frais d'entretien et de réparation sont déductibles s'ils maintiennent la substance de l'immeuble sans l'améliorer. Cette distinction entre entretien (déductible) et amélioration (non déductible) est cruciale mais parfois délicate.
+
+Les intérêts hypothécaires sont intégralement déductibles du revenu immobilier ou, si insuffisant, du revenu global. Cette déduction importante peut même créer un déficit immobilier imputable sur les autres revenus.
+
+Les primes d'assurance (incendie, responsabilité civile, perte de loyers) sont déductibles. Les frais de gérance et d'administration, honoraires de fiduciaire ou régie, entrent aussi dans les charges déductibles.
+
+Les amortissements ne sont généralement pas déductibles pour les personnes physiques (contrairement aux entreprises). Seuls l'entretien et les réparations, pas la dépréciation théorique, peuvent être déduits.`,
+        keyPoints: [
+          'Entretien déductible, amélioration non',
+          'Intérêts hypothécaires intégralement déductibles',
+          'Assurances et gérance déductibles',
+          'Pas d\'amortissement pour personnes physiques',
+          'Déficit immobilier imputable autres revenus'
+        ],
+        warning: 'La distinction entretien/amélioration est stricte : changer les fenêtres pour des modèles équivalents = entretien déductible ; installer des fenêtres triple vitrage = amélioration non déductible.'
+      },
+      {
+        id: 'optimisation-immobiliere',
+        title: 'Optimisation fiscale immobilière',
+        content: `Le timing des travaux influence l'optimisation : grouper les gros entretiens les années à hauts revenus (taux marginal élevé) maximise l'avantage fiscal. À l'inverse, étaler les travaux peut éviter de créer des déficits importants inutilisables.
+
+L'endettement hypothécaire peut être optimisé fiscalement : maintenir des dettes déductibles plutôt que d'amortir rapidement, surtout si les liquidités peuvent être placées avantageusement ailleurs.
+
+La répartition immobilière entre conjoints permet d'optimiser la charge fiscale globale. Le conjoint avec les revenus les plus élevés peut supporter les charges déductibles, tandis que l'autre perçoit les revenus locatifs.
+
+Le moment de la vente influence aussi la fiscalité : l'impôt sur les gains immobiliers varie selon la durée de détention. Certains cantons appliquent des taux dégressifs encourageant la détention à long terme.`,
+        keyPoints: [
+          'Timing travaux selon revenus autres',
+          'Maintenir endettement déductible optimal',
+          'Répartition entre conjoints stratégique',
+          'Moment vente influence gains imposables',
+          'Planification long terme nécessaire'
+        ],
+        example: 'Un couple peut attribuer un immeuble locatif au conjoint à hauts revenus pour maximiser la déduction des intérêts hypothécaires, tout en déclarant les loyers chez le conjoint moins imposé.'
+      }
+    ],
+    keywords: ['revenus locatifs', 'immobilier', 'déductions', 'charges', 'optimisation'],
+    relatedConcepts: [
+      { slug: 'valeur-locative-residence', title: 'Valeur locative' },
+      { slug: 'gains-immobiliers', title: 'Gains immobiliers' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 21 (Revenus immobiliers)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_21' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== FISCALITÉ DES ENTREPRISES ==========
+  {
+    slug: 'statut-independant-criteres',
+    title: 'Critères de détermination du statut d\'indépendant',
+    description: 'Comment distinguer l\'activité indépendante du salariat : critères légaux, fiscaux et pratiques',
+    category: 'Indépendants et entreprises',
+    subcategory: 'Statut fiscal',
+    content: '',
+    sections: [
+      {
+        id: 'criteres-legaux',
+        title: 'Critères légaux fondamentaux',
+        content: `La distinction entre activité indépendante et salariat repose sur plusieurs critères cumulatifs établis par la jurisprudence. Le critère principal est l'autonomie dans l'organisation du travail : l'indépendant détermine librement ses horaires, ses méthodes et son lieu de travail.
+
+La subordination constitue l'élément caractéristique du salariat. Elle se manifeste par l'obligation de suivre des instructions, de respecter des horaires imposés, d'utiliser des outils fournis par l'employeur et de s'intégrer dans une organisation hiérarchique.
+
+Le risque économique distingue également les deux statuts. L'indépendant supporte le risque de perte, peut réaliser des bénéfices variables et engage ses propres capitaux. Le salarié perçoit une rémunération fixe indépendamment des résultats.
+
+L'autonomie commerciale se manifeste par la possibilité de travailler pour plusieurs clients, de fixer ses prix, de facturer ses prestations et de développer sa propre clientèle.`,
+        keyPoints: [
+          'Autonomie dans l\'organisation du travail',
+          'Absence de subordination hiérarchique',
+          'Support du risque économique',
+          'Autonomie commerciale et tarifaire',
+          'Possibilité de clientèle multiple'
+        ]
+      },
+      {
+        id: 'implications-fiscales',
+        title: 'Implications fiscales du statut',
+        content: `Le statut d'indépendant entraîne une imposition différente du salariat. Les revenus indépendants sont imposés après déduction des charges d'exploitation, permettant une optimisation fiscale plus large que pour les salariés.
+
+Les cotisations sociales diffèrent substantiellement : l'indépendant paie l'intégralité des cotisations AVS/AI (10.6% au lieu de 5.3% pour le salarié) mais n'est pas soumis à l'assurance-chômage obligatoire.
+
+La TVA devient obligatoire dès 100'000 CHF de chiffre d'affaires annuel, avec possibilité d'option volontaire en dessous. Cette obligation crée des contraintes administratives mais permet la récupération de la TVA sur les achats professionnels.
+
+La prévoyance professionnelle (LPP) n'est pas obligatoire pour les indépendants, qui peuvent cependant s'affilier volontairement ou développer une prévoyance via le pilier 3A avec des plafonds majorés.`,
+        keyPoints: [
+          'Déduction des charges d\'exploitation',
+          'Cotisations AVS doublées (10.6%)',
+          'TVA obligatoire dès 100\'000 CHF',
+          'Pas d\'assurance-chômage obligatoire',
+          'Prévoyance LPP facultative'
+        ],
+        warning: 'Le changement de statut en cours d\'année nécessite une déclaration immédiate aux caisses de compensation pour éviter les régularisations rétroactives.'
+      }
+    ],
+    keywords: ['indépendant', 'statut fiscal', 'autonomie', 'subordination', 'cotisations'],
+    relatedConcepts: [
+      { slug: 'tva-entreprises', title: 'TVA pour entreprises' },
+      { slug: 'charges-deductibles', title: 'Charges déductibles' }
+    ],
+    legalReferences: [
+      { title: 'Circulaire AVS sur l\'indépendance', url: 'https://www.bsv.admin.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== AUTRES ARTICLES INDÉPENDANTS ET ENTREPRISES ==========
+  {
+    slug: 'formes-juridiques-entreprises',
+    title: 'Choix de la forme juridique et implications fiscales',
+    description: 'Comparaison fiscale des différentes formes juridiques : entreprise individuelle, société de personnes, société de capitaux',
+    category: 'Indépendants et entreprises',
+    subcategory: 'Formes juridiques',
+    content: '',
+    sections: [
+      {
+        id: 'entreprise-individuelle',
+        title: 'Entreprise individuelle',
+        content: `L'entreprise individuelle constitue la forme la plus simple et la plus courante pour débuter une activité indépendante. Sur le plan fiscal, elle se caractérise par une transparence totale : les bénéfices sont directement imposés chez la personne physique selon les barèmes progressifs habituels.
+
+Cette forme ne créé pas de personnalité juridique distincte, ce qui simplifie la comptabilité et les obligations administratives. Les revenus et charges professionnels s'ajoutent directement aux autres éléments de la déclaration d'impôt personnelle.
+
+L'avantage principal réside dans la simplicité : pas de double imposition, déduction intégrale des pertes contre les autres revenus, régime de la TVA simplifié possible. Les charges sociales (AVS/AI) s'élèvent à 10.6% sur le bénéfice net.
+
+L'inconvénient majeur concerne la responsabilité illimitée et l'exposition fiscale : les bénéfices importants subissent la progressivité maximale des barèmes cantonaux, sans possibilité d'optimisation par la forme sociétaire.`,
+        keyPoints: [
+          'Transparence fiscale totale',
+          'Imposition selon barèmes personnes physiques',
+          'Simplicité administrative',
+          'Responsabilité illimitée',
+          'Cotisations AVS/AI 10.6%'
+        ]
+      },
+      {
+        id: 'societe-personnes',
+        title: 'Sociétés de personnes (SNC, société simple)',
+        content: `Les sociétés de personnes (société en nom collectif, société simple) conservent la transparence fiscale : les bénéfices sont répartis entre les associés selon leurs quotes-parts et imposés directement chez eux comme revenus d'activité indépendante.
+
+Cette forme permet de s'associer tout en maintenant la simplicité fiscale de l'entreprise individuelle. Chaque associé déclare sa part de bénéfice dans sa déclaration personnelle et paie ses cotisations sociales individuellement.
+
+L'avantage réside dans la possibilité de répartir les revenus entre plusieurs personnes, exploitant potentiellement leurs tranches d'imposition inférieures. Les pertes peuvent être imputées sur les autres revenus de chaque associé.
+
+Les inconvénients incluent la responsabilité solidaire et illimitée de tous les associés, ainsi que l'impossibilité d'optimiser l'imposition des bénéfices importants. La dissolution peut créer des complications administratives.`,
+        keyPoints: [
+          'Transparence fiscale maintenue',
+          'Répartition bénéfices selon quotes-parts',
+          'Responsabilité solidaire illimitée',
+          'Imputation pertes possible',
+          'Complications dissolution'
+        ]
+      },
+      {
+        id: 'societe-capitaux',
+        title: 'Sociétés de capitaux (SA, Sàrl)',
+        content: `Les sociétés de capitaux (SA, Sàrl) créent une personnalité juridique distincte avec ses propres obligations fiscales. La société paie l'impôt sur le bénéfice et le capital, puis les distributions aux actionnaires/associés sont imposées chez ces derniers (double imposition économique).
+
+Le taux global d'imposition sur le bénéfice varie entre 12% et 21% selon les cantons (8.5% fédéral + cantonal/communal). Cette imposition proportionnelle peut être avantageuse par rapport aux barèmes progressifs des personnes physiques.
+
+Pour éviter la double imposition, le système de la participation qualifiée (détention > 10%) prévoit une imposition réduite des dividendes chez les actionnaires. L'impôt anticipé de 35% est prélevé à la source mais récupérable.
+
+Cette forme convient aux entreprises avec des bénéfices substantiels où l'optimisation fiscale justifie la complexité administrative supplémentaire. La responsabilité limitée constitue aussi un avantage important.`,
+        keyPoints: [
+          'Personnalité juridique distincte',
+          'Double imposition économique',
+          'Taux proportionnel 12-21%',
+          'Participation qualifiée atténue double imposition',
+          'Responsabilité limitée'
+        ],
+        example: 'Une Sàrl réalisant 200\'000 CHF de bénéfice paie environ 30\'000 CHF d\'impôt sociétal, puis l\'actionnaire paie l\'impôt réduit sur les dividendes distribués.'
+      },
+      {
+        id: 'choix-optimal',
+        title: 'Critères de choix optimal',
+        content: `Le choix de la forme juridique dépend principalement du niveau de bénéfices prévisibles, de la situation fiscale personnelle, des besoins de financement et des objectifs de développement. Une analyse comparative s'impose.
+
+Pour des bénéfices inférieurs à 100'000 CHF, l'entreprise individuelle reste généralement optimale : simplicité administrative, déduction intégrale des pertes, évitement de la double imposition. Les barèmes progressifs restent modérés à ces niveaux.
+
+Au-delà de 150'000-200'000 CHF de bénéfices, la société de capitaux devient intéressante : les taux proportionnels deviennent inférieurs aux barèmes progressifs marginaux élevés. L'optimisation par non-distribution des bénéfices devient possible.
+
+D'autres facteurs influencent le choix : nécessité de lever des capitaux (SA favorisée), protection patrimoniale (responsabilité limitée), transmission d'entreprise (société plus flexible), complexité administrative acceptable (formation, comptabilité).`,
+        keyPoints: [
+          'Analyse selon niveau bénéfices',
+          'Entreprise individuelle < 100\'000 CHF',
+          'Société capitaux > 150\'000-200\'000 CHF',
+          'Autres facteurs : financement, protection, transmission',
+          'Équilibre optimisation/complexité'
+        ],
+        warning: 'Le changement de forme juridique en cours d\'exploitation peut avoir des conséquences fiscales importantes (réalisation gains latents, droits d\'enregistrement).'
+      }
+    ],
+    keywords: ['formes juridiques', 'entreprise individuelle', 'société', 'optimisation', 'bénéfices'],
+    relatedConcepts: [
+      { slug: 'statut-independant-criteres', title: 'Statut indépendant' },
+      { slug: 'tva-entreprises', title: 'TVA entreprises' }
+    ],
+    legalReferences: [
+      { title: 'Code des obligations - Formes juridiques', url: 'https://www.fedlex.admin.ch/eli/cc/27/317_321_377/fr' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  {
+    slug: 'tva-assujettissement-entreprises',
+    title: 'TVA : assujettissement et obligations des entreprises',
+    description: 'Guide complet de la TVA pour entreprises : seuils, méthodes de calcul, décomptes et optimisation',
+    category: 'Indépendants et entreprises',
+    subcategory: 'TVA',
+    content: '',
+    sections: [
+      {
+        id: 'seuils-assujettissement',
+        title: 'Seuils et conditions d\'assujettissement',
+        content: `L'assujettissement à la TVA devient obligatoire dès que le chiffre d'affaires annuel atteint 100'000 CHF. Ce seuil s'applique aux livraisons et prestations imposables réalisées en Suisse, en excluant les opérations exonérées.
+
+En dessous de ce seuil, l'assujettissement volontaire est possible et souvent avantageux. Il permet de récupérer la TVA payée sur les achats professionnels (impôt préalable) et donne une image plus professionnelle face aux clients assujettis.
+
+Le dépassement du seuil doit être annoncé dans les 30 jours. L'assujettissement débute au début du trimestre où le seuil a été dépassé. Une surveillance attentive du chiffre d'affaires en fin d'année est cruciale.
+
+Pour les nouvelles entreprises, l'assujettissement peut être demandé avant même le début d'activité si le chiffre d'affaires prévisible dépasse le seuil. Cette approche évite les régularisations ultérieures.`,
+        keyPoints: [
+          'Seuil obligatoire : 100\'000 CHF annuel',
+          'Option volontaire en dessous du seuil',
+          'Annonce obligatoire dans 30 jours',
+          'Assujettissement rétroactif au trimestre',
+          'Demande possible avant début activité'
+        ]
+      },
+      {
+        id: 'methodes-calcul',
+        title: 'Méthodes de calcul et décomptes',
+        content: `La méthode effective (convenue) constitue la règle générale : la TVA est calculée sur chaque facture au taux applicable (8.1%, 2.6% ou 3.8%), et l'impôt préalable est récupéré sur les achats avec justificatifs.
+
+Les méthodes forfaitaires simplifient la gestion pour les PME. Les taux forfaitaires varient selon le secteur d'activité (commerce, prestations, restauration). Cette méthode évite le suivi détaillé mais peut être moins avantageuse.
+
+La méthode de la dette fiscale nette convient aux entreprises avec peu d'achats déductibles. Elle applique un taux réduit directement sur le chiffre d'affaires total, sans récupération d'impôt préalable.
+
+Les décomptes sont généralement trimestriels, mais peuvent être mensuels (gros chiffres d'affaires) ou semestriels (petites entreprises). Le paiement doit intervenir dans les 60 jours suivant la fin de la période.`,
+        keyPoints: [
+          'Méthode effective = règle générale',
+          'Forfaitaires = simplification PME',
+          'Dette fiscale nette = peu d\'achats',
+          'Décomptes trimestriels standard',
+          'Paiement dans 60 jours'
+        ],
+        example: 'Un restaurant peut choisir le taux forfaitaire de 3.7% sur son chiffre d\'affaires plutôt que de gérer la TVA détaillée sur chaque facture et récupérer l\'impôt préalable.'
+      },
+      {
+        id: 'deduction-impot-prealable',
+        title: 'Déduction de l\'impôt préalable',
+        content: `L'impôt préalable peut être déduit sur tous les achats, investissements et charges directement liés à l'activité imposable. Cette déduction constitue l'avantage principal de l'assujettissement pour les entreprises avec des investissements importants.
+
+Les conditions de déduction sont strictes : justificatifs originaux obligatoires, lien direct avec l'activité imposable, respect des formes légales (mention TVA sur facture). Les factures de complaisance ou privées sont exclues.
+
+Pour les entreprises avec activités mixtes (imposables et exonérées), une répartition proportionnelle s'impose. Le calcul du taux de récupération se base sur les chiffres d'affaires respectifs des activités.
+
+Certaines dépenses sont spécifiquement exclues : véhicules de tourisme (sauf justification professionnelle), frais de représentation excessifs, amendes et contraventions. La récupération sur l'immobilier nécessite une option spéciale.`,
+        keyPoints: [
+          'Déduction sur achats liés activité imposable',
+          'Justificatifs originaux obligatoires',
+          'Répartition si activités mixtes',
+          'Exclusions spécifiques (véhicules, représentation)',
+          'Option spéciale pour immobilier'
+        ],
+        warning: 'La récupération d\'impôt préalable sur un achat personnel peut constituer une soustraction frauduleuse passible d\'amende.'
+      },
+      {
+        id: 'optimisation-tva',
+        title: 'Optimisation et planification TVA',
+        content: `Le timing des facturations peut optimiser la trésorerie : retarder les facturations en fin de période pour reporter l'exigibilité de la TVA au trimestre suivant. Inversement, accélérer les achats permet de récupérer plus rapidement l'impôt préalable.
+
+L'option pour l'imposition des locations immobilières peut être stratégique si les locataires sont eux-mêmes assujettis. Cette option permet de récupérer la TVA sur les investissements immobiliers tout en répercutant la TVA aux locataires.
+
+La méthode de calcul peut être changée avec l'accord de l'administration. Une analyse comparative périodique permet de vérifier si la méthode choisie reste optimale selon l'évolution de l'activité.
+
+En cas de cessation d'activité ou de baisse sous le seuil, une planification de la sortie évite les régularisations importantes sur les stocks et investissements récents.`,
+        keyPoints: [
+          'Timing facturations optimise trésorerie',
+          'Option immobilier si locataires assujettis',
+          'Changement méthode possible',
+          'Planification sortie TVA importante',
+          'Analyse comparative périodique'
+        ]
+      }
+    ],
+    keywords: ['TVA', 'assujettissement', 'décomptes', 'impôt préalable', 'entreprises'],
+    relatedConcepts: [
+      { slug: 'formes-juridiques-entreprises', title: 'Formes juridiques' },
+      { slug: 'charges-deductibles-entreprises', title: 'Charges déductibles' }
+    ],
+    legalReferences: [
+      { title: 'LTVA - Assujettissement', url: 'https://www.fedlex.admin.ch/eli/cc/2009/615/fr#art_10' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  {
+    slug: 'imposition-benefice-entreprises',
+    title: 'Imposition du bénéfice des entreprises',
+    description: 'Calcul et optimisation de l\'impôt sur le bénéfice : détermination, charges déductibles et planification',
+    category: 'Indépendants et entreprises',
+    subcategory: 'Impôt sur le bénéfice',
+    content: '',
+    sections: [
+      {
+        id: 'determination-benefice',
+        title: 'Détermination du bénéfice imposable',
+        content: `Le bénéfice imposable correspond au bénéfice comptable ajusté selon les règles fiscales. Cette détermination suit le principe de la comptabilité commerciale avec des corrections fiscales spécifiques prévues par la loi.
+
+Pour les entreprises individuelles et sociétés de personnes, le bénéfice est imposé directement chez les associés selon les barèmes progressifs. Pour les sociétés de capitaux, l'imposition se fait au niveau de la société selon des taux proportionnels.
+
+Les corrections fiscales principales incluent : réintégration des amortissements excessifs, ajustement des provisions non justifiées, correction des charges non déductibles fiscalement, ajout des avantages accordés aux dirigeants.
+
+La période de calcul correspond généralement à l'exercice comptable. En cas de changement d'exercice, des règles spéciales s'appliquent pour éviter les doubles impositions ou exonérations.`,
+        keyPoints: [
+          'Bénéfice comptable + corrections fiscales',
+          'Imposition différente selon forme juridique',
+          'Corrections : amortissements, provisions, charges',
+          'Période = exercice comptable',
+          'Règles spéciales changement exercice'
+        ]
+      },
+      {
+        id: 'charges-deductibles',
+        title: 'Charges déductibles et limitations',
+        content: `Les charges déductibles doivent être justifiées commercialement, comptabilisées correctement et avoir un lien direct avec l'obtention des revenus imposables. Cette triple condition est rigoureusement contrôlée par les administrations fiscales.
+
+Les charges de personnel (salaires, cotisations sociales, formation) sont généralement déductibles si elles correspondent à des prestations effectives et sont raisonnables par rapport au marché. Les rémunérations excessives peuvent être refusées.
+
+Les amortissements sont déductibles selon les taux admis fiscalement, souvent plus restrictifs que les possibilités comptables. Les taux varient selon la nature des biens : 20-30% pour machines, 10-15% pour véhicules, 3-5% pour immeubles.
+
+Certaines charges sont spécifiquement non déductibles : amendes et contraventions, impôts sur le bénéfice, charges excessives sans justification commerciale, libéralités pures. Une attention particulière est requise pour ces exclusions.`,
+        keyPoints: [
+          'Triple condition : justification, comptabilisation, lien',
+          'Charges personnel si prestations effectives',
+          'Amortissements selon taux fiscaux admis',
+          'Exclusions spécifiques importantes',
+          'Contrôle strict administrations'
+        ],
+        warning: 'Une charge déductible comptablement peut être refusée fiscalement si elle manque de justification commerciale, créant une différence temporaire ou définitive.'
+      },
+      {
+        id: 'optimisation-fiscale',
+        title: 'Optimisation fiscale du bénéfice',
+        content: `Le timing des opérations permet d'optimiser l'imposition : accélération des charges déductibles en fin d'exercice profitable, report des recettes en cas de bénéfice excessif, étalement des investissements selon la capacité d'absorption.
+
+La politique d'amortissement offre des marges de manœuvre : choix entre amortissement linéaire ou dégressif, utilisation des taux maximaux ou modérés selon la situation, constitution de réserves latentes pour les années moins favorables.
+
+Pour les sociétés de capitaux, la politique de distribution influence l'imposition globale : non-distribution évite la double imposition immédiate mais crée de l'impôt latent. L'équilibre dépend de la situation des actionnaires.
+
+La planification pluriannuelle permet d'optimiser la charge fiscale globale : étalement des revenus exceptionnels, anticipation des investissements importants, coordination avec la situation fiscale personnelle des dirigeants.`,
+        keyPoints: [
+          'Timing opérations selon rentabilité',
+          'Politique amortissement flexible',
+          'Distribution vs rétention société capitaux',
+          'Planification pluriannuelle nécessaire',
+          'Coordination situation personnelle dirigeants'
+        ],
+        example: 'Une entreprise rentable peut accélérer ses investissements en décembre pour bénéficier des amortissements déductibles, réduisant le bénéfice de l\'exercice.'
+      }
+    ],
+    keywords: ['bénéfice', 'charges déductibles', 'amortissements', 'optimisation', 'imposition'],
+    relatedConcepts: [
+      { slug: 'formes-juridiques-entreprises', title: 'Formes juridiques' },
+      { slug: 'tva-assujettissement-entreprises', title: 'TVA entreprises' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 58 (Bénéfice net)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_58' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== PATRIMOINE ET INVESTISSEMENTS ==========
+  {
+    slug: 'valeur-locative-residence',
+    title: 'La valeur locative de la résidence principale',
+    description: 'Comprendre le calcul, la contestation et les déductions liées à la valeur locative',
+    category: 'Patrimoine et investissements',
+    subcategory: 'Immobilier',
+    content: '',
+    sections: [
+      {
+        id: 'principe-valeur-locative',
+        title: 'Principe de la valeur locative',
+        content: `La valeur locative représente le loyer théorique que le propriétaire devrait payer s'il était locataire de son propre bien. Cette fiction juridique vise à établir l'égalité de traitement entre propriétaires et locataires : les seconds paient un loyer avec leur revenu net d'impôt, les premiers doivent déclarer un revenu fictif équivalent.
+
+Cette approche garantit la neutralité fiscale entre les modes de logement. Sans la valeur locative, les propriétaires auraient un avantage fiscal injustifié, car ils obtiendraient un logement "gratuit" avec un capital déjà imposé.
+
+Le montant de la valeur locative est fixé par l'administration fiscale cantonale selon les prix du marché locatif local. Elle est généralement comprise entre 60% et 80% du loyer de marché effectif pour tenir compte des charges et risques du propriétaire.
+
+La valeur locative s'applique à tous les biens immobiliers utilisés par le propriétaire : résidence principale, résidences secondaires, locaux professionnels. Seuls échappent à cette règle les biens loués à des tiers qui génèrent un revenu locatif effectif.`,
+        keyPoints: [
+          'Égalité propriétaires/locataires',
+          '60-80% du loyer de marché effectif',
+          'Fixation par administration cantonale',
+          'Application à tous biens auto-occupés',
+          'Neutralité fiscale entre modes de logement'
+        ]
+      },
+      {
+        id: 'calcul-contestation',
+        title: 'Calcul et contestation',
+        content: `Le calcul de la valeur locative se base sur des critères objectifs : surface, standing, situation géographique, état du bien et prix du marché locatif environnant. Les administrations disposent généralement de bases de données et de barèmes de référence.
+
+La contestation est possible si la valeur fixée paraît excessive par rapport au marché. Il faut apporter des éléments de comparaison précis : annonces de biens similaires, expertises immobilières ou attestations de régies. La simple affirmation que "c'est trop cher" ne suffit pas.
+
+Les éléments favorables à une réduction incluent : défauts du bien (bruit, pollution), charges importantes non répercutables, contraintes d'utilisation (monuments historiques), marché locatif déprimé dans la région.
+
+La révision peut être demandée en cas de changement substantiel : importantes rénovations, dégradation du bien, évolution du marché locatif. Certains cantons procèdent à des réévaluations systématiques périodiques.`,
+        keyPoints: [
+          'Critères objectifs de marché',
+          'Contestation avec éléments comparatifs',
+          'Défauts et contraintes favorables',
+          'Révision possible si changements',
+          'Réévaluations périodiques cantonales'
+        ],
+        example: 'Une maison avec valeur locative de 24\'000 CHF près d\'un aéroport peut obtenir une réduction si des biens similaires sans nuisance se louent effectivement 15-20% moins cher.'
+      }
+    ],
+    keywords: ['valeur locative', 'immobilier', 'propriétaire', 'contestation'],
+    relatedConcepts: [
+      { slug: 'deductions-immobilieres', title: 'Déductions immobilières' },
+      { slug: 'gains-immobiliers', title: 'Gains immobiliers' }
+    ],
+    legalReferences: [
+      { title: 'ATF sur la valeur locative', url: 'https://www.bger.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== FISCALITÉ INTERNATIONALE ==========
+  {
+    slug: 'frontaliers-imposition',
+    title: 'Fiscalité des travailleurs frontaliers',
+    description: 'Règles d\'imposition des frontaliers selon les accords bilatéraux avec les pays voisins',
+    category: 'Fiscalité internationale',
+    subcategory: 'Frontaliers',
+    content: '',
+    sections: [
+      {
+        id: 'principe-frontaliers',
+        title: 'Principe d\'imposition des frontaliers',
+        content: `Les travailleurs frontaliers bénéficient d'un régime fiscal spécial défini par les conventions de double imposition entre la Suisse et ses pays voisins. Le principe général veut que le salaire soit imposé dans le pays de travail, mais le frontalier conserve sa résidence fiscale dans son pays de domicile.
+
+Cette règle vise à éviter la double imposition tout en respectant la souveraineté fiscale de chaque État. Les modalités précises varient selon le pays de résidence : France, Allemagne, Autriche ou Italie ont chacun des accords spécifiques avec la Suisse.
+
+L'impôt à la source est prélevé en Suisse au moment du versement du salaire. Les taux varient selon le canton de travail et la situation familiale. Cet impôt constitue généralement l'imposition définitive, mais des régularisations peuvent être nécessaires dans le pays de résidence.
+
+La zone frontalière est définie géographiquement dans chaque accord. En général, elle s'étend sur 20 kilomètres de part et d'autre de la frontière, mais des communes spécifiques sont listées dans les conventions.`,
+        keyPoints: [
+          'Imposition dans le pays de travail (Suisse)',
+          'Résidence fiscale conservée dans pays de domicile',
+          'Accords spécifiques par pays voisin',
+          'Zone frontalière définie géographiquement',
+          'Impôt à la source en Suisse'
+        ]
+      },
+      {
+        id: 'specificites-pays',
+        title: 'Spécificités par pays',
+        content: `L'accord franco-suisse prévoit l'imposition en Suisse avec retenue à la source. La France reverse 4.5% de l'impôt perçu aux départements frontaliers français. Les frontaliers français peuvent opter pour l'imposition ordinaire en Suisse s'ils y ont des revenus dépassant 120'000 CHF.
+
+L'accord avec l'Allemagne suit le même principe mais sans rétrocession fiscale. Les frontaliers allemands déclarent leurs revenus suisses en Allemagne où ils sont exonérés, l'impôt suisse étant définitif.
+
+L'Autriche et l'Italie ont des accords similaires avec leurs spécificités propres. Les frontaliers doivent généralement déclarer leurs revenus suisses dans leur pays de résidence, où ils bénéficient d'une exonération correspondant à l'impôt payé en Suisse.
+
+La période de référence pour conserver le statut de frontalier est importante : retour quotidien ou au moins hebdomadaire au domicile, avec des dérogations limitées pour les déplacements professionnels.`,
+        keyPoints: [
+          'France : rétrocession 4.5% aux départements',
+          'Allemagne : exonération sans rétrocession',
+          'Déclaration dans pays de résidence',
+          'Retour régulier au domicile obligatoire',
+          'Dérogations limitées pour voyages'
+        ],
+        warning: 'Le télétravail depuis le domicile peut remettre en cause le statut fiscal frontalier si la proportion devient trop importante.'
+      }
+    ],
+    keywords: ['frontaliers', 'conventions', 'impôt à la source', 'zone frontalière'],
+    relatedConcepts: [
+      { slug: 'double-imposition', title: 'Conventions double imposition' },
+      { slug: 'impot-source', title: 'Impôt à la source' }
+    ],
+    legalReferences: [
+      { title: 'Convention franco-suisse', url: 'https://www.fedlex.admin.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== DÉCLARATION ET PROCESSUS ==========
+  {
+    slug: 'declaration-impots-delais',
+    title: 'Déclaration d\'impôts : délais et procédures',
+    description: 'Guide pratique pour remplir sa déclaration fiscale : délais, documents requis et procédures',
+    category: 'Déclaration et processus',
+    subcategory: 'Procédures',
+    content: '',
+    sections: [
+      {
+        id: 'delais-legaux',
+        title: 'Délais légaux et prolongations',
+        content: `Les délais de dépôt de la déclaration d'impôt varient selon les cantons, généralement entre le 31 mars et le 31 mai pour les personnes physiques. Ces délais sont impératifs et leur non-respect entraîne des sanctions : amendes, estimations d'office et intérêts moratoires.
+
+La prolongation automatique jusqu'au 30 septembre est accordée dans la plupart des cantons si la demande est formulée avant l'échéance normale. Cette prolongation ne nécessite pas de justification particulière mais doit être demandée expressément.
+
+Pour les cas complexes (revenus étrangers, restructurations, successions), une prolongation supplémentaire peut être accordée sur demande motivée. Les fiduciaires obtiennent souvent des délais étendus pour traiter plusieurs dossiers simultanément.
+
+Le dépôt électronique devient obligatoire dans plusieurs cantons et permet souvent d'obtenir des délais supplémentaires. Les plateformes numériques facilitent aussi les corrections et compléments.`,
+        keyPoints: [
+          'Délais cantonaux : 31 mars à 31 mai',
+          'Prolongation automatique au 30 septembre',
+          'Sanctions en cas de retard',
+          'Délais étendus pour cas complexes',
+          'Avantages du dépôt électronique'
+        ]
+      },
+      {
+        id: 'documents-necessaires',
+        title: 'Documents nécessaires',
+        content: `La liste des documents varie selon la situation, mais certains sont systématiquement requis. Pour les salariés : certificats de salaire, attestations de cotisations 3e pilier, relevés bancaires et de titres au 31 décembre.
+
+Les propriétaires doivent joindre les décomptes de charges, factures de travaux déductibles, attestations d'assurances et éventuellement les contrats de location si le bien est loué. La valeur d'assurance incendie sert souvent de base pour l'évaluation de la fortune immobilière.
+
+Les indépendants et dirigeants de sociétés ont des obligations renforcées : comptes annuels, bilan, compte de pertes et profits, état des débiteurs et créanciers. Un rapport de révision peut être exigé selon la taille de l'entreprise.
+
+Pour les situations internationales : attestations fiscales étrangères, preuves de paiement d'impôts à l'étranger, traductions certifiées conformes des documents en langue étrangère.`,
+        keyPoints: [
+          'Certificats salaire et cotisations obligatoires',
+          'Décomptes charges pour propriétaires',
+          'Comptes annuels pour indépendants',
+          'Attestations étrangères traduites',
+          'Relevés bancaires au 31 décembre'
+        ],
+        example: 'Un salarié propriétaire doit joindre : certificat de salaire, attestation 3e pilier, décompte charges immeuble, factures entretien déductible et relevé bancaire de clôture.'
+      }
+    ],
+    keywords: ['déclaration', 'délais', 'documents', 'procédures'],
+    relatedConcepts: [
+      { slug: 'taxation-processus', title: 'Processus de taxation' },
+      { slug: 'recours-fiscal', title: 'Voies de recours' }
+    ],
+    legalReferences: [
+      { title: 'Procédures fiscales cantonales', url: 'https://www.ch.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== ANALYSES ET OPTIMISATION ==========
+  {
+    slug: 'optimisation-fiscale-legale',
+    title: 'Stratégies d\'optimisation fiscale légale',
+    description: 'Techniques légales pour réduire sa charge fiscale : timing, structuration et planification',
+    category: 'Analyses et optimisation',
+    subcategory: 'Stratégies',
+    content: '',
+    sections: [
+      {
+        id: 'principe-optimisation',
+        title: 'Principes de l\'optimisation fiscale',
+        content: `L'optimisation fiscale légale consiste à structurer ses affaires de manière à minimiser la charge fiscale dans le respect de la loi. Elle se distingue de l'évasion fiscale (illégale) et de la fraude fiscale (pénalement sanctionnée).
+
+Le principe fondamental est que le contribuable peut choisir la voie la moins imposée, pourvu qu'elle soit légale et conforme à la substance économique de l'opération. Cette liberté découle du principe de légalité : ce qui n'est pas interdit est permis.
+
+L'optimisation peut porter sur le timing (étalement des revenus), la forme juridique (société vs personne physique), la localisation (choix du canton) ou la structuration (utilisation de véhicules fiscalement avantageux comme le 3e pilier).
+
+Certaines limites existent : l'abus de droit fiscal sanctionne les montages purement artificiels sans substance économique. Les autorités examinent la réalité économique au-delà de la forme juridique.`,
+        keyPoints: [
+          'Optimisation légale vs évasion illégale',
+          'Choix de la voie la moins imposée',
+          'Timing, forme, localisation, structuration',
+          'Limites : abus de droit fiscal',
+          'Substance économique requise'
+        ]
+      },
+      {
+        id: 'techniques-courantes',
+        title: 'Techniques d\'optimisation courantes',
+        content: `Le versement anticipé au 3e pilier permet de déduire jusqu'à 7\'056 CHF du revenu imposable tout en constituant un capital pour la retraite. Le timing du versement (avant le 31 décembre) et les retraits échelonnés optimisent l'avantage fiscal.
+
+La répartition revenus/fortune entre conjoints permet d'exploiter la progressivité de l'impôt. Les revenus de capitaux peuvent être attribués au conjoint moins imposé par des donations entre époux.
+
+L'étalement des revenus extraordinaires évite les effets de la progressivité. Les bonus peuvent être négociés sur plusieurs années, les plus-values immobilières étalées via des ventes échelonnées.
+
+Le choix du domicile fiscal représente souvent l'optimisation la plus efficace. Les différences de charge fiscale entre cantons peuvent atteindre 40-50% pour les hauts revenus, justifiant économiquement un déménagement.`,
+        keyPoints: [
+          '3e pilier : 7\'056 CHF déductibles',
+          'Répartition optimale entre conjoints',
+          'Étalement des revenus extraordinaires',
+          'Choix stratégique du domicile fiscal',
+          'Timing des opérations important'
+        ],
+        warning: 'Toute optimisation doit avoir une justification économique réelle au-delà du simple avantage fiscal.'
+      }
+    ],
+    keywords: ['optimisation', 'stratégies', 'planification', '3e pilier', 'domicile fiscal'],
+    relatedConcepts: [
+      { slug: 'troisieme-pilier-optimisation', title: 'Optimisation 3e pilier' },
+      { slug: 'domicile-fiscal-choix', title: 'Choix du domicile fiscal' }
+    ],
+    legalReferences: [
+      { title: 'ATF sur l\'abus de droit fiscal', url: 'https://www.bger.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== SPÉCIFICITÉS CANTONALES ==========
+  {
+    slug: 'comparatif-fiscal-cantonal',
+    title: 'Comparatif fiscal intercantonal',
+    description: 'Analyse des différences de charge fiscale entre cantons suisses et implications pour les contribuables',
+    category: 'Spécificités cantonales',
+    subcategory: 'Comparatifs',
+    content: '',
+    sections: [
+      {
+        id: 'methodologie-comparaison',
+        title: 'Méthodologie de comparaison',
+        content: `La comparaison fiscale entre cantons nécessite une méthodologie rigoureuse car les systèmes varient substantiellement. Il faut considérer l'impôt cantonal, l'impôt communal (qui varie aussi selon les communes), les déductions autorisées et les barèmes appliqués.
+
+L'Administration fédérale des contributions publie annuellement des statistiques comparatives basées sur des profils types : célibataire, couple sans enfant, couple avec enfants, pour différents niveaux de revenus. Ces données permettent des comparaisons objectives.
+
+Les variables clés incluent : le coefficient communal (multiplicateur de l'impôt cantonal), les déductions spécifiques (certains cantons offrent des déductions généreuses), les barèmes (certains sont plus progressifs), l'impôt sur la fortune (inexistant dans certains cantons).
+
+Les comparaisons doivent aussi intégrer les coûts de la vie, la qualité des services publics, l'accessibilité et les opportunités économiques. Un impôt plus élevé peut être compensé par de meilleurs services ou un marché du travail plus dynamique.`,
+        keyPoints: [
+          'Méthodologie rigoureuse nécessaire',
+          'Statistiques AFC avec profils types',
+          'Variables : coefficient, déductions, barèmes',
+          'Considérer coûts vie et services publics',
+          'Vue globale au-delà des seuls impôts'
+        ]
+      },
+      {
+        id: 'cantons-competitifs',
+        title: 'Cantons fiscalement compétitifs',
+        content: `Zoug reste traditionnellement le canton le plus attractif fiscalement, avec des taux très compétitifs sur le revenu et l'absence d'impôt sur la fortune pour les montants modestes. Cette attractivité a attiré de nombreuses entreprises et contribuables aisés.
+
+Les cantons d'Appenzell Rhodes-Intérieures, Nidwald et Obwald offrent aussi des charges fiscales réduites, particulièrement pour les hauts revenus. Leurs barèmes plafonnent rapidement, évitant une progressivité excessive.
+
+Bâle-Ville présente un profil particulier : charge fiscale modérée malgré son statut urbain, avec d'excellents services publics et transports. C'est un exemple d'équilibre entre impôts et qualité de vie urbaine.
+
+Les cantons de montagne (Valais, Grisons) offrent souvent des conditions avantageuses, notamment pour les résidences secondaires et l'imposition forfaitaire des étrangers fortunés.`,
+        keyPoints: [
+          'Zoug : référence en compétitivité fiscale',
+          'Cantons ruraux : plafonnement progressivité',
+          'Bâle-Ville : équilibre impôts/services',
+          'Cantons montagne : conditions spéciales',
+          'Attractivité pour entreprises et particuliers'
+        ],
+        example: 'Un couple avec 150\'000 CHF de revenu paie environ 12\'000 CHF d\'impôts à Zoug contre 25\'000 CHF à Genève, soit une différence de 13\'000 CHF annuels.'
+      }
+    ],
+    keywords: ['comparatif cantonal', 'charge fiscale', 'compétitivité', 'Zoug', 'barèmes'],
+    relatedConcepts: [
+      { slug: 'domicile-fiscal-choix', title: 'Choix du domicile fiscal' },
+      { slug: 'concurrence-fiscale', title: 'Concurrence fiscale' }
+    ],
+    legalReferences: [
+      { title: 'Statistiques fiscales AFC', url: 'https://www.estv.admin.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
   }
 ];
 
@@ -618,7 +1728,9 @@ export function searchArticles(query: string): Article[] {
 
 // Fonction pour obtenir les articles d'une catégorie
 export function getArticlesByCategory(category: string): Article[] {
-  return articles.filter(article => article.category === category);
+  // Supprimer les emojis du titre de catégorie pour la comparaison
+  const cleanCategory = category.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|🔹|👤|🏢|💼|🌍|📄|📊|🏛️/gu, '').trim();
+  return articles.filter(article => article.category === cleanCategory);
 }
 
 // Fonction pour obtenir un article par slug
