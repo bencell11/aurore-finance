@@ -15,7 +15,8 @@ import {
   TrendingUp,
   Menu,
   X,
-  FileText
+  FileText,
+  GraduationCap
 } from 'lucide-react';
 
 const navigationItems = [
@@ -30,6 +31,13 @@ const navigationItems = [
     href: '/simulateurs',
     icon: Calculator,
     public: true
+  },
+  {
+    name: 'Éducation Fiscale',
+    href: '/education-fiscale',
+    icon: GraduationCap,
+    public: true,
+    badge: 'Nouveau'
   },
   {
     name: 'Assistant Fiscal',
