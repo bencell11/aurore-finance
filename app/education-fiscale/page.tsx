@@ -49,12 +49,12 @@ const thematiques = [
     icon: Book,
     description: 'Comprendre le système fiscal suisse',
     sousThemes: [
-      { id: 'systeme', titre: 'Système fiscal suisse', articles: 8 },
-      { id: 'bases-legales', titre: 'Bases légales', articles: 5 },
-      { id: 'principes', titre: 'Principes d\'imposition', articles: 6 },
-      { id: 'types-impots', titre: 'Types d\'impôts', articles: 4 },
-      { id: 'domicile', titre: 'Domicile fiscal', articles: 3 },
-      { id: 'baremes', titre: 'Barèmes et progressivité', articles: 4 }
+      { id: 'systeme', titre: 'Système fiscal suisse', articles: 1, slug: 'systeme-fiscal-suisse' },
+      { id: 'bases-legales', titre: 'Bases légales', articles: 1, slug: 'bases-legales-fiscalite' },
+      { id: 'principes', titre: 'Principes d\'imposition', articles: 1, slug: 'principes-imposition' },
+      { id: 'types-impots', titre: 'Types d\'impôts', articles: 1, slug: 'types-impots' },
+      { id: 'domicile', titre: 'Domicile fiscal', articles: 1, slug: 'domicile-fiscal' },
+      { id: 'baremes', titre: 'Barèmes et progressivité', articles: 0, slug: null }
     ]
   },
   {
@@ -425,14 +425,27 @@ export default function EducationFiscalePage() {
                                 <CardHeader className="pb-3">
                                   <div className="flex items-center justify-between">
                                     <CardTitle className="text-lg">{sousTheme.titre}</CardTitle>
-                                    <Badge variant="secondary">{sousTheme.articles} articles</Badge>
+                                    <Badge variant={sousTheme.articles > 0 ? "default" : "secondary"}>
+                                      {sousTheme.articles > 0 ? `${sousTheme.articles} article${sousTheme.articles > 1 ? 's' : ''}` : 'Bientôt disponible'}
+                                    </Badge>
                                   </div>
                                 </CardHeader>
                                 <CardContent>
-                                  <Button className="w-full" variant="outline">
-                                    <BookOpen className="h-4 w-4 mr-2" />
-                                    Consulter
-                                  </Button>
+                                  {sousTheme.slug ? (
+                                    <Button 
+                                      className="w-full" 
+                                      variant="outline"
+                                      onClick={() => window.open(`/education-fiscale/articles/${sousTheme.slug}`, '_blank')}
+                                    >
+                                      <BookOpen className="h-4 w-4 mr-2" />
+                                      Lire l'article
+                                    </Button>
+                                  ) : (
+                                    <Button className="w-full" variant="outline" disabled>
+                                      <BookOpen className="h-4 w-4 mr-2" />
+                                      Bientôt disponible
+                                    </Button>
+                                  )}
                                 </CardContent>
                               </Card>
                             ))}
