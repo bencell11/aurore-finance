@@ -35,8 +35,11 @@ import {
   Bot,
   Send,
   X,
-  ChevronDown
+  ChevronDown,
+  Clock,
+  Eye
 } from 'lucide-react';
+import { getArticlesByCategory } from '@/lib/data/tax-articles';
 
 // Structure des thématiques fiscales
 const thematiques = [
@@ -375,26 +378,67 @@ export default function EducationFiscalePage() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {selectedTheme.sousThemes.map((sousTheme: any) => (
-                        <Card 
-                          key={sousTheme.id}
-                          className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-blue-500"
-                        >
-                          <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between">
-                              <CardTitle className="text-lg">{sousTheme.titre}</CardTitle>
-                              <Badge variant="secondary">{sousTheme.articles} articles</Badge>
+                    <div className="space-y-6">
+                      {/* Articles disponibles pour cette catégorie */}
+                      {(() => {
+                        const articles = getArticlesByCategory(selectedTheme.titre);
+                        return articles.length > 0 ? (
+                          <div>
+                            <h3 className="text-xl font-bold mb-4">Articles disponibles</h3>
+                            <div className="grid md:grid-cols-2 gap-4">
+                              {articles.map((article) => (
+                                <Card 
+                                  key={article.slug}
+                                  className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-blue-500"
+                                  onClick={() => window.open(`/education-fiscale/articles/${article.slug}`, '_blank')}
+                                >
+                                  <CardHeader className="pb-3">
+                                    <div className="flex items-center justify-between mb-2">
+                                      <Badge variant="secondary">{article.subcategory}</Badge>
+                                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                                        <Clock className="h-3 w-3" />
+                                        <span>5 min</span>
+                                      </div>
+                                    </div>
+                                    <CardTitle className="text-lg">{article.title}</CardTitle>
+                                    <CardDescription className="text-sm text-gray-600">
+                                      {article.description}
+                                    </CardDescription>
+                                  </CardHeader>
+                                  <CardContent>
+                                    <Button className="w-full" variant="outline">
+                                      <BookOpen className="h-4 w-4 mr-2" />
+                                      Lire l'article
+                                    </Button>
+                                  </CardContent>
+                                </Card>
+                              ))}
                             </div>
-                          </CardHeader>
-                          <CardContent>
-                            <Button className="w-full" variant="outline">
-                              <BookOpen className="h-4 w-4 mr-2" />
-                              Consulter
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      ))}
+                          </div>
+                        ) : (
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {selectedTheme.sousThemes.map((sousTheme: any) => (
+                              <Card 
+                                key={sousTheme.id}
+                                className="hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-blue-500"
+                              >
+                                <CardHeader className="pb-3">
+                                  <div className="flex items-center justify-between">
+                                    <CardTitle className="text-lg">{sousTheme.titre}</CardTitle>
+                                    <Badge variant="secondary">{sousTheme.articles} articles</Badge>
+                                  </div>
+                                </CardHeader>
+                                <CardContent>
+                                  <Button className="w-full" variant="outline">
+                                    <BookOpen className="h-4 w-4 mr-2" />
+                                    Consulter
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Suggestions de lecture */}
