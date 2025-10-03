@@ -2415,6 +2415,341 @@ Concept clé pour l'imposition des entreprises dans l'autre État contractant.`,
       { title: 'OAF - Ordonnance sur l\'assistance administrative', url: 'https://www.fedlex.admin.ch/eli/cc/2007/686/fr' }
     ],
     lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== PRÉVOYANCE 2E/3E PILIER ==========
+  {
+    slug: 'prevoyance-2e-3e-pilier',
+    title: 'Prévoyance professionnelle et individuelle (2e/3e pilier)',
+    description: 'Comprendre et optimiser votre prévoyance professionnelle et privée en Suisse',
+    category: 'Patrimoine et investissements',
+    subcategory: 'Prévoyance',
+    content: '',
+    sections: [
+      {
+        id: 'systeme-trois-piliers',
+        title: 'Le système des trois piliers',
+        content: `Le système de prévoyance suisse repose sur trois piliers complémentaires visant à garantir le maintien du niveau de vie à la retraite.
+
+**1er pilier (AVS/AI) :**
+- Prévoyance étatique obligatoire
+- Couvre les besoins vitaux de base
+- Système de répartition (actifs financent les retraités)
+- Rente maximale AVS : 2'450 CHF/mois (individuelle)
+
+**2e pilier (LPP) :**
+- Prévoyance professionnelle obligatoire
+- Maintien du niveau de vie antérieur
+- Système de capitalisation individuelle
+- Obligatoire dès 22'050 CHF de salaire annuel
+
+**3e pilier :**
+- Prévoyance individuelle facultative
+- Complément personnalisé
+- 3a : lié avec avantages fiscaux
+- 3b : libre sans avantages fiscaux`,
+        keyPoints: [
+          'Système à trois niveaux pour une protection complète',
+          '1er pilier : besoins de base (AVS)',
+          '2e pilier : maintien du niveau de vie (LPP)',
+          '3e pilier : complément individuel avec avantages fiscaux'
+        ],
+        example: 'Salarié avec 80\'000 CHF de salaire : AVS (1er pilier) = environ 2\'000 CHF/mois, LPP (2e pilier) = environ 1\'500 CHF/mois, nécessité du 3e pilier pour maintenir le niveau de vie.'
+      },
+      {
+        id: 'deuxieme-pilier',
+        title: 'Le 2e pilier (LPP) en détail',
+        content: `La prévoyance professionnelle constitue un élément central du système de retraite suisse.
+
+**Cotisations LPP :**
+- Part employeur : minimum 50%
+- Part employé : maximum 50%
+- Taux selon l'âge : 7% à 18% du salaire assuré
+- Salaire assuré : salaire annuel - déduction de coordination (25'725 CHF)
+
+**Prestations possibles :**
+- Rente de vieillesse à la retraite
+- Rente d'invalidité en cas d'incapacité
+- Rente de survivants (veuve/veuf, orphelins)
+- Capital unique possible (jusqu'à 100% selon caisse)
+
+**Rachats volontaires :**
+- Combler les lacunes de cotisation
+- Améliorer les prestations futures
+- Entièrement déductibles fiscalement
+- Blocage 3 ans avant retrait en capital
+
+**Retrait anticipé possible pour :**
+- Achat résidence principale
+- Démarrage activité indépendante
+- Départ définitif de Suisse`,
+        keyPoints: [
+          'Cotisations partagées employeur/employé',
+          'Rachats volontaires déductibles à 100%',
+          'Possibilité de retrait en capital ou rente',
+          'Retrait anticipé pour propriété ou indépendance'
+        ],
+        example: 'Rachat LPP de 50\'000 CHF : économie fiscale immédiate de 15\'000 CHF (taux marginal 30%), augmentation de la rente future de 200 CHF/mois.',
+        warning: 'Les rachats LPP sont bloqués 3 ans avant de pouvoir être retirés en capital.'
+      },
+      {
+        id: 'troisieme-pilier-a',
+        title: 'Le 3e pilier A (prévoyance liée)',
+        content: `Le pilier 3a offre des avantages fiscaux substantiels pour la constitution d'une épargne retraite.
+
+**Montants maximaux 2024 :**
+- Avec 2e pilier : 7'056 CHF par année
+- Sans 2e pilier (indépendants) : 35'280 CHF (20% du revenu)
+- Déductible à 100% du revenu imposable
+
+**Types de solutions 3a :**
+- Compte épargne 3a (sécurité, faible rendement)
+- Fonds de placement 3a (potentiel de rendement supérieur)
+- Assurance-vie 3a (protection + épargne)
+
+**Conditions de retrait :**
+- 5 ans avant l'âge AVS ordinaire (anticipé)
+- Départ retraite ordinaire
+- Achat résidence principale
+- Amortissement hypothèque résidence principale
+- Démarrage activité indépendante
+- Départ définitif de Suisse
+- Invalidité complète
+
+**Imposition au retrait :**
+- Taux réduit séparé du revenu
+- Environ 5-8% selon canton et montant
+- Échelonnement recommandé (plusieurs comptes)`,
+        keyPoints: [
+          'Déduction fiscale jusqu\'à 7\'056 CHF/an',
+          'Économie fiscale immédiate de 20-40%',
+          'Retrait anticipé possible dès 60/59 ans',
+          'Imposition réduite au retrait (5-8%)'
+        ],
+        example: 'Versement annuel de 7\'056 CHF pendant 30 ans : capital final environ 350\'000 CHF, économies fiscales cumulées environ 70\'000 CHF.',
+        warning: 'Les fonds sont bloqués jusqu\'à la retraite sauf exceptions légales.'
+      },
+      {
+        id: 'optimisation-fiscale',
+        title: 'Optimisation fiscale de la prévoyance',
+        content: `Stratégies pour maximiser les avantages fiscaux de votre prévoyance.
+
+**Échelonnement des retraits :**
+- Ouvrir plusieurs comptes 3a (max 5 recommandé)
+- Retirer sur plusieurs années fiscales
+- Réduction de la progression fiscale
+- Coordination avec rachats LPP
+
+**Combinaison 2e et 3e pilier :**
+1. Maximiser d'abord le 3a (flexibilité)
+2. Rachats LPP ciblés (3-5 ans avant retraite)
+3. Alternance capital/rente selon situation
+4. Considérer l'impôt sur la fortune post-retraite
+
+**Timing optimal :**
+- Rachats LPP : après 50 ans idéalement
+- Retrait capital : échelonné sur 5 ans
+- Conversion rente : selon espérance de vie
+- Coordination avec départ à la retraite
+
+**Cas particuliers :**
+- Couples : répartition entre conjoints
+- Indépendants : maximiser le 3a élargi
+- Expatriés : considérer les conventions
+- Propriétaires : arbitrage amortissement vs 3a`,
+        keyPoints: [
+          'Ouvrir plusieurs comptes 3a pour échelonner',
+          'Rachats LPP stratégiques avant retraite',
+          'Coordination des retraits pour minimiser l\'impôt',
+          'Planification sur 5-10 ans avant retraite'
+        ],
+        example: '5 comptes 3a de 70\'000 CHF chacun, retirés sur 5 ans : économie fiscale de 15\'000 CHF vs retrait unique.',
+        warning: 'La planification doit commencer au moins 5-10 ans avant la retraite pour être optimale.'
+      }
+    ],
+    keywords: ['prévoyance', '2e pilier', '3e pilier', 'LPP', 'retraite', 'rachats'],
+    relatedConcepts: [
+      { slug: 'optimisation-troisieme-pilier', title: 'Optimisation du 3e pilier' },
+      { slug: 'rentes-avs-lpp-imposition', title: 'Imposition des rentes' }
+    ],
+    legalReferences: [
+      { title: 'LPP - Loi sur la prévoyance professionnelle', url: 'https://www.fedlex.admin.ch/eli/cc/1983/797_797_797/fr' },
+      { title: 'OPP 3 - Ordonnance sur le pilier 3a', url: 'https://www.fedlex.admin.ch/eli/cc/1985/1791_1791_1791/fr' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== CALENDRIER FISCAL ==========
+  {
+    slug: 'calendrier-fiscal-suisse',
+    title: 'Calendrier fiscal suisse',
+    description: 'Dates clés et échéances importantes pour vos obligations fiscales en Suisse',
+    category: 'Déclaration et processus',
+    subcategory: 'Calendrier',
+    content: '',
+    sections: [
+      {
+        id: 'echeances-principales',
+        title: 'Échéances fiscales principales',
+        content: `Le calendrier fiscal suisse varie selon les cantons mais suit une structure générale commune.
+
+**Janvier-Février :**
+- Réception de la déclaration d'impôts
+- Envoi des certificats de salaire par les employeurs
+- Attestations bancaires disponibles
+
+**Mars :**
+- 31 mars : Délai standard de dépôt dans plusieurs cantons
+- Possibilité de demander une prolongation
+- Délai pour demande de remboursement impôt anticipé
+
+**Avril-Mai :**
+- Délais prolongés selon cantons (30 avril, 31 mai)
+- Envoi des premières tranches provisoires
+- Traitement des déclarations simples
+
+**Septembre :**
+- 30 septembre : Échéance acomptes provisoires
+- Délai final avec prolongation dans certains cantons
+- Envoi des taxations définitives (déclarations précoces)
+
+**Décembre :**
+- Paiement solde impôt année précédente
+- Versements 3e pilier avant le 31
+- Rachats LPP avant le 31`,
+        keyPoints: [
+          'Délais variables selon les cantons (31 mars à 30 septembre)',
+          'Prolongations possibles sur demande',
+          'Acomptes provisoires durant l\'année',
+          'Actions fiscales importantes en fin d\'année'
+        ],
+        example: 'Canton de Vaud : déclaration reçue en janvier, délai au 15 mars, prolongation automatique au 30 juin sur demande.',
+        warning: 'Les intérêts moratoires courent dès l\'échéance du délai, même avec prolongation.'
+      },
+      {
+        id: 'paiements-acomptes',
+        title: 'Système d\'acomptes et paiements',
+        content: `Le paiement des impôts suit un système d'acomptes provisoires avec régularisation finale.
+
+**Acomptes provisoires :**
+- Basés sur la dernière taxation connue
+- Généralement 3-12 tranches selon canton
+- Versements mensuels ou trimestriels
+- Ajustables sur demande justifiée
+
+**Intérêts :**
+- Intérêts rémunératoires si trop payé (0,25% typique)
+- Intérêts moratoires si insuffisant (3-5% selon canton)
+- Calcul dès l'échéance générale
+- Compensation automatique
+
+**Facilités de paiement :**
+- Plans de paiement sur demande
+- Reports possibles (situations difficiles)
+- Paiement par e-banking recommandé
+- QR-factures depuis 2022
+
+**Taxation définitive :**
+- Émise 6-18 mois après dépôt
+- Décompte final avec solde
+- 30 jours pour payer ou contester
+- Remboursement automatique si trop perçu`,
+        keyPoints: [
+          'Acomptes basés sur année précédente',
+          'Ajustement possible des acomptes',
+          'Intérêts moratoires élevés (3-5%)',
+          'Paiement échelonné disponible'
+        ],
+        example: 'Revenus en baisse de 30% : demander immédiatement la réduction des acomptes pour éviter de bloquer la trésorerie.',
+        warning: 'Les acomptes non payés génèrent des intérêts même si la taxation finale est inférieure.'
+      },
+      {
+        id: 'actions-fin-annee',
+        title: 'Actions fiscales de fin d\'année',
+        content: `Décembre est crucial pour l'optimisation fiscale de l'année en cours.
+
+**Avant le 31 décembre :**
+
+**Déductions à maximiser :**
+- Versement 3e pilier A (7'056 CHF)
+- Rachats LPP (selon capacité)
+- Dons aux œuvres (jusqu'à 20% du revenu)
+- Cotisations politiques (jusqu'à 10'100 CHF fédéral)
+
+**Revenus à reporter :**
+- Bonus différables en janvier
+- Dividendes reportables
+- Ventes de titres (plus-values)
+- Facturations indépendants
+
+**Fortune à optimiser :**
+- Remboursement de dettes privées
+- Investissements déductibles
+- Transferts entre conjoints
+- Donations aux enfants
+
+**Timing des transactions :**
+- Achat immobilier : frais déductibles
+- Travaux d'entretien : à réaliser et payer
+- Formation continue : inscription et paiement
+- Frais médicaux : regrouper si possible`,
+        keyPoints: [
+          'Actions irrévocables après le 31 décembre',
+          '3e pilier et LPP : versements avant le 31',
+          'Optimisation revenus/charges selon situation',
+          'Planification pluriannuelle recommandée'
+        ],
+        example: 'Report d\'un bonus de 20\'000 CHF en janvier : économie fiscale immédiate de 6\'000 CHF si versement du 3e pilier en décembre.',
+        warning: 'Les versements 3a/LPP doivent être crédités avant le 31.12, prévoir le délai bancaire.'
+      },
+      {
+        id: 'controles-recours',
+        title: 'Contrôles et délais de recours',
+        content: `Comprendre les délais pour les contrôles fiscaux et les voies de recours.
+
+**Délais de l'administration :**
+- Rappel déclaration : 30 jours généralement
+- Taxation d'office : si non-réponse au rappel
+- Contrôle ordinaire : jusqu'à 5 ans
+- Révision : 10 ans si nouveaux éléments
+
+**Voies de recours contribuable :**
+- Réclamation : 30 jours dès notification
+- Recours : 30 jours dès décision sur réclamation
+- Tribunal cantonal : 30 jours
+- Tribunal fédéral : 30 jours
+
+**Procédure de réclamation :**
+1. Écrit motivé dans les 30 jours
+2. Gratuit en première instance
+3. Effet suspensif possible
+4. Décision dans 6-12 mois
+
+**Prescription :**
+- Droit de taxer : 5 ans (10 si soustraction)
+- Perception : 5 ans dès taxation définitive
+- Remboursement : 5 ans pour demander
+- Rappel d'impôt : 10 ans si non déclaré`,
+        keyPoints: [
+          'Délai de réclamation : 30 jours impératif',
+          'Procédure gratuite en première instance',
+          'Prescription de 5 ans (cas normal)',
+          'Conservation documents 10 ans recommandée'
+        ],
+        example: 'Taxation reçue le 15 mai : dernier jour pour réclamation le 14 juin (30 jours calendaires).',
+        warning: 'Le non-respect du délai de 30 jours entraîne la perte définitive du droit de recours.'
+      }
+    ],
+    keywords: ['calendrier', 'échéances', 'délais', 'acomptes', 'taxation', 'recours'],
+    relatedConcepts: [
+      { slug: 'declaration-impots-delais', title: 'Délais et procédures' },
+      { slug: 'documents-necessaires-declaration', title: 'Documents nécessaires' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 161 - Échéances', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_161' },
+      { title: 'Calendriers cantonaux', url: 'https://www.estv.admin.ch/estv/fr/accueil.html' }
+    ],
+    lastUpdated: new Date('2024-01-15')
   }
 ];
 

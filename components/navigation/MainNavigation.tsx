@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import UserMenu from '@/components/auth/UserMenu';
 import { Button } from '@/components/ui/button';
+import { SimpleLanguageSelector } from '@/components/SimpleLanguageSelector';
 import { 
   Home,
   Calculator,
@@ -134,6 +135,7 @@ export default function MainNavigation() {
 
           {/* Actions utilisateur */}
           <div className="hidden md:flex items-center space-x-3">
+            <SimpleLanguageSelector />
             {isAuthenticated ? (
               <UserMenu />
             ) : (
@@ -189,6 +191,9 @@ export default function MainNavigation() {
             
             {/* Actions mobile */}
             <div className="mt-4 pt-4 border-t space-y-2">
+              <div className="px-3 mb-3">
+                <SimpleLanguageSelector />
+              </div>
               {isAuthenticated ? (
                 <div className="px-3">
                   <p className="text-sm text-gray-600 mb-2">

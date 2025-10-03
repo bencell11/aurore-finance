@@ -97,7 +97,7 @@ const thematiques = [
       { id: 'immobilier', titre: 'Biens immobiliers', articles: 1, slug: 'valeur-locative-residence' },
       { id: 'titres', titre: 'Titres et valeurs', articles: 1, slug: 'titres-valeurs-mobilieres' },
       { id: 'crypto', titre: 'Cryptomonnaies', articles: 1, slug: 'fiscalite-cryptomonnaies-suisse' },
-      { id: 'prevoyance', titre: 'Prévoyance (2e/3e pilier)', articles: 0, slug: null },
+      { id: 'prevoyance', titre: 'Prévoyance (2e/3e pilier)', articles: 1, slug: 'prevoyance-2e-3e-pilier' },
       { id: 'luxe', titre: 'Biens de luxe', articles: 0, slug: null }
     ]
   },
@@ -121,7 +121,7 @@ const thematiques = [
     sousThemes: [
       { id: 'declaration', titre: 'Délais et procédures', articles: 1, slug: 'declaration-impots-delais' },
       { id: 'documents', titre: 'Documents nécessaires', articles: 1, slug: 'documents-necessaires-declaration' },
-      { id: 'calendrier', titre: 'Calendrier fiscal', articles: 0, slug: null },
+      { id: 'calendrier', titre: 'Calendrier fiscal', articles: 1, slug: 'calendrier-fiscal-suisse' },
       { id: 'taxation', titre: 'Taxation et corrections', articles: 0, slug: null }
     ]
   },
