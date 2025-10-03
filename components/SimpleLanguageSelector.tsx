@@ -67,6 +67,20 @@ const translations = {
     declarationProcess: 'Déclaration et processus',
     analysisOptimization: 'Analyses et optimisation',
     cantonalSpecifics: 'Spécificités cantonales',
+    // Descriptions des catégories
+    introToTaxDesc: 'Comprendre le système fiscal suisse',
+    personalTaxDesc: 'Tout sur vos impôts personnels',
+    businessTaxDesc: 'Fiscalité professionnelle',
+    internationalTaxDesc: 'Frontaliers et expatriés',
+    declarationProcessDesc: 'Remplir sa déclaration',
+    analysisOptimizationDesc: 'Réduire légalement vos impôts',
+    cantonalSpecificsDesc: 'Votre canton en détail',
+    // Interface d'articles
+    clickToRead: 'Cliquez pour lire l\'article complet',
+    article: 'article',
+    articles: 'articles',
+    keyPointsTitle: 'Points clés à retenir',
+    practicalExample: 'Exemple pratique',
   },
   de: {
     admin: 'Admin',
@@ -108,6 +122,20 @@ const translations = {
     declarationProcess: 'Erklärung und Verfahren',
     analysisOptimization: 'Analyse und Optimierung',
     cantonalSpecifics: 'Kantonale Besonderheiten',
+    // Descriptions des catégories
+    introToTaxDesc: 'Das Schweizer Steuersystem verstehen',
+    personalTaxDesc: 'Alles über Ihre persönlichen Steuern',
+    businessTaxDesc: 'Geschäftliche Besteuerung',
+    internationalTaxDesc: 'Grenzgänger und Expatriates',
+    declarationProcessDesc: 'Steuererklärung ausfüllen',
+    analysisOptimizationDesc: 'Steuern legal reduzieren',
+    cantonalSpecificsDesc: 'Ihr Kanton im Detail',
+    // Interface d'articles
+    clickToRead: 'Klicken Sie, um den vollständigen Artikel zu lesen',
+    article: 'Artikel',
+    articles: 'Artikel',
+    keyPointsTitle: 'Wichtige Punkte zum Merken',
+    practicalExample: 'Praktisches Beispiel',
   },
   it: {
     admin: 'Admin',
@@ -149,6 +177,20 @@ const translations = {
     declarationProcess: 'Dichiarazione e processo',
     analysisOptimization: 'Analisi e ottimizzazione',
     cantonalSpecifics: 'Specificità cantonali',
+    // Descriptions des catégories
+    introToTaxDesc: 'Comprendere il sistema fiscale svizzero',
+    personalTaxDesc: 'Tutto sulle tue tasse personali',
+    businessTaxDesc: 'Tassazione professionale',
+    internationalTaxDesc: 'Frontalieri ed espatriati',
+    declarationProcessDesc: 'Compilare la dichiarazione',
+    analysisOptimizationDesc: 'Ridurre legalmente le tasse',
+    cantonalSpecificsDesc: 'Il tuo cantone nel dettaglio',
+    // Interface d'articles
+    clickToRead: 'Clicca per leggere l\'articolo completo',
+    article: 'articolo',
+    articles: 'articoli',
+    keyPointsTitle: 'Punti chiave da ricordare',
+    practicalExample: 'Esempio pratico',
   },
   en: {
     admin: 'Admin',
@@ -190,6 +232,20 @@ const translations = {
     declarationProcess: 'Declaration and process',
     analysisOptimization: 'Analysis and optimization',
     cantonalSpecifics: 'Cantonal specifics',
+    // Descriptions des catégories
+    introToTaxDesc: 'Understanding the Swiss tax system',
+    personalTaxDesc: 'Everything about your personal taxes',
+    businessTaxDesc: 'Professional taxation',
+    internationalTaxDesc: 'Cross-border workers and expats',
+    declarationProcessDesc: 'Filing your tax return',
+    analysisOptimizationDesc: 'Legally reducing your taxes',
+    cantonalSpecificsDesc: 'Your canton in detail',
+    // Interface d'articles
+    clickToRead: 'Click to read the full article',
+    article: 'article',
+    articles: 'articles',
+    keyPointsTitle: 'Key points to remember',
+    practicalExample: 'Practical example',
   },
 };
 

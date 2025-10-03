@@ -30,6 +30,58 @@ export interface RelatedConcept {
   title: string;
 }
 
+// Système de traductions pour les articles
+export interface ArticleTranslations {
+  [slug: string]: {
+    title: {
+      fr: string;
+      de: string;
+      it: string;
+      en: string;
+    };
+    description: {
+      fr: string;
+      de: string;
+      it: string;
+      en: string;
+    };
+    content: {
+      fr: string;
+      de: string;
+      it: string;
+      en: string;
+    };
+    sections: {
+      [sectionId: string]: {
+        title: {
+          fr: string;
+          de: string;
+          it: string;
+          en: string;
+        };
+        content: {
+          fr: string;
+          de: string;
+          it: string;
+          en: string;
+        };
+        keyPoints?: {
+          fr: string;
+          de: string;
+          it: string;
+          en: string;
+        };
+        example?: {
+          fr: string;
+          de: string;
+          it: string;
+          en: string;
+        };
+      };
+    };
+  };
+}
+
 export interface LegalReference {
   title: string;
   url: string;
@@ -2798,4 +2850,87 @@ export function getRelatedArticles(article: Article): Article[] {
   }
   
   return related.slice(0, 4);
+}
+
+// Traductions des articles - Articles multilingues
+export const articleTranslations: ArticleTranslations = {
+  'systeme-fiscal-suisse': {
+    title: {
+      fr: 'Le système fiscal suisse : Vue d\'ensemble',
+      de: 'Das Schweizer Steuersystem: Überblick',
+      it: 'Il sistema fiscale svizzero: Panoramica',
+      en: 'The Swiss Tax System: Overview'
+    },
+    description: {
+      fr: 'Comprendre la structure fédéraliste unique du système fiscal suisse avec ses trois niveaux d\'imposition',
+      de: 'Verstehen Sie die einzigartige föderalistische Struktur des Schweizer Steuersystems mit seinen drei Besteuerungsebenen',
+      it: 'Comprendere la struttura federalista unica del sistema fiscale svizzero con i suoi tre livelli di tassazione',
+      en: 'Understanding the unique federalist structure of the Swiss tax system with its three levels of taxation'
+    },
+    content: {
+      fr: 'Le système fiscal suisse se distingue par sa complexité et son caractère fédéraliste unique au monde...',
+      de: 'Das Schweizer Steuersystem zeichnet sich durch seine weltweit einzigartige Komplexität und föderalistische Struktur aus...',
+      it: 'Il sistema fiscale svizzero si distingue per la sua complessità e il suo carattere federalista unico al mondo...',
+      en: 'The Swiss tax system is distinguished by its complexity and its federalist character that is unique in the world...'
+    },
+    sections: {
+      'structure-federale': {
+        title: {
+          fr: 'Structure fédérale à trois niveaux',
+          de: 'Dreistufige föderale Struktur',
+          it: 'Struttura federale a tre livelli',
+          en: 'Three-level federal structure'
+        },
+        content: {
+          fr: 'Le système fiscal suisse est unique au monde par sa structure fédéraliste à trois niveaux. Contrairement à la plupart des pays qui ont un système centralisé, la Suisse répartit le pouvoir fiscal entre la Confédération, les 26 cantons et plus de 2\'000 communes.',
+          de: 'Das Schweizer Steuersystem ist weltweit einzigartig durch seine dreistufige föderalistische Struktur. Im Gegensatz zu den meisten Ländern mit zentralisierten Systemen verteilt die Schweiz die Steuergewalt zwischen dem Bund, den 26 Kantonen und über 2\'000 Gemeinden.',
+          it: 'Il sistema fiscale svizzero è unico al mondo per la sua struttura federalista a tre livelli. A differenza della maggior parte dei paesi che hanno un sistema centralizzato, la Svizzera distribuisce il potere fiscale tra la Confederazione, i 26 cantoni e oltre 2\'000 comuni.',
+          en: 'The Swiss tax system is unique in the world due to its three-level federalist structure. Unlike most countries that have a centralized system, Switzerland distributes tax power between the Confederation, the 26 cantons and over 2,000 municipalities.'
+        },
+        keyPoints: {
+          fr: 'Trois niveaux d\'imposition : Confédération, cantons, communes\nPrincipe de subsidiarité : les décisions sont prises au niveau le plus proche du citoyen\nSouveraineté fiscale partagée entre les différents niveaux\nPlus de 2\'000 systèmes fiscaux communaux différents',
+          de: 'Drei Besteuerungsebenen: Bund, Kantone, Gemeinden\nSubsidiaritätsprinzip: Entscheidungen werden auf der bürgernächsten Ebene getroffen\nGeteilte Steuerhoheit zwischen den verschiedenen Ebenen\nÜber 2\'000 verschiedene Gemeindesteuer-systeme',
+          it: 'Tre livelli di tassazione: Confederazione, cantoni, comuni\nPrincipio di sussidiarietà: le decisioni sono prese al livello più vicino al cittadino\nSovranità fiscale condivisa tra i diversi livelli\nOltre 2\'000 sistemi fiscali comunali diversi',
+          en: 'Three levels of taxation: Confederation, cantons, municipalities\nSubsidiarity principle: decisions are made at the level closest to the citizen\nShared tax sovereignty between different levels\nMore than 2,000 different municipal tax systems'
+        },
+        example: {
+          fr: 'Un habitant de Lausanne paie des impôts à trois niveaux : à la Confédération (IFD), au canton de Vaud (impôt cantonal) et à la commune de Lausanne (impôt communal calculé comme un multiple de l\'impôt cantonal).',
+          de: 'Ein Einwohner von Lausanne zahlt Steuern auf drei Ebenen: an den Bund (DBG), an den Kanton Waadt (Kantonssteuer) und an die Gemeinde Lausanne (Gemeindesteuer berechnet als Vielfaches der Kantonssteuer).',
+          it: 'Un abitante di Losanna paga le tasse a tre livelli: alla Confederazione (IFD), al cantone di Vaud (imposta cantonale) e al comune di Losanna (imposta comunale calcolata come multiplo dell\'imposta cantonale).',
+          en: 'A resident of Lausanne pays taxes at three levels: to the Confederation (direct federal tax), to the canton of Vaud (cantonal tax) and to the municipality of Lausanne (municipal tax calculated as a multiple of the cantonal tax).'
+        }
+      }
+    }
+  }
+};
+
+// Fonction pour obtenir une traduction d'article
+export function getTranslatedArticle(slug: string, locale: 'fr' | 'de' | 'it' | 'en'): Article | null {
+  const baseArticle = getArticleBySlug(slug);
+  if (!baseArticle) return null;
+  
+  const translation = articleTranslations[slug];
+  if (!translation) return baseArticle; // Retourne l'article original si pas de traduction
+  
+  // Applique les traductions
+  const translatedArticle: Article = {
+    ...baseArticle,
+    title: translation.title[locale] || baseArticle.title,
+    description: translation.description[locale] || baseArticle.description,
+    content: translation.content[locale] || baseArticle.content,
+    sections: baseArticle.sections.map(section => {
+      const sectionTranslation = translation.sections[section.id];
+      if (!sectionTranslation) return section;
+      
+      return {
+        ...section,
+        title: sectionTranslation.title[locale] || section.title,
+        content: sectionTranslation.content[locale] || section.content,
+        keyPoints: sectionTranslation.keyPoints?.[locale]?.split('\n') || section.keyPoints,
+        example: sectionTranslation.example?.[locale] || section.example
+      };
+    })
+  };
+  
+  return translatedArticle;
 }

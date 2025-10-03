@@ -44,7 +44,7 @@ import {
   Lightbulb,
   Link as LinkIcon
 } from 'lucide-react';
-import { getArticlesByCategory, getArticleBySlug } from '@/lib/data/tax-articles';
+import { getArticlesByCategory, getArticleBySlug, getTranslatedArticle } from '@/lib/data/tax-articles';
 import { useTranslation } from '@/components/SimpleLanguageSelector';
 
 // Fonction pour traduire les thématiques
@@ -53,7 +53,7 @@ const getTranslatedThematiques = (t: any) => [
     id: 'introduction',
     titre: `🔹 ${t.introToTax}`,
     icon: Book,
-    description: 'Comprendre le système fiscal suisse',
+    description: t.introToTaxDesc,
     sousThemes: [
       { id: 'systeme', titre: 'Système fiscal suisse', articles: 1, slug: 'systeme-fiscal-suisse' },
       { id: 'bases-legales', titre: 'Bases légales', articles: 1, slug: 'bases-legales-fiscalite' },
@@ -67,7 +67,7 @@ const getTranslatedThematiques = (t: any) => [
     id: 'personnes-physiques',
     titre: `👤 ${t.personalTax}`,
     icon: User,
-    description: 'Tout sur vos impôts personnels',
+    description: t.personalTaxDesc,
     sousThemes: [
       { id: 'salaires', titre: 'Salaires et revenus', articles: 1, slug: 'revenus-imposables-salaries' },
       { id: 'deductions', titre: 'Déductions fiscales', articles: 1, slug: 'deductions-fiscales-principales' },
@@ -80,7 +80,7 @@ const getTranslatedThematiques = (t: any) => [
     id: 'entreprises',
     titre: `🏢 ${t.businessTax}`,
     icon: Building,
-    description: 'Fiscalité professionnelle',
+    description: t.businessTaxDesc,
     sousThemes: [
       { id: 'statut', titre: 'Statut fiscal', articles: 1, slug: 'statut-independant-criteres' },
       { id: 'formes-juridiques', titre: 'Formes juridiques', articles: 1, slug: 'formes-juridiques-entreprises' },
@@ -106,7 +106,7 @@ const getTranslatedThematiques = (t: any) => [
     id: 'international',
     titre: `🌍 ${t.internationalTax}`,
     icon: Globe,
-    description: 'Frontaliers et expatriés',
+    description: t.internationalTaxDesc,
     sousThemes: [
       { id: 'frontaliers', titre: 'Frontaliers', articles: 1, slug: 'frontaliers-imposition' },
       { id: 'cdi', titre: 'Conventions double imposition', articles: 1, slug: 'conventions-double-imposition' },
@@ -118,7 +118,7 @@ const getTranslatedThematiques = (t: any) => [
     id: 'declaration',
     titre: `📄 ${t.declarationProcess}`,
     icon: FileText,
-    description: 'Remplir sa déclaration',
+    description: t.declarationProcessDesc,
     sousThemes: [
       { id: 'declaration', titre: 'Délais et procédures', articles: 1, slug: 'declaration-impots-delais' },
       { id: 'documents', titre: 'Documents nécessaires', articles: 1, slug: 'documents-necessaires-declaration' },
@@ -130,7 +130,7 @@ const getTranslatedThematiques = (t: any) => [
     id: 'optimisation',
     titre: `📊 ${t.analysisOptimization}`,
     icon: TrendingUp,
-    description: 'Réduire légalement vos impôts',
+    description: t.analysisOptimizationDesc,
     sousThemes: [
       { id: 'strategies', titre: 'Stratégies d\'optimisation', articles: 1, slug: 'optimisation-fiscale-legale' },
       { id: 'planification', titre: 'Planification annuelle', articles: 0, slug: null },
@@ -142,7 +142,7 @@ const getTranslatedThematiques = (t: any) => [
     id: 'cantons',
     titre: `🏛️ ${t.cantonalSpecifics}`,
     icon: MapPin,
-    description: 'Votre canton en détail',
+    description: t.cantonalSpecificsDesc,
     sousThemes: [
       { id: 'comparatif', titre: 'Comparatif intercantonal', articles: 1, slug: 'comparatif-fiscal-cantonal' },
       { id: 'vaud', titre: 'Vaud', articles: 0, slug: null },
@@ -299,7 +299,10 @@ ${selectedTheme ? `Je vois que vous consultez le thème "${selectedTheme.titre}"
 
 // Composant pour afficher un article complet
 function ArticleDisplay({ slug }: { slug: string }) {
-  const article = getArticleBySlug(slug);
+  const t = useTranslation();
+  const currentLocale = (typeof window !== 'undefined' ? localStorage.getItem('locale') : 'fr') as 'fr' | 'de' | 'it' | 'en' || 'fr';
+  
+  const article = getTranslatedArticle(slug, currentLocale);
   
   if (!article) {
     return (
@@ -364,7 +367,7 @@ function ArticleDisplay({ slug }: { slug: string }) {
                   <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                     <Lightbulb className="h-4 w-4 text-blue-600" />
                   </div>
-                  Points clés à retenir
+                  {t.keyPointsTitle}
                 </h4>
                 <ul className="space-y-2">
                   {section.keyPoints.map((point, kIdx) => (
@@ -386,7 +389,7 @@ function ArticleDisplay({ slug }: { slug: string }) {
                   <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
                     <TrendingUp className="h-4 w-4 text-green-600" />
                   </div>
-                  Exemple pratique
+                  {t.practicalExample}
                 </h4>
                 <div className="bg-white rounded-md p-3 shadow-sm">
                   <p className="text-sm text-gray-700 leading-relaxed">{section.example}</p>
@@ -543,7 +546,7 @@ export default function EducationFiscalePage() {
                                     <div className="flex flex-col">
                                       <span className="font-medium text-gray-900 group-hover:text-blue-700 transition-colors">{sousTheme.titre}</span>
                                       {sousTheme.articles > 0 && (
-                                        <span className="text-xs text-gray-500 mt-0.5">Cliquez pour lire l'article complet</span>
+                                        <span className="text-xs text-gray-500 mt-0.5">{t.clickToRead}</span>
                                       )}
                                     </div>
                                   </div>
