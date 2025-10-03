@@ -59,8 +59,8 @@ const getTranslatedThematiques = (t: any) => [
       { id: 'bases-legales', titre: t.legalBases, articles: 1, slug: 'bases-legales-fiscalite' },
       { id: 'principes', titre: t.taxationPrinciples, articles: 1, slug: 'principes-imposition' },
       { id: 'types-impots', titre: t.typesOfTaxes, articles: 1, slug: 'types-impots' },
-      { id: 'domicile', titre: 'Domicile fiscal', articles: 1, slug: 'domicile-fiscal' },
-      { id: 'baremes', titre: 'Barèmes et progressivité', articles: 1, slug: 'baremes-progressivite' }
+      { id: 'domicile', titre: t.domicileFiscal, articles: 1, slug: 'domicile-fiscal' },
+      { id: 'baremes', titre: t.scalesProgressivity, articles: 1, slug: 'baremes-progressivite' }
     ]
   },
   {
@@ -69,11 +69,11 @@ const getTranslatedThematiques = (t: any) => [
     icon: User,
     description: t.personalTaxDesc,
     sousThemes: [
-      { id: 'salaires', titre: 'Salaires et revenus', articles: 1, slug: 'revenus-imposables-salaries' },
-      { id: 'deductions', titre: 'Déductions fiscales', articles: 1, slug: 'deductions-fiscales-principales' },
-      { id: 'fortune', titre: 'Impôt sur la fortune', articles: 1, slug: 'impot-fortune-personnes-physiques' },
-      { id: 'rentes', titre: 'Rentes AVS/LPP', articles: 1, slug: 'rentes-avs-lpp-imposition' },
-      { id: 'immobilier', titre: 'Revenus immobiliers', articles: 1, slug: 'revenus-immobiliers-personnes-physiques' }
+      { id: 'salaires', titre: t.wagesAndIncome, articles: 1, slug: 'revenus-imposables-salaries' },
+      { id: 'deductions', titre: t.taxDeductionsFull, articles: 1, slug: 'deductions-fiscales-principales' },
+      { id: 'fortune', titre: t.wealthTaxFull, articles: 1, slug: 'impot-fortune-personnes-physiques' },
+      { id: 'rentes', titre: t.pensionsAVSLPP, articles: 1, slug: 'rentes-avs-lpp-imposition' },
+      { id: 'immobilier', titre: t.realEstateIncome, articles: 1, slug: 'revenus-immobiliers-personnes-physiques' }
     ]
   },
   {
@@ -82,24 +82,24 @@ const getTranslatedThematiques = (t: any) => [
     icon: Building,
     description: t.businessTaxDesc,
     sousThemes: [
-      { id: 'statut', titre: 'Statut fiscal', articles: 1, slug: 'statut-independant-criteres' },
-      { id: 'formes-juridiques', titre: 'Formes juridiques', articles: 1, slug: 'formes-juridiques-entreprises' },
-      { id: 'tva', titre: 'TVA', articles: 1, slug: 'tva-assujettissement-entreprises' },
-      { id: 'benefices', titre: 'Imposition du bénéfice', articles: 1, slug: 'imposition-benefice-entreprises' },
-      { id: 'dirigeant', titre: 'Rémunération dirigeant', articles: 1, slug: 'remuneration-dirigeant-entreprises' }
+      { id: 'statut', titre: t.taxStatus, articles: 1, slug: 'statut-independant-criteres' },
+      { id: 'formes-juridiques', titre: t.legalForms, articles: 1, slug: 'formes-juridiques-entreprises' },
+      { id: 'tva', titre: t.vatFull, articles: 1, slug: 'tva-assujettissement-entreprises' },
+      { id: 'benefices', titre: t.profitTaxation, articles: 1, slug: 'imposition-benefice-entreprises' },
+      { id: 'dirigeant', titre: t.managerRemuneration, articles: 1, slug: 'remuneration-dirigeant-entreprises' }
     ]
   },
   {
     id: 'patrimoine',
-    titre: '💼 Patrimoine et investissements',
+    titre: `💼 ${t.patrimoneyInvestments}`,
     icon: PiggyBank,
-    description: 'Optimiser votre patrimoine',
+    description: t.patrimoneyDesc,
     sousThemes: [
-      { id: 'immobilier', titre: 'Biens immobiliers', articles: 1, slug: 'valeur-locative-residence' },
-      { id: 'titres', titre: 'Titres et valeurs', articles: 1, slug: 'titres-valeurs-mobilieres' },
-      { id: 'crypto', titre: 'Cryptomonnaies', articles: 1, slug: 'fiscalite-cryptomonnaies-suisse' },
-      { id: 'prevoyance', titre: 'Prévoyance (2e/3e pilier)', articles: 1, slug: 'prevoyance-2e-3e-pilier' },
-      { id: 'luxe', titre: 'Biens de luxe', articles: 0, slug: null }
+      { id: 'immobilier', titre: t.realEstate, articles: 1, slug: 'valeur-locative-residence' },
+      { id: 'titres', titre: t.securitiesValues, articles: 1, slug: 'titres-valeurs-mobilieres' },
+      { id: 'crypto', titre: t.cryptocurrencies, articles: 1, slug: 'fiscalite-cryptomonnaies-suisse' },
+      { id: 'prevoyance', titre: t.pensionProvision, articles: 1, slug: 'prevoyance-2e-3e-pilier' },
+      { id: 'luxe', titre: t.luxuryGoods, articles: 0, slug: null }
     ]
   },
   {
@@ -108,10 +108,10 @@ const getTranslatedThematiques = (t: any) => [
     icon: Globe,
     description: t.internationalTaxDesc,
     sousThemes: [
-      { id: 'frontaliers', titre: 'Frontaliers', articles: 1, slug: 'frontaliers-imposition' },
-      { id: 'cdi', titre: 'Conventions double imposition', articles: 1, slug: 'conventions-double-imposition' },
-      { id: 'expatries', titre: 'Expatriés/Impatriés', articles: 0, slug: null },
-      { id: 'comptes-etrangers', titre: 'Comptes étrangers', articles: 0, slug: null }
+      { id: 'frontaliers', titre: t.crossBorderWorkers, articles: 1, slug: 'frontaliers-imposition' },
+      { id: 'cdi', titre: t.doubleTaxationConventions, articles: 1, slug: 'conventions-double-imposition' },
+      { id: 'expatries', titre: t.expatriatesImpatriates, articles: 0, slug: null },
+      { id: 'comptes-etrangers', titre: t.foreignAccounts, articles: 0, slug: null }
     ]
   },
   {
@@ -120,10 +120,10 @@ const getTranslatedThematiques = (t: any) => [
     icon: FileText,
     description: t.declarationProcessDesc,
     sousThemes: [
-      { id: 'declaration', titre: 'Délais et procédures', articles: 1, slug: 'declaration-impots-delais' },
-      { id: 'documents', titre: 'Documents nécessaires', articles: 1, slug: 'documents-necessaires-declaration' },
-      { id: 'calendrier', titre: 'Calendrier fiscal', articles: 1, slug: 'calendrier-fiscal-suisse' },
-      { id: 'taxation', titre: 'Taxation et corrections', articles: 0, slug: null }
+      { id: 'declaration', titre: t.deadlinesProcedures, articles: 1, slug: 'declaration-impots-delais' },
+      { id: 'documents', titre: t.requiredDocuments, articles: 1, slug: 'documents-necessaires-declaration' },
+      { id: 'calendrier', titre: t.taxCalendar, articles: 1, slug: 'calendrier-fiscal-suisse' },
+      { id: 'taxation', titre: t.taxationCorrections, articles: 0, slug: null }
     ]
   },
   {
@@ -132,10 +132,10 @@ const getTranslatedThematiques = (t: any) => [
     icon: TrendingUp,
     description: t.analysisOptimizationDesc,
     sousThemes: [
-      { id: 'strategies', titre: 'Stratégies d\'optimisation', articles: 1, slug: 'optimisation-fiscale-legale' },
-      { id: 'planification', titre: 'Planification annuelle', articles: 0, slug: null },
-      { id: '3e-pilier', titre: 'Optimisation 3e pilier', articles: 1, slug: 'optimisation-troisieme-pilier' },
-      { id: 'succession', titre: 'Planification successorale', articles: 0, slug: null }
+      { id: 'strategies', titre: t.optimizationStrategies, articles: 1, slug: 'optimisation-fiscale-legale' },
+      { id: 'planification', titre: t.annualPlanning, articles: 0, slug: null },
+      { id: '3e-pilier', titre: t.thirdPillarOptimization, articles: 1, slug: 'optimisation-troisieme-pilier' },
+      { id: 'succession', titre: t.successionPlanning, articles: 0, slug: null }
     ]
   },
   {
@@ -144,7 +144,7 @@ const getTranslatedThematiques = (t: any) => [
     icon: MapPin,
     description: t.cantonalSpecificsDesc,
     sousThemes: [
-      { id: 'comparatif', titre: 'Comparatif intercantonal', articles: 1, slug: 'comparatif-fiscal-cantonal' },
+      { id: 'comparatif', titre: t.intercantonalComparison, articles: 1, slug: 'comparatif-fiscal-cantonal' },
       { id: 'vaud', titre: 'Vaud', articles: 0, slug: null },
       { id: 'geneve', titre: 'Genève', articles: 0, slug: null },
       { id: 'zurich', titre: 'Zurich', articles: 0, slug: null }

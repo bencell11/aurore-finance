@@ -90,6 +90,48 @@ const translations = {
     taxDeductions: 'Déductions fiscales',
     wealthTax: 'Impôt sur la fortune',
     taxableIncomeEmployees: 'Revenus imposables salariés',
+    // Module Fiscalité des personnes physiques
+    wagesAndIncome: 'Salaires et revenus',
+    taxDeductionsFull: 'Déductions fiscales',
+    wealthTaxFull: 'Impôt sur la fortune',
+    pensionsAVSLPP: 'Rentes AVS/LPP',
+    realEstateIncome: 'Revenus immobiliers',
+    // Module Indépendants et entreprises
+    taxStatus: 'Statut fiscal',
+    legalForms: 'Formes juridiques',
+    vatFull: 'TVA',
+    profitTaxation: 'Imposition du bénéfice',
+    managerRemuneration: 'Rémunération dirigeant',
+    // Module Patrimoine et investissements  
+    patrimoneyInvestments: 'Patrimoine et investissements',
+    patrimoneyDesc: 'Optimiser votre patrimoine',
+    realEstate: 'Biens immobiliers',
+    securitiesValues: 'Titres et valeurs',
+    cryptocurrencies: 'Cryptomonnaies',
+    pensionProvision: 'Prévoyance (2e/3e pilier)',
+    luxuryGoods: 'Biens de luxe',
+    // Module International
+    crossBorderWorkers: 'Frontaliers',
+    doubleTaxationConventions: 'Conventions double imposition',
+    expatriatesImpatriates: 'Expatriés/Impatriés',
+    foreignAccounts: 'Comptes étrangers',
+    // Module Déclaration
+    deadlinesProcedures: 'Délais et procédures',
+    requiredDocuments: 'Documents nécessaires',
+    taxCalendar: 'Calendrier fiscal',
+    taxationCorrections: 'Taxation et corrections',
+    // Module Optimisation
+    optimizationStrategies: 'Stratégies d\'optimisation',
+    annualPlanning: 'Planification annuelle',
+    thirdPillarOptimization: 'Optimisation 3e pilier',
+    successionPlanning: 'Planification successorale',
+    // Module Cantons
+    intercantonalComparison: 'Comparatif intercantonal',
+    // Autres
+    domicileFiscal: 'Domicile fiscal',
+    scalesProgressivity: 'Barèmes et progressivité',
+    rentalValue: 'Valeur locative résidence',
+    securitiesMobiliary: 'Titres et valeurs mobilières',
   },
   de: {
     admin: 'Admin',
@@ -154,6 +196,48 @@ const translations = {
     taxDeductions: 'Steuerabzüge',
     wealthTax: 'Vermögenssteuer',
     taxableIncomeEmployees: 'Steuerpflichtiges Einkommen Angestellte',
+    // Module Fiscalité des personnes physiques
+    wagesAndIncome: 'Löhne und Einkommen',
+    taxDeductionsFull: 'Steuerabzüge',
+    wealthTaxFull: 'Vermögenssteuer',
+    pensionsAVSLPP: 'AHV/BVG-Renten',
+    realEstateIncome: 'Immobilienerträge',
+    // Module Indépendants et entreprises
+    taxStatus: 'Steuerstatus',
+    legalForms: 'Rechtsformen',
+    vatFull: 'MWST',
+    profitTaxation: 'Gewinnbesteuerung',
+    managerRemuneration: 'Geschäftsführervergütung',
+    // Module Patrimoine et investissements  
+    patrimoneyInvestments: 'Vermögen und Investitionen',
+    patrimoneyDesc: 'Ihr Vermögen optimieren',
+    realEstate: 'Immobilien',
+    securitiesValues: 'Wertpapiere und Werte',
+    cryptocurrencies: 'Kryptowährungen',
+    pensionProvision: 'Vorsorge (2./3. Säule)',
+    luxuryGoods: 'Luxusgüter',
+    // Module International
+    crossBorderWorkers: 'Grenzgänger',
+    doubleTaxationConventions: 'Doppelbesteuerungsabkommen',
+    expatriatesImpatriates: 'Expatriates/Impatriates',
+    foreignAccounts: 'Ausländische Konten',
+    // Module Déclaration
+    deadlinesProcedures: 'Fristen und Verfahren',
+    requiredDocuments: 'Erforderliche Dokumente',
+    taxCalendar: 'Steuerkalender',
+    taxationCorrections: 'Besteuerung und Korrekturen',
+    // Module Optimisation
+    optimizationStrategies: 'Optimierungsstrategien',
+    annualPlanning: 'Jahresplanung',
+    thirdPillarOptimization: '3. Säule Optimierung',
+    successionPlanning: 'Nachfolgeplanung',
+    // Module Cantons
+    intercantonalComparison: 'Interkantonaler Vergleich',
+    // Autres
+    domicileFiscal: 'Steuerdomizil',
+    scalesProgressivity: 'Tarife und Progressivität',
+    rentalValue: 'Eigenmietwert Wohnung',
+    securitiesMobiliary: 'Wertpapiere und Mobilwerte',
   },
   it: {
     admin: 'Admin',
@@ -218,6 +302,48 @@ const translations = {
     taxDeductions: 'Detrazioni fiscali',
     wealthTax: 'Imposta sul patrimonio',
     taxableIncomeEmployees: 'Reddito imponibile dipendenti',
+    // Module Fiscalité des personnes physiques
+    wagesAndIncome: 'Salari e redditi',
+    taxDeductionsFull: 'Detrazioni fiscali',
+    wealthTaxFull: 'Imposta sul patrimonio',
+    pensionsAVSLPP: 'Rendite AVS/LPP',
+    realEstateIncome: 'Redditi immobiliari',
+    // Module Indépendants et entreprises
+    taxStatus: 'Stato fiscale',
+    legalForms: 'Forme giuridiche',
+    vatFull: 'IVA',
+    profitTaxation: 'Tassazione del profitto',
+    managerRemuneration: 'Remunerazione dirigente',
+    // Module Patrimoine et investissements  
+    patrimoneyInvestments: 'Patrimonio e investimenti',
+    patrimoneyDesc: 'Ottimizzare il vostro patrimonio',
+    realEstate: 'Beni immobiliari',
+    securitiesValues: 'Titoli e valori',
+    cryptocurrencies: 'Criptovalute',
+    pensionProvision: 'Previdenza (2°/3° pilastro)',
+    luxuryGoods: 'Beni di lusso',
+    // Module International
+    crossBorderWorkers: 'Frontalieri',
+    doubleTaxationConventions: 'Convenzioni doppia imposizione',
+    expatriatesImpatriates: 'Espatriati/Impatriati',
+    foreignAccounts: 'Conti esteri',
+    // Module Déclaration
+    deadlinesProcedures: 'Scadenze e procedure',
+    requiredDocuments: 'Documenti necessari',
+    taxCalendar: 'Calendario fiscale',
+    taxationCorrections: 'Tassazione e correzioni',
+    // Module Optimisation
+    optimizationStrategies: 'Strategie di ottimizzazione',
+    annualPlanning: 'Pianificazione annuale',
+    thirdPillarOptimization: 'Ottimizzazione 3° pilastro',
+    successionPlanning: 'Pianificazione successoria',
+    // Module Cantons
+    intercantonalComparison: 'Confronto intercantonale',
+    // Autres
+    domicileFiscal: 'Domicilio fiscale',
+    scalesProgressivity: 'Tariffe e progressività',
+    rentalValue: 'Valore locativo residenza',
+    securitiesMobiliary: 'Titoli e valori mobiliari',
   },
   en: {
     admin: 'Admin',
@@ -282,6 +408,48 @@ const translations = {
     taxDeductions: 'Tax deductions',
     wealthTax: 'Wealth tax',
     taxableIncomeEmployees: 'Taxable income employees',
+    // Module Fiscalité des personnes physiques
+    wagesAndIncome: 'Wages and income',
+    taxDeductionsFull: 'Tax deductions',
+    wealthTaxFull: 'Wealth tax',
+    pensionsAVSLPP: 'AVS/LPP pensions',
+    realEstateIncome: 'Real estate income',
+    // Module Indépendants et entreprises
+    taxStatus: 'Tax status',
+    legalForms: 'Legal forms',
+    vatFull: 'VAT',
+    profitTaxation: 'Profit taxation',
+    managerRemuneration: 'Manager remuneration',
+    // Module Patrimoine et investissements  
+    patrimoneyInvestments: 'Wealth and investments',
+    patrimoneyDesc: 'Optimize your wealth',
+    realEstate: 'Real estate',
+    securitiesValues: 'Securities and values',
+    cryptocurrencies: 'Cryptocurrencies',
+    pensionProvision: 'Pension provision (2nd/3rd pillar)',
+    luxuryGoods: 'Luxury goods',
+    // Module International
+    crossBorderWorkers: 'Cross-border workers',
+    doubleTaxationConventions: 'Double taxation conventions',
+    expatriatesImpatriates: 'Expatriates/Impatriates',
+    foreignAccounts: 'Foreign accounts',
+    // Module Déclaration
+    deadlinesProcedures: 'Deadlines and procedures',
+    requiredDocuments: 'Required documents',
+    taxCalendar: 'Tax calendar',
+    taxationCorrections: 'Taxation and corrections',
+    // Module Optimisation
+    optimizationStrategies: 'Optimization strategies',
+    annualPlanning: 'Annual planning',
+    thirdPillarOptimization: '3rd pillar optimization',
+    successionPlanning: 'Succession planning',
+    // Module Cantons
+    intercantonalComparison: 'Intercantonal comparison',
+    // Autres
+    domicileFiscal: 'Tax domicile',
+    scalesProgressivity: 'Scales and progressivity',
+    rentalValue: 'Rental value residence',
+    securitiesMobiliary: 'Securities and movable values',
   },
 };
 
