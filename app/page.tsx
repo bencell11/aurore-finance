@@ -153,23 +153,47 @@ export default function HomePage() {
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="px-4 py-3 flex items-center justify-between">
-          {/* Logo ET Admin Button ensemble */}
-          <div className="flex items-center gap-3 flex-1">
-            <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-              <Calculator className="h-4 w-4 text-white" />
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 md:h-10 md:w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <Calculator className="h-4 w-4 md:h-5 md:w-5 text-white" />
             </div>
-            <span className="text-lg font-bold text-gray-900">
+            <span className="text-lg md:text-xl font-bold text-gray-900">
               Aurore Finances
             </span>
-            {/* Admin Button juste après le logo */}
-            <a
-              href="/admin/login-simple"
-              className="ml-auto bg-red-600 text-white px-3 py-1.5 rounded font-bold text-sm"
-            >
-              ADMIN
-            </a>
           </div>
+          
+          {/* Admin Button - Même style sur tous les écrans */}
+          <a
+            href="/admin/login-simple"
+            className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50"
+          >
+            <Shield className="h-4 w-4" />
+            <span>Admin</span>
+          </a>
+          
+          {/* Desktop Navigation - Caché sur mobile */}
+          <nav className="hidden md:flex items-center gap-6">
+            <a
+              href="/mentions-legales"
+              className="text-gray-600 hover:text-blue-600 transition-colors"
+            >
+              Mentions légales
+            </a>
+            <a
+              href="/confidentialite"
+              className="text-gray-600 hover:text-blue-600 transition-colors"
+            >
+              Confidentialité
+            </a>
+            <a
+              href="/contact"
+              className="text-gray-600 hover:text-blue-600 transition-colors"
+            >
+              Contact
+            </a>
+          </nav>
         </div>
 
         {/* Mobile Navigation Menu */}
@@ -201,16 +225,6 @@ export default function HomePage() {
           </div>
         )}
       </header>
-
-      {/* Gros bouton Admin sur mobile uniquement */}
-      <div className="md:hidden bg-yellow-400 p-2">
-        <a
-          href="/admin/login-simple"
-          className="block text-center bg-black text-white py-3 font-bold text-lg rounded"
-        >
-          CLIQUEZ ICI POUR ADMIN
-        </a>
-      </div>
 
       {/* Hero Section */}
       <section className="py-20 px-6">
