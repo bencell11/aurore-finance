@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useAuthContext } from '@/lib/contexts/AuthContext';
 import UserMenu from '@/components/auth/UserMenu';
 import { Button } from '@/components/ui/button';
 import { SimpleLanguageSelector } from '@/components/SimpleLanguageSelector';
@@ -71,18 +71,7 @@ export default function MainNavigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   
-  // Gestion sécurisée de l'authentification
-  let user = null;
-  let isAuthenticated = false;
-  
-  try {
-    const authData = useAuth();
-    user = authData.user;
-    isAuthenticated = authData.isAuthenticated;
-  } catch (error) {
-    // Si les hooks d'auth échouent, on continue sans authentification
-    console.warn('Auth hooks not available, continuing without authentication');
-  }
+  const { user, isAuthenticated } = useAuthContext();
 
   // Ne pas afficher la navigation sur la page de connexion
   if (pathname === '/auth') {

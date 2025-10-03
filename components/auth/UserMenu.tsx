@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useAuthContext } from '@/lib/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,7 +24,7 @@ import {
 
 export default function UserMenu() {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
 
   if (!user) {

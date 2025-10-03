@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useAuthContext } from '@/lib/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,8 +21,9 @@ import {
 
 export default function AuthPage() {
   const router = useRouter();
-  const { login, register, isLoading } = useAuth();
+  const { login, register } = useAuthContext();
   const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -45,48 +46,34 @@ export default function AuthPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
-
-    // Mode démo : bypass de l'authentification
-    const isDemoMode = !process.env.NEXT_PUBLIC_SUPABASE_URL || 
-                      process.env.NEXT_PUBLIC_SUPABASE_URL === 'your-supabase-url-here' ||
-                      process.env.NEXT_PUBLIC_SUPABASE_URL.includes('demo');
-    
-    if (isDemoMode) {
-      // En mode démo, connexion automatique
-      setSuccess(mode === 'login' ? 'Connexion réussie! (Mode Démo)' : 'Compte créé avec succès! (Mode Démo)');
-      setTimeout(() => {
-        router.push('/assistant-fiscal');
-      }, 500);
-      return;
-    }
+    setIsLoading(true);
 
     try {
-      let response;
+      let result;
       
       if (mode === 'login') {
-        response = await login({
-          email: formData.email,
-          password: formData.password
-        });
+        result = await login(formData.email, formData.password);
       } else {
-        response = await register({
-          email: formData.email,
-          password: formData.password,
-          nom: formData.nom,
-          prenom: formData.prenom
-        });
+        result = await register(
+          formData.email,
+          formData.password,
+          formData.nom,
+          formData.prenom
+        );
       }
 
-      if (response.success) {
+      if (result) {
         setSuccess(mode === 'login' ? 'Connexion réussie!' : 'Compte créé avec succès!');
         setTimeout(() => {
           router.push('/dashboard');
-        }, 1000);
+        }, 500);
       } else {
-        setError(response.error || 'Une erreur est survenue');
+        setError('Email ou mot de passe incorrect');
       }
     } catch (err) {
       setError('Une erreur inattendue est survenue');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -119,7 +106,7 @@ export default function AuthPage() {
           </div>
           
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Aurore Finance
+            Aurore Finances
           </h1>
           <p className="text-gray-600">
             {mode === 'login' 
