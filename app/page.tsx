@@ -30,7 +30,7 @@ import {
   X,
 } from "lucide-react";
 import { AdminNavLink } from "@/components/navigation/AdminNavLink";
-import { SimpleLanguageSelector } from "@/components/SimpleLanguageSelector";
+import { SimpleLanguageSelector, useTranslation } from "@/components/SimpleLanguageSelector";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -40,6 +40,7 @@ export default function HomePage() {
   const [error, setError] = useState("");
   const [showAccessMessage, setShowAccessMessage] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const t = useTranslation();
 
   // Vérifier si l'utilisateur vient d'une redirection d'accès restreint
   useEffect(() => {
@@ -146,7 +147,7 @@ export default function HomePage() {
           <div className="bg-orange-100 border border-orange-300 text-orange-800 px-6 py-3 rounded-lg shadow-lg">
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              <span className="font-medium">Accès restreint - Rejoignez la liste d'attente pour l'accès prioritaire !</span>
+              <span className="font-medium">{t.accessRestricted}</span>
             </div>
           </div>
         </div>
@@ -240,8 +241,7 @@ export default function HomePage() {
           </h1>
 
           <h2 className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            Rejoignez la liste d'attente et soyez parmi les premiers à tester
-            Aurore Finances en version bêta.
+            {t.subtitle}
           </h2>
 
           {/* Formulaire d'inscription */}
@@ -250,7 +250,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Input
                   type="email"
-                  placeholder="Votre email"
+                  placeholder={t.emailPlaceholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -264,12 +264,12 @@ export default function HomePage() {
                   {subscribed ? (
                     <>
                       <CheckCircle2 className="h-5 w-5 mr-2" />
-                      Inscrit !
+                      {t.registeredButton}
                     </>
                   ) : isSubmitting ? (
-                    "Inscription..."
+                    t.submitting
                   ) : (
-                    "Rejoindre la liste d'attente"
+                    t.joinWaitlist
                   )}
                 </Button>
               </div>
@@ -287,17 +287,17 @@ export default function HomePage() {
           {subscribed && (
             <div className="max-w-lg mx-auto mb-4">
               <p className="text-green-600 text-sm bg-green-50 border border-green-200 rounded-lg p-3">
-                🎉 Parfait ! Un email de confirmation vous a été envoyé.
+                🎉 {t.subscribed}
               </p>
             </div>
           )}
 
           <p className="text-gray-500 text-sm">
-            Déjà plus de{" "}
+            {t.alreadyMore}{" "}
             <span className="font-semibold text-blue-600">
-              {waitlistCount} personnes
+              {waitlistCount}
             </span>{" "}
-            inscrites. Rejoignez le mouvement.
+            {t.joinMovement}
           </p>
         </div>
       </section>
@@ -562,7 +562,7 @@ export default function HomePage() {
             size="lg"
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg"
           >
-            Rejoindre la liste d'attente
+            {t.joinWaitlist}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
