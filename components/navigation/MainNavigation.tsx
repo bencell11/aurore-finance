@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useAuthContext } from '@/lib/contexts/AuthContext';
 import UserMenu from '@/components/auth/UserMenu';
 import { Button } from '@/components/ui/button';
-import { SimpleLanguageSelector } from '@/components/SimpleLanguageSelector';
+import { SimpleLanguageSelector, useTranslation } from '@/components/SimpleLanguageSelector';
 import { 
   Home,
   Calculator,
@@ -20,47 +20,55 @@ import {
   GraduationCap
 } from 'lucide-react';
 
-const navigationItems = [
+// Fonction pour générer les éléments de navigation avec traductions
+const getNavigationItems = (t: any) => [
   {
-    name: 'Accueil',
+    nameKey: 'home',
+    name: t.home,
     href: '/',
     icon: Home,
     public: true
   },
   {
-    name: 'Simulateurs',
+    nameKey: 'simulators',
+    name: t.simulators,
     href: '/simulateurs',
     icon: Calculator,
     public: true
   },
   {
-    name: 'Éducation Fiscale',
+    nameKey: 'taxEducation',
+    name: t.taxEducation,
     href: '/education-fiscale',
     icon: GraduationCap,
     public: true,
-    badge: 'Nouveau'
+    badge: t.new
   },
   {
-    name: 'Assistant Fiscal',
+    nameKey: 'taxAssistant',
+    name: t.taxAssistant,
     href: '/assistant-fiscal',
     icon: FileText,
     public: false,
     badge: 'AI'
   },
   {
-    name: 'Dashboard',
+    nameKey: 'dashboard',
+    name: t.dashboard,
     href: '/dashboard',
     icon: PieChart,
     public: false
   },
   {
-    name: 'Objectifs',
+    nameKey: 'objectives',
+    name: t.objectives,
     href: '/objectifs',
     icon: Target,
     public: false
   },
   {
-    name: 'Chatbot IA',
+    nameKey: 'chatbot',
+    name: t.chatbot,
     href: '/demo',
     icon: MessageCircle,
     public: false
@@ -72,12 +80,14 @@ export default function MainNavigation() {
   const pathname = usePathname();
   
   const { user, isAuthenticated } = useAuthContext();
+  const t = useTranslation();
 
   // Ne pas afficher la navigation sur la page de connexion
   if (pathname === '/auth') {
     return null;
   }
 
+  const navigationItems = getNavigationItems(t);
   const visibleItems = navigationItems.filter(item => 
     item.public || isAuthenticated
   );

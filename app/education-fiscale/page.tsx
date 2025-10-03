@@ -45,12 +45,13 @@ import {
   Link as LinkIcon
 } from 'lucide-react';
 import { getArticlesByCategory, getArticleBySlug } from '@/lib/data/tax-articles';
+import { useTranslation } from '@/components/SimpleLanguageSelector';
 
-// Structure des thématiques fiscales
-const thematiques = [
+// Fonction pour traduire les thématiques
+const getTranslatedThematiques = (t: any) => [
   {
     id: 'introduction',
-    titre: '🔹 Introduction à la fiscalité suisse',
+    titre: `🔹 ${t.introToTax}`,
     icon: Book,
     description: 'Comprendre le système fiscal suisse',
     sousThemes: [
@@ -64,7 +65,7 @@ const thematiques = [
   },
   {
     id: 'personnes-physiques',
-    titre: '👤 Fiscalité des personnes physiques',
+    titre: `👤 ${t.personalTax}`,
     icon: User,
     description: 'Tout sur vos impôts personnels',
     sousThemes: [
@@ -77,7 +78,7 @@ const thematiques = [
   },
   {
     id: 'entreprises',
-    titre: '🏢 Indépendants et entreprises',
+    titre: `🏢 ${t.businessTax}`,
     icon: Building,
     description: 'Fiscalité professionnelle',
     sousThemes: [
@@ -103,7 +104,7 @@ const thematiques = [
   },
   {
     id: 'international',
-    titre: '🌍 Fiscalité internationale',
+    titre: `🌍 ${t.internationalTax}`,
     icon: Globe,
     description: 'Frontaliers et expatriés',
     sousThemes: [
@@ -115,7 +116,7 @@ const thematiques = [
   },
   {
     id: 'declaration',
-    titre: '📄 Déclaration et processus',
+    titre: `📄 ${t.declarationProcess}`,
     icon: FileText,
     description: 'Remplir sa déclaration',
     sousThemes: [
@@ -127,7 +128,7 @@ const thematiques = [
   },
   {
     id: 'optimisation',
-    titre: '📊 Analyses et optimisation',
+    titre: `📊 ${t.analysisOptimization}`,
     icon: TrendingUp,
     description: 'Réduire légalement vos impôts',
     sousThemes: [
@@ -139,7 +140,7 @@ const thematiques = [
   },
   {
     id: 'cantons',
-    titre: '🏛️ Spécificités cantonales',
+    titre: `🏛️ ${t.cantonalSpecifics}`,
     icon: MapPin,
     description: 'Votre canton en détail',
     sousThemes: [
@@ -445,7 +446,9 @@ export default function EducationFiscalePage() {
   const [selectedTheme, setSelectedTheme] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('themes');
+  const t = useTranslation();
 
+  const thematiques = getTranslatedThematiques(t);
   const filteredThemes = thematiques.filter(theme =>
     theme.titre.toLowerCase().includes(searchQuery.toLowerCase()) ||
     theme.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -459,7 +462,7 @@ export default function EducationFiscalePage() {
         <div className="container mx-auto max-w-7xl">
           <div className="flex items-center gap-3 mb-4">
             <GraduationCap className="h-10 w-10" />
-            <h1 className="text-4xl font-bold">Centre d'Éducation Fiscale Suisse</h1>
+            <h1 className="text-4xl font-bold">{t.taxEducationCenter}</h1>
           </div>
           <p className="text-xl text-blue-100 mb-6">
             Maîtrisez la fiscalité suisse avec notre guide interactif et l'assistance IA
@@ -470,7 +473,7 @@ export default function EducationFiscalePage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               type="text"
-              placeholder="Rechercher un thème fiscal..."
+              placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-3 text-gray-900 bg-white rounded-lg shadow-lg"
@@ -751,7 +754,7 @@ export default function EducationFiscalePage() {
                   <p className="text-sm text-gray-600 mb-4">
                     Liste complète des documents nécessaires
                   </p>
-                  <Button className="w-full" variant="outline">Consulter</Button>
+                  <Button className="w-full" variant="outline">{t.consult}</Button>
                 </CardContent>
               </Card>
 
