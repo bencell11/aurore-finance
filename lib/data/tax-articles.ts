@@ -1424,6 +1424,82 @@ La planification pluriannuelle permet d'optimiser la charge fiscale globale : é
     lastUpdated: new Date('2024-01-15')
   },
 
+  {
+    slug: 'remuneration-dirigeant-entreprises',
+    title: 'Rémunération des dirigeants d\'entreprise',
+    description: 'Optimisation fiscale de la rémunération des dirigeants : salaire, dividendes, avantages en nature',
+    category: 'Indépendants et entreprises',
+    subcategory: 'Rémunération dirigeant',
+    content: '',
+    sections: [
+      {
+        id: 'mix-salaire-dividendes',
+        title: 'Mix optimal salaire-dividendes',
+        content: `La rémunération du dirigeant d'une société de capitaux peut combiner salaire et dividendes, chacun ayant ses avantages fiscaux spécifiques. L'optimisation dépend de la situation globale : charges sociales, taux marginaux d'imposition, besoins de liquidités.
+
+Le salaire crée des charges sociales (AVS/AI, LPP, assurance-chômage) mais permet de constituer des droits sociaux et de la prévoyance. Il est déductible du bénéfice de la société, réduisant l'impôt sur le bénéfice.
+
+Les dividendes ne génèrent pas de charges sociales mais subissent la double imposition économique : impôt sur le bénéfice au niveau société, puis impôt sur le revenu (réduit) chez l'actionnaire. L'impôt anticipé de 35% est prélevé mais récupérable.
+
+Le point d'équilibre dépend des taux d'imposition : généralement, un salaire de base pour couvrir les besoins courants et les charges sociales minimales, complété par des dividendes pour optimiser la charge fiscale globale.`,
+        keyPoints: [
+          'Salaire : charges sociales mais déductible société',
+          'Dividendes : pas de charges sociales, double imposition',
+          'Impôt anticipé 35% récupérable',
+          'Optimisation selon taux marginaux',
+          'Équilibre besoins courants vs optimisation'
+        ],
+        example: 'Un dirigeant peut prendre 100\'000 CHF de salaire (charges sociales comprises) plus 50\'000 CHF de dividendes, plutôt que 150\'000 CHF de salaire pur, économisant environ 15\'000 CHF de charges sociales annuelles.'
+      },
+      {
+        id: 'avantages-nature',
+        title: 'Avantages en nature et fringe benefits',
+        content: `Les avantages en nature accordés aux dirigeants sont imposables mais peuvent être optimisés. La voiture de fonction reste l'avantage le plus courant, évalué à 0.8% de la valeur d'achat neuve par mois.
+
+Les frais de représentation, formations professionnelles, équipements informatiques peuvent être pris en charge par la société sans imposition chez le dirigeant, s'ils sont justifiés par l'activité professionnelle.
+
+Le logement de fonction est possible mais fortement encadré : il doit présenter un intérêt prépondérant pour l'employeur. La valeur locative imposable chez le dirigeant peut être réduite de 20% si les conditions sont remplies.
+
+Les stock-options et plans d'actionnariat offrent des possibilités d'optimisation, particulièrement dans les start-ups. L'imposition intervient généralement au moment de l'exercice des options, pas à l'attribution.`,
+        keyPoints: [
+          'Voiture : 0.8% valeur neuve par mois',
+          'Frais justifiés par activité professionnelle',
+          'Logement fonction très encadré',
+          'Stock-options imposées à l\'exercice',
+          'Justification professionnelle obligatoire'
+        ]
+      },
+      {
+        id: 'strategies-optimisation',
+        title: 'Stratégies d\'optimisation globales',
+        content: `La planification pluriannuelle permet d'optimiser la rémunération selon les fluctuations d'activité. Les années fastes peuvent privilégier les dividendes, les années difficiles maintenir un salaire minimum pour préserver les droits sociaux.
+
+Le pilotage de la distribution permet d'étaler les dividendes selon la situation fiscale personnelle du dirigeant. Les réserves peuvent être constituées en société pour différer l'imposition personnelle.
+
+La coordination avec la prévoyance est cruciale : maintenir un salaire LPP pour optimiser la couverture, utiliser le 3e pilier A au maximum, prévoir les rachats LPP stratégiques.
+
+La transmission d'entreprise influence aussi la stratégie : privilégier la croissance en valeur (gains en capital exonérés) plutôt que les distributions courantes peut être optimal si une cession est envisagée.`,
+        keyPoints: [
+          'Planification pluriannuelle selon activité',
+          'Pilotage distributions via réserves',
+          'Coordination avec prévoyance LPP',
+          'Stratégie transmission (croissance vs distribution)',
+          'Optimisation globale situation personnelle'
+        ],
+        warning: 'Les rémunérations excessives ou sans contrepartie économique peuvent être requalifiées par l\'administration fiscale en avantages constructifs.'
+      }
+    ],
+    keywords: ['rémunération dirigeant', 'salaire', 'dividendes', 'avantages nature', 'optimisation'],
+    relatedConcepts: [
+      { slug: 'formes-juridiques-entreprises', title: 'Formes juridiques' },
+      { slug: 'imposition-benefice-entreprises', title: 'Imposition du bénéfice' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 17 (Revenus d\'activité)', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_17' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
   // ========== PATRIMOINE ET INVESTISSEMENTS ==========
   {
     slug: 'valeur-locative-residence',
@@ -1478,6 +1554,158 @@ La révision peut être demandée en cas de changement substantiel : importantes
     ],
     legalReferences: [
       { title: 'ATF sur la valeur locative', url: 'https://www.bger.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  {
+    slug: 'fiscalite-cryptomonnaies-suisse',
+    title: 'Fiscalité des cryptomonnaies en Suisse',
+    description: 'Guide complet de l\'imposition des cryptomonnaies : fortune, gains, mining et trading professionnel',
+    category: 'Patrimoine et investissements',
+    subcategory: 'Cryptomonnaies',
+    content: '',
+    sections: [
+      {
+        id: 'principe-imposition-crypto',
+        title: 'Principe d\'imposition des cryptomonnaies',
+        content: `En Suisse, les cryptomonnaies sont considérées comme de la fortune mobilière au même titre que les actions ou obligations. Cette qualification entraîne des règles fiscales spécifiques selon que l'activité est privée ou commerciale.
+
+Pour la gestion de fortune privée, les cryptomonnaies sont imposables sur la fortune au 31 décembre selon leur valeur de marché. Les gains en capital ne sont généralement pas imposables, conformément au principe suisse d'exonération des gains privés.
+
+L'Administration fédérale des contributions (AFC) publie annuellement les cours de référence des principales cryptomonnaies pour l'évaluation fiscale. Bitcoin, Ethereum et autres cryptomonnaies majeures ont des cours officiels.
+
+La distinction entre activité privée et commerciale est cruciale : elle dépend de critères similaires au trading d'actions (fréquence, montants, effet de levier, durée de détention). Le trading professionnel rend tous les gains imposables.`,
+        keyPoints: [
+          'Fortune mobilière imposable au 31 décembre',
+          'Gains privés généralement exonérés',
+          'Cours AFC pour évaluation officielle',
+          'Distinction privé/commercial cruciale',
+          'Critères trading professionnel applicables'
+        ]
+      },
+      {
+        id: 'mining-staking',
+        title: 'Mining et staking : revenus professionnels',
+        content: `Le mining (minage) et le staking de cryptomonnaies constituent des activités génératrices de revenus imposables. Ces activités sont considérées comme de l'activité indépendante, imposable selon les barèmes progressifs ordinaires.
+
+Les revenus de mining correspondent à la valeur des cryptomonnaies reçues au moment de leur création. Les frais d'électricité, matériel informatique, locaux peuvent être déduits comme charges d'exploitation si l'activité est exercée de manière professionnelle.
+
+Le staking (preuve d'enjeu) génère également des revenus imposables au moment de la réception des récompenses. La valeur imposable correspond au cours de marché au moment de la réception.
+
+Les cotisations AVS/AI (10.6%) s'appliquent sur les revenus nets de mining/staking. Une inscription au registre du commerce peut être nécessaire selon l'ampleur de l'activité.`,
+        keyPoints: [
+          'Mining/staking = activité indépendante',
+          'Revenus imposables à réception',
+          'Charges exploitation déductibles',
+          'Cotisations AVS/AI 10.6% dues',
+          'Inscription commerce selon ampleur'
+        ],
+        example: 'Un mineur recevant 0.1 Bitcoin à 50\'000 CHF déclare 5\'000 CHF de revenu imposable, moins ses frais d\'électricité et matériel déductibles.'
+      },
+      {
+        id: 'defi-nft',
+        title: 'DeFi et NFT : cas particuliers',
+        content: `La finance décentralisée (DeFi) pose des défis fiscaux complexes. Les revenus de liquidity providing, yield farming, lending sont généralement imposables comme revenus de capitaux mobiliers au moment de leur réalisation.
+
+Les airdrops gratuits ne génèrent pas de revenu imposable à réception si aucune contrepartie n'est fournie. Cependant, ils augmentent la fortune imposable et leur vente ultérieure peut générer des gains.
+
+Les NFT (tokens non fongibles) suivent les mêmes règles que les autres actifs numériques : fortune imposable, gains privés exonérés sauf trading professionnel. La création et vente régulière de NFT constitue une activité commerciale.
+
+L'échange de cryptomonnaies (crypto-to-crypto) n'est généralement pas imposable si fait dans le cadre de la gestion de fortune privée. Cependant, il faut tenir compte de la valeur pour le calcul de la fortune.`,
+        keyPoints: [
+          'DeFi : revenus à réalisation',
+          'Airdrops : pas de revenu si gratuit',
+          'NFT : mêmes règles actifs numériques',
+          'Échanges crypto privés non imposables',
+          'Création NFT régulière = commercial'
+        ],
+        warning: 'La frontière entre activité privée et commerciale est parfois floue. En cas de doute, l\'administration fiscale peut requalifier l\'activité rétroactivement.'
+      }
+    ],
+    keywords: ['cryptomonnaies', 'Bitcoin', 'mining', 'staking', 'DeFi', 'NFT'],
+    relatedConcepts: [
+      { slug: 'impot-fortune-personnes-physiques', title: 'Impôt sur la fortune' },
+      { slug: 'statut-independant-criteres', title: 'Statut indépendant' }
+    ],
+    legalReferences: [
+      { title: 'AFC - Cryptomonnaies', url: 'https://www.estv.admin.ch/estv/fr/home/privatpersonen/steuern/digitale-waehrungen.html' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  {
+    slug: 'optimisation-troisieme-pilier',
+    title: 'Optimisation du 3e pilier A',
+    description: 'Stratégies avancées pour maximiser les avantages fiscaux du 3e pilier : versements, retraits et planification',
+    category: 'Analyses et optimisation', 
+    subcategory: 'Optimisation 3e pilier',
+    content: '',
+    sections: [
+      {
+        id: 'versements-optimaux',
+        title: 'Stratégies de versements optimaux',
+        content: `Le versement au 3e pilier A doit être effectué avant le 31 décembre pour être déductible dans l'année fiscale. Cette règle stricte impose une planification précise, particulièrement pour optimiser les années à hauts revenus.
+
+L'étalement des versements peut être stratégique : plutôt que de verser le maximum chaque année, concentrer les versements les années à taux marginal élevé maximise l'économie fiscale. Cela nécessite une vision pluriannuelle des revenus.
+
+Les rachats de lacunes dans le 3e pilier permettent de rattraper les années où le maximum n'a pas été versé. Ces rachats sont possibles rétroactivement et peuvent créer des déductions substantielles les années de revenus exceptionnels.
+
+Le timing en fin d'année est crucial : un versement le 2 janvier ne peut plus être rattaché à l'année précédente. Les virements doivent être effectués et comptabilisés avant le 31 décembre par l'institution de prévoyance.`,
+        keyPoints: [
+          'Versement avant 31 décembre obligatoire',
+          'Concentration années hauts revenus optimal',
+          'Rachats lacunes rétroactifs possibles',
+          'Timing fin année crucial',
+          'Vision pluriannuelle nécessaire'
+        ],
+        example: 'Un cadre anticipant un bonus important en décembre peut verser 14\'000 CHF au 3e pilier (année courante + année suivante) pour optimiser ses déductions sur l\'année du bonus.'
+      },
+      {
+        id: 'retraits-echelonnes',
+        title: 'Optimisation des retraits échelonnés',
+        content: `Le retrait du 3e pilier A est imposé séparément des autres revenus, évitant l'effet de la progressivité. L'échelonnement des retraits sur plusieurs années peut réduire significativement la charge fiscale totale.
+
+Les retraits sont possibles 5 ans avant l'âge AVS, permettant un étalement sur 6 années (60-65 ans). Chaque retrait partiel est imposé selon le barème de l'imposition séparée, généralement plus avantageux.
+
+Les conjoints peuvent échelonner leurs retraits de manière coordonnée, doublant les possibilités d'optimisation. Une planification commune permet de lisser les revenus imposables sur la période de retraite.
+
+Le choix du canton de domicile au moment du retrait influence l'imposition. Certains cantons ont des barèmes très favorables pour l'imposition séparée des prestations de prévoyance.`,
+        keyPoints: [
+          'Imposition séparée évite progressivité',
+          'Étalement possible 5 ans avant AVS',
+          'Coordination retraits entre conjoints',
+          'Canton domicile influence imposition',
+          'Barèmes séparés souvent avantageux'
+        ]
+      },
+      {
+        id: 'retraits-anticipes',
+        title: 'Retraits anticipés stratégiques',
+        content: `Le retrait anticipé pour l'achat immobilier (résidence principale) peut être fiscalement intéressant si le bien est conservé long terme. L'imposition au retrait peut être inférieure à l'économie d'intérêts hypothécaires.
+
+Le passage à l'indépendance permet le retrait anticipé de l'ensemble du 3e pilier. Cette possibilité peut être utilisée stratégiquement lors d'une création d'entreprise, même temporaire.
+
+Le départ définitif de Suisse autorise le retrait complet, souvent avec une imposition réduite. Cette option peut être planifiée dans le cadre d'une stratégie patrimoniale internationale.
+
+L'amortissement indirect via le 3e pilier permet de maintenir les avantages fiscaux tout en réduisant les dettes hypothécaires. Le capital reste placé et fructifie tout en servant de garantie bancaire.`,
+        keyPoints: [
+          'Achat immobilier : analyse coût/bénéfice',
+          'Indépendance permet retrait complet',
+          'Départ Suisse avec imposition réduite',
+          'Amortissement indirect maintient avantages',
+          'Planification stratégique nécessaire'
+        ],
+        warning: 'Le retrait pour l\'achat immobilier crée une dette fiscale latente si le bien est revendu dans les 3 ans ou si la résidence principale change.'
+      }
+    ],
+    keywords: ['3e pilier', 'optimisation', 'versements', 'retraits', 'planification'],
+    relatedConcepts: [
+      { slug: 'deductions-fiscales-principales', title: 'Déductions fiscales' },
+      { slug: 'rentes-avs-lpp-imposition', title: 'Rentes et prévoyance' }
+    ],
+    legalReferences: [
+      { title: 'LPP Art. 60 (3e pilier)', url: 'https://www.fedlex.admin.ch/eli/cc/1983/797_797_797/fr#art_60' }
     ],
     lastUpdated: new Date('2024-01-15')
   },
@@ -1710,6 +1938,481 @@ Les cantons de montagne (Valais, Grisons) offrent souvent des conditions avantag
     ],
     legalReferences: [
       { title: 'Statistiques fiscales AFC', url: 'https://www.estv.admin.ch/' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== TITRES ET VALEURS MOBILIÈRES ==========
+  {
+    slug: 'titres-valeurs-mobilieres',
+    title: 'Fiscalité des titres et valeurs mobilières',
+    description: 'Comprendre l\'imposition des actions, obligations et fonds de placement pour les particuliers',
+    category: 'Patrimoine et investissements',
+    subcategory: 'Titres et valeurs',
+    content: '',
+    sections: [
+      {
+        id: 'types-titres',
+        title: 'Types de titres et classification fiscale',
+        content: `En Suisse, les titres et valeurs mobilières sont considérés comme de la fortune mobilière pour les particuliers. Cette classification détermine leur traitement fiscal.
+
+Les principaux types de titres comprennent :
+- Actions cotées et non cotées
+- Obligations (d'État, d'entreprises, convertibles)
+- Parts de fonds de placement (OPCVM)
+- Produits structurés et dérivés
+- ETF (Exchange Traded Funds)
+- Certificats de participation
+
+La distinction entre gestion de fortune privée et activité commerciale est cruciale pour déterminer le régime fiscal applicable.`,
+        keyPoints: [
+          'Les titres sont considérés comme fortune mobilière chez les particuliers',
+          'La plus-value privée n\'est généralement pas imposable',
+          'Les dividendes et intérêts sont imposables comme revenus',
+          'La limite entre gestion privée et commerciale est déterminante'
+        ],
+        example: 'Un salarié qui détient 100 actions Nestlé : les dividendes reçus sont imposables comme revenus, mais la plus-value de vente n\'est pas imposable (gestion de fortune privée).'
+      },
+      {
+        id: 'revenus-titres',
+        title: 'Imposition des revenus de titres',
+        content: `Les revenus générés par les titres sont imposables selon leur nature :
+
+**Dividendes d'actions suisses :**
+- Imposables à 100% comme revenus
+- Impôt anticipé de 35% prélevé à la source
+- Remboursement possible pour résidents suisses via déclaration
+
+**Dividendes d'actions étrangères :**
+- Imposables selon conventions de double imposition
+- Retenue à la source variable selon pays
+- Possibilité de déduction ou crédit d'impôt
+
+**Intérêts d'obligations :**
+- Imposables à 100% comme revenus
+- Impôt anticipé de 35% sur obligations suisses
+- Calcul prorata temporis pour acquisitions en cours d'année
+
+**Distributions de fonds :**
+- Imposables selon nature (revenus ou remboursements de capital)
+- Distinction importante entre distributions et plus-values reinvesties`,
+        keyPoints: [
+          'Tous les revenus de titres sont imposables (dividendes, intérêts)',
+          'Impôt anticipé de 35% sur titres suisses (remboursable)',
+          'Conventions de double imposition pour titres étrangers',
+          'Calcul prorata temporis pour détentions partielles'
+        ],
+        example: '1000 CHF de dividendes reçus : 350 CHF d\'impôt anticipé prélevé, 1000 CHF déclarés comme revenus, 350 CHF remboursés via déclaration d\'impôts.',
+        warning: 'Ne pas oublier de déclarer les revenus bruts (avant impôt anticipé) et demander le remboursement.'
+      },
+      {
+        id: 'plus-values',
+        title: 'Traitement des plus-values et moins-values',
+        content: `Le traitement fiscal des plus-values dépend du statut de l'investisseur :
+
+**Gestion de fortune privée (règle générale) :**
+- Plus-values non imposables
+- Moins-values non déductibles
+- Critères : détention long terme, pas de recours au crédit, revenus accessoires
+
+**Trading/Activité commerciale :**
+- Plus-values imposables comme revenus d'activité indépendante
+- Moins-values déductibles
+- Critères : transactions fréquentes, détention court terme, effet de levier
+
+**Critères de délimitation (pratique ATF) :**
+- Durée de détention (< 6 mois = suspect)
+- Rapport entre plus-values et fortune/revenus
+- Financement par emprunt
+- Fréquence des transactions
+- Connaissances spécialisées
+
+La qualification est déterminée globalement pour l'ensemble du portefeuille.`,
+        keyPoints: [
+          'Plus-values privées généralement non imposables en Suisse',
+          'Activité commerciale = plus-values imposables',
+          'Critères stricts de délimitation (durée, fréquence, financement)',
+          'Qualification globale du portefeuille'
+        ],
+        example: 'Investisseur détenant 20 actions pendant 2 ans, vendues avec 10\'000 CHF de plus-value : non imposable (gestion privée). Même personne faisant 100 transactions par mois : imposable (activité commerciale).',
+        warning: 'La requalification en activité commerciale impose rétroactivement toutes les plus-values réalisées.'
+      },
+      {
+        id: 'fortune-titres',
+        title: 'Imposition de la fortune en titres',
+        content: `Les titres font partie de la fortune imposable et doivent être déclarés à leur valeur vénale au 31 décembre.
+
+**Évaluation des titres cotés :**
+- Valeur boursière au 31 décembre
+- Cours de clôture du dernier jour de bourse
+- Conversion en CHF au cours officiel
+
+**Évaluation des titres non cotés :**
+- Valeur intrinsèque (actif net)
+- Méthodes d'évaluation reconnues
+- Expertise possible en cas de litige
+
+**Comptes-titres à l'étranger :**
+- Déclaration obligatoire
+- Valeur au 31 décembre en CHF
+- Formulaire spécial "Avoirs à l'étranger"
+
+**Optimisations légales :**
+- Répartition familiale des titres
+- Timing des achats/ventes de fin d'année
+- Structures holding familiales`,
+        keyPoints: [
+          'Valeur vénale au 31 décembre pour l\'impôt sur la fortune',
+          'Cours officiel pour titres cotés',
+          'Déclaration obligatoire des comptes étrangers',
+          'Possibilités d\'optimisation légale'
+        ],
+        example: 'Portefeuille de 500\'000 CHF au 31.12 : imposable à la fortune. Si détenu à 50/50 par époux : 250\'000 CHF chacun (optimisation).',
+        warning: 'L\'omission de déclarer des comptes-titres à l\'étranger constitue une soustraction d\'impôt.'
+      }
+    ],
+    keywords: ['titres', 'actions', 'obligations', 'fonds', 'plus-values', 'dividendes', 'fortune mobilière'],
+    relatedConcepts: [
+      { slug: 'impot-fortune-personnes-physiques', title: 'Impôt sur la fortune' },
+      { slug: 'fiscalite-cryptomonnaies-suisse', title: 'Fiscalité des cryptomonnaies' },
+      { slug: 'statut-independant-criteres', title: 'Statut indépendant' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 16 - Revenus mobiliers', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_16' },
+      { title: 'LHID Art. 7 - Revenus mobiliers', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1256_1256_1256/fr#art_7' },
+      { title: 'Circulaire AFC 36 - Délimitation', url: 'https://www.estv.admin.ch/estv/fr/accueil/impot-federal-direct/documentation/publications.html' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== CONVENTIONS DOUBLE IMPOSITION ==========
+  {
+    slug: 'conventions-double-imposition',
+    title: 'Conventions de double imposition (CDI)',
+    description: 'Comprendre les accords fiscaux internationaux et éviter la double taxation',
+    category: 'Fiscalité internationale',
+    subcategory: 'Conventions internationales',
+    content: '',
+    sections: [
+      {
+        id: 'principe-cdi',
+        title: 'Principe et objectifs des CDI',
+        content: `Les Conventions de Double Imposition (CDI) sont des accords bilatéraux conclus entre la Suisse et d'autres États pour éviter que les mêmes revenus soient imposés dans les deux pays.
+
+**Objectifs principaux :**
+- Éliminer la double imposition juridique
+- Prévenir la fraude et l'évasion fiscales
+- Favoriser les échanges économiques
+- Créer la sécurité juridique pour les contribuables
+
+**Mécanismes d'élimination :**
+- Méthode de l'exemption (revenus exemptés dans un État)
+- Méthode de l'imputation (crédit d'impôt pour impôt étranger)
+- Répartition du droit d'imposer entre États
+
+La Suisse a conclu plus de 100 CDI avec différents pays, basées sur le modèle OCDE.`,
+        keyPoints: [
+          'Plus de 100 CDI conclues par la Suisse',
+          'Basées sur le modèle OCDE',
+          'Deux méthodes principales : exemption et imputation',
+          'Sécurité juridique pour les contribuables'
+        ],
+        example: 'Un frontalier travaillant en Suisse et résidant en France : la CDI Suisse-France détermine que seule la Suisse impose le salaire, la France l\'exempte.'
+      },
+      {
+        id: 'champ-application',
+        title: 'Champ d\'application et personnes concernées',
+        content: `Les CDI s'appliquent aux personnes physiques et morales résidentes d'un ou des deux États contractants.
+
+**Personnes visées :**
+- Résidents fiscaux d'un État contractant
+- Parfois les nationaux (selon convention)
+- Entreprises ayant siège effectif dans un État
+
+**Impôts couverts :**
+- Impôts sur le revenu et la fortune
+- Parfois droits de succession
+- Exclusion généralement de la TVA et impôts indirects
+
+**Détermination de la résidence fiscale :**
+1. Domicile/séjour selon droit interne
+2. Centre des intérêts vitaux (famille, économiques)
+3. Séjour habituel
+4. Nationalité (critère subsidiaire)
+
+**Établissement stable :**
+Concept clé pour l'imposition des entreprises dans l'autre État contractant.`,
+        keyPoints: [
+          'Résidence fiscale = critère principal d\'application',
+          'Impôts directs couverts (revenus, fortune)',
+          'Procédure de départage pour double résidence',
+          'Concept d\'établissement stable pour entreprises'
+        ],
+        example: 'Cadre suisse travaillant 6 mois par an à Singapour : la CDI détermine s\'il reste résident fiscal suisse ou devient résident singapourien.',
+        warning: 'La résidence selon le droit interne peut différer de celle selon la CDI.'
+      },
+      {
+        id: 'types-revenus',
+        title: 'Répartition par types de revenus',
+        content: `Chaque CDI répartit le droit d'imposer selon le type de revenu :
+
+**Revenus d'activité dépendante (Art. 15) :**
+- Principe : imposition dans l'État de l'activité
+- Exception : < 183 jours + employeur non-résident + charges non déductibles
+
+**Revenus d'activité indépendante (Art. 14) :**
+- Imposition dans l'État d'exercice (établissement stable)
+- Professions libérales : base fixe
+
+**Revenus immobiliers (Art. 6) :**
+- Imposition dans l'État de situation de l'immeuble
+- Inclut revenus locatifs et gains immobiliers
+
+**Dividendes (Art. 10) :**
+- Imposition dans l'État de résidence du bénéficiaire
+- Retenue à la source limitée dans l'État de la source (5-15%)
+
+**Intérêts (Art. 11) :**
+- Principe : imposition dans l'État de résidence
+- Parfois retenue à la source limitée
+
+**Redevances (Art. 12) :**
+- Imposition dans l'État de résidence du bénéficiaire`,
+        keyPoints: [
+          'Chaque type de revenu a sa règle spécifique',
+          'Activité salariée : règle des 183 jours',
+          'Immobilier : imposition dans l\'État de situation',
+          'Revenus mobiliers : généralement État de résidence'
+        ],
+        example: 'Dividendes d\'une SA française reçus par un résident suisse : 5% de retenue en France, imputation en Suisse.',
+        warning: 'Les seuils et taux varient selon chaque CDI spécifique.'
+      },
+      {
+        id: 'procedures',
+        title: 'Procédures et mise en œuvre',
+        content: `L'application des CDI nécessite des procédures spécifiques :
+
+**Certificat de résidence fiscale :**
+- Délivré par l'administration fiscale de résidence
+- Obligatoire pour bénéficier de la CDI
+- Formulaire standardisé selon pays
+
+**Demande de remboursement :**
+- Retenues à la source excédentaires
+- Délais de prescription variables (2-4 ans)
+- Formulaires spécifiques par pays
+
+**Procédure amiable (Art. 25) :**
+- Résolution des conflits entre administrations
+- Recours en cas de double imposition persistante
+- Délai généralement 3 ans
+
+**Échange de renseignements :**
+- Automatique ou sur demande
+- Standard CRS (Common Reporting Standard)
+- Lutte contre l'évasion fiscale
+
+**Clause anti-abus :**
+- Prévention de l'usage abusif des CDI
+- Test du but principal (Principal Purpose Test)
+- Substance économique requise`,
+        keyPoints: [
+          'Certificat de résidence obligatoire',
+          'Procédures de remboursement spécifiques',
+          'Recours possible via procédure amiable',
+          'Clauses anti-abus renforcées'
+        ],
+        example: 'Retenue de 25% sur dividendes allemands au lieu de 5% prévu par CDI : demande de remboursement avec certificat de résidence suisse.',
+        warning: 'Respecter les délais de demande de remboursement sous peine de perte définitive.'
+      }
+    ],
+    keywords: ['cdi', 'double imposition', 'convention fiscale', 'résidence fiscale', 'retenue source'],
+    relatedConcepts: [
+      { slug: 'frontaliers-imposition', title: 'Fiscalité des frontaliers' },
+      { slug: 'titres-valeurs-mobilieres', title: 'Titres et valeurs mobilières' }
+    ],
+    legalReferences: [
+      { title: 'Liste des CDI de la Suisse', url: 'https://www.sif.admin.ch/sif/fr/home/multilateral-relations/accords-fiscaux.html' },
+      { title: 'Modèle OCDE 2017', url: 'https://www.oecd.org/tax/treaties/model-tax-convention-on-income-and-on-capital-condensed-version-20745419.htm' },
+      { title: 'Procédure amiable', url: 'https://www.estv.admin.ch/estv/fr/accueil/impot-federal-direct/procedures-amiables.html' }
+    ],
+    lastUpdated: new Date('2024-01-15')
+  },
+
+  // ========== DOCUMENTS NÉCESSAIRES ==========
+  {
+    slug: 'documents-necessaires-declaration',
+    title: 'Documents nécessaires pour la déclaration d\'impôts',
+    description: 'Liste complète des documents et justificatifs requis pour remplir sa déclaration fiscale',
+    category: 'Déclaration et processus',
+    subcategory: 'Documents et justificatifs',
+    content: '',
+    sections: [
+      {
+        id: 'documents-revenus',
+        title: 'Documents relatifs aux revenus',
+        content: `Pour déclarer correctement vos revenus, plusieurs documents sont indispensables :
+
+**Revenus salariés :**
+- Certificat de salaire (obligatoire)
+- Décomptes de salaire de décembre
+- Certificats de remplacement du revenu (chômage, maladie, accident)
+- Attestations de préretraite ou rentes-pont
+
+**Revenus indépendants :**
+- Comptes annuels (bilan, compte de résultat)
+- Attestation TVA si assujetti
+- Justificatifs des charges déductibles
+- Contrats de mandat ou prestations
+
+**Revenus de capitaux :**
+- Attestations bancaires (intérêts, dividendes)
+- Relevés de comptes-titres au 31 décembre
+- Avis d'imposition de l'impôt anticipé
+- Certificats étrangers pour titres internationaux
+
+**Autres revenus :**
+- Attestations AVS/AI/LPP pour rentes
+- Contrats de rente viagère
+- Revenus locatifs (décomptes de charges)`,
+        keyPoints: [
+          'Certificat de salaire = document principal pour salariés',
+          'Comptes annuels obligatoires pour indépendants',
+          'Attestations bancaires pour revenus de capitaux',
+          'Conserver tous les justificatifs pendant 10 ans'
+        ],
+        example: 'Salarié avec épargne : certificat de salaire + attestation bancaire des intérêts reçus + relevé de compte-titres.',
+        warning: 'L\'absence de certificat de salaire peut entraîner une taxation d\'office majorée.'
+      },
+      {
+        id: 'documents-deductions',
+        title: 'Justificatifs pour déductions',
+        content: `Les déductions doivent être justifiées par des documents probants :
+
+**Frais professionnels :**
+- Abonnements de transport (attestation)
+- Frais de repas (justificatifs restaurants, cantines)
+- Formation et perfectionnement (factures, attestations)
+- Vêtements professionnels spéciaux
+- Outillage et équipement professionnel
+
+**Assurances et prévoyance :**
+- Polices d'assurance maladie obligatoire
+- Attestations 3e pilier A et B
+- Primes d'assurance-vie et invalidité
+- Cotisations syndicales
+
+**Frais médicaux et dentaires :**
+- Factures médecins, dentistes, hôpitaux
+- Factures pharmacies (médicaments prescrits)
+- Lunettes et appareils auditifs (prescriptions)
+- Frais de transport médical
+
+**Intérêts débiteurs :**
+- Attestations bancaires d'intérêts hypothécaires
+- Relevés de prêts et crédits privés
+- Contrats de crédit avec détail des intérêts`,
+        keyPoints: [
+          'Toute déduction doit être justifiée par un document',
+          'Conserver factures et attestations originales',
+          'Intérêts hypothécaires : attestation bancaire obligatoire',
+          'Frais médicaux : uniquement sur prescription'
+        ],
+        example: 'Déduction de 5000 CHF de frais médicaux : nécessite factures détaillées + prescriptions médicales.',
+        warning: 'Les déductions non justifiées sont systématiquement refusées lors de contrôles.'
+      },
+      {
+        id: 'documents-fortune',
+        title: 'Inventaire de la fortune',
+        content: `La déclaration de fortune nécessite un inventaire complet au 31 décembre :
+
+**Comptes bancaires :**
+- Relevés de tous les comptes au 31.12
+- Comptes courants, épargne, placement
+- Comptes à l'étranger (déclaration spéciale)
+
+**Titres et valeurs :**
+- Relevés de dépôts au 31.12
+- Valorisation des titres non cotés
+- Participations dans sociétés non cotées
+- Créances privées et prêts consentis
+
+**Biens immobiliers :**
+- Estimation officielle ou valeur d'achat
+- Factures de rénovations importantes
+- Contrats d'achat et actes notariés
+- Parts de copropriété
+
+**Autres actifs :**
+- Véhicules (permis de circulation)
+- Objets de valeur, collections
+- Bijoux et métaux précieux
+- Polices d'assurance-vie (valeur rachat)
+
+**Dettes déductibles :**
+- Attestations de dettes hypothécaires
+- Relevés de crédits bancaires
+- Dettes privées documentées`,
+        keyPoints: [
+          'Inventaire complet au 31 décembre obligatoire',
+          'Valorisation à la valeur vénale',
+          'Comptes étrangers : déclaration spéciale',
+          'Dettes déductibles uniquement si documentées'
+        ],
+        example: 'Fortune immobilière de 800\'000 CHF - hypothèque de 400\'000 CHF = 400\'000 CHF de fortune nette imposable.',
+        warning: 'L\'omission d\'éléments de fortune constitue une soustraction d\'impôt.'
+      },
+      {
+        id: 'organisation-documents',
+        title: 'Organisation et conservation',
+        content: `Une bonne organisation des documents facilite la déclaration et les contrôles :
+
+**Classement recommandé :**
+- Dossier par année fiscale
+- Sous-dossiers par catégorie (revenus, déductions, fortune)
+- Classement chronologique dans chaque catégorie
+- Copies de sauvegarde importantes
+
+**Conservation obligatoire :**
+- Durée : 10 ans minimum
+- Originaux requis pour justificatifs
+- Copies acceptées pour information
+- Format numérique autorisé si lisible
+
+**Préparation de la déclaration :**
+- Check-list des documents nécessaires
+- Vérification de la complétude
+- Calculs préparatoires
+- Comparaison avec année précédente
+
+**Transmission à l'administration :**
+- Déclaration signée et datée
+- Annexes obligatoires jointes
+- Copie de sauvegarde conservée
+- Accusé de réception demandé
+
+**Réponse aux demandes :**
+- Délai de 30 jours généralement
+- Documents complémentaires si requis
+- Explications écrites si nécessaire`,
+        keyPoints: [
+          'Conservation 10 ans minimum obligatoire',
+          'Classement systématique recommandé',
+          'Originaux requis pour justificatifs',
+          'Préparation méthodique de la déclaration'
+        ],
+        example: 'Contrôle fiscal de l\'année 2020 en 2024 : tous les documents 2020 doivent être disponibles.',
+        warning: 'L\'impossibilité de fournir les justificatifs peut entraîner un refus des déductions.'
+      }
+    ],
+    keywords: ['documents', 'justificatifs', 'déclaration', 'certificat salaire', 'conservation'],
+    relatedConcepts: [
+      { slug: 'declaration-impots-delais', title: 'Délais et procédures' },
+      { slug: 'deductions-fiscales-principales', title: 'Déductions fiscales' }
+    ],
+    legalReferences: [
+      { title: 'LIFD Art. 127 - Obligation de renseigner', url: 'https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr#art_127' },
+      { title: 'OAF - Ordonnance sur l\'assistance administrative', url: 'https://www.fedlex.admin.ch/eli/cc/2007/686/fr' }
     ],
     lastUpdated: new Date('2024-01-15')
   }

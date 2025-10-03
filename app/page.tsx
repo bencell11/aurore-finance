@@ -26,6 +26,8 @@ import {
   ArrowRight,
   Shield,
   FileText,
+  Menu,
+  X,
 } from "lucide-react";
 import { AdminNavLink } from "@/components/navigation/AdminNavLink";
 
@@ -36,6 +38,7 @@ export default function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [showAccessMessage, setShowAccessMessage] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Vérifier si l'utilisateur vient d'une redirection d'accès restreint
   useEffect(() => {
@@ -150,38 +153,64 @@ export default function HomePage() {
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-              <Calculator className="h-5 w-5 text-white" />
+        <div className="px-4 py-3 flex items-center justify-between">
+          {/* Logo ET Admin Button ensemble */}
+          <div className="flex items-center gap-3 flex-1">
+            <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <Calculator className="h-4 w-4 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-lg font-bold text-gray-900">
               Aurore Finances
             </span>
+            {/* Admin Button juste après le logo */}
+            <a
+              href="/admin/login-simple"
+              className="ml-auto bg-red-600 text-white px-3 py-1.5 rounded font-bold text-sm"
+            >
+              ADMIN
+            </a>
           </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <a
-              href="/mentions-legales"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Mentions légales
-            </a>
-            <a
-              href="/confidentialite"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Confidentialité
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Contact
-            </a>
-            <AdminNavLink />
-          </nav>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-100 bg-white">
+            <nav className="container mx-auto px-6 py-4 flex flex-col gap-3">
+              <a
+                href="/mentions-legales"
+                className="text-gray-600 hover:text-blue-600 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Mentions légales
+              </a>
+              <a
+                href="/confidentialite"
+                className="text-gray-600 hover:text-blue-600 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Confidentialité
+              </a>
+              <a
+                href="/contact"
+                className="text-gray-600 hover:text-blue-600 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </a>
+            </nav>
+          </div>
+        )}
       </header>
+
+      {/* Gros bouton Admin sur mobile uniquement */}
+      <div className="md:hidden bg-yellow-400 p-2">
+        <a
+          href="/admin/login-simple"
+          className="block text-center bg-black text-white py-3 font-bold text-lg rounded"
+        >
+          CLIQUEZ ICI POUR ADMIN
+        </a>
+      </div>
 
       {/* Hero Section */}
       <section className="py-20 px-6">

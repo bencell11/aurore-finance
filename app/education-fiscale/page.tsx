@@ -85,7 +85,7 @@ const thematiques = [
       { id: 'formes-juridiques', titre: 'Formes juridiques', articles: 1, slug: 'formes-juridiques-entreprises' },
       { id: 'tva', titre: 'TVA', articles: 1, slug: 'tva-assujettissement-entreprises' },
       { id: 'benefices', titre: 'Imposition du bénéfice', articles: 1, slug: 'imposition-benefice-entreprises' },
-      { id: 'dirigeant', titre: 'Rémunération dirigeant', articles: 0, slug: null }
+      { id: 'dirigeant', titre: 'Rémunération dirigeant', articles: 1, slug: 'remuneration-dirigeant-entreprises' }
     ]
   },
   {
@@ -95,8 +95,8 @@ const thematiques = [
     description: 'Optimiser votre patrimoine',
     sousThemes: [
       { id: 'immobilier', titre: 'Biens immobiliers', articles: 1, slug: 'valeur-locative-residence' },
-      { id: 'titres', titre: 'Titres et valeurs', articles: 0, slug: null },
-      { id: 'crypto', titre: 'Cryptomonnaies', articles: 0, slug: null },
+      { id: 'titres', titre: 'Titres et valeurs', articles: 1, slug: 'titres-valeurs-mobilieres' },
+      { id: 'crypto', titre: 'Cryptomonnaies', articles: 1, slug: 'fiscalite-cryptomonnaies-suisse' },
       { id: 'prevoyance', titre: 'Prévoyance (2e/3e pilier)', articles: 0, slug: null },
       { id: 'luxe', titre: 'Biens de luxe', articles: 0, slug: null }
     ]
@@ -108,7 +108,7 @@ const thematiques = [
     description: 'Frontaliers et expatriés',
     sousThemes: [
       { id: 'frontaliers', titre: 'Frontaliers', articles: 1, slug: 'frontaliers-imposition' },
-      { id: 'cdi', titre: 'Conventions double imposition', articles: 0, slug: null },
+      { id: 'cdi', titre: 'Conventions double imposition', articles: 1, slug: 'conventions-double-imposition' },
       { id: 'expatries', titre: 'Expatriés/Impatriés', articles: 0, slug: null },
       { id: 'comptes-etrangers', titre: 'Comptes étrangers', articles: 0, slug: null }
     ]
@@ -120,7 +120,7 @@ const thematiques = [
     description: 'Remplir sa déclaration',
     sousThemes: [
       { id: 'declaration', titre: 'Délais et procédures', articles: 1, slug: 'declaration-impots-delais' },
-      { id: 'documents', titre: 'Documents nécessaires', articles: 0, slug: null },
+      { id: 'documents', titre: 'Documents nécessaires', articles: 1, slug: 'documents-necessaires-declaration' },
       { id: 'calendrier', titre: 'Calendrier fiscal', articles: 0, slug: null },
       { id: 'taxation', titre: 'Taxation et corrections', articles: 0, slug: null }
     ]
@@ -133,7 +133,7 @@ const thematiques = [
     sousThemes: [
       { id: 'strategies', titre: 'Stratégies d\'optimisation', articles: 1, slug: 'optimisation-fiscale-legale' },
       { id: 'planification', titre: 'Planification annuelle', articles: 0, slug: null },
-      { id: '3e-pilier', titre: 'Optimisation 3e pilier', articles: 0, slug: null },
+      { id: '3e-pilier', titre: 'Optimisation 3e pilier', articles: 1, slug: 'optimisation-troisieme-pilier' },
       { id: 'succession', titre: 'Planification successorale', articles: 0, slug: null }
     ]
   },
@@ -311,23 +311,36 @@ function ArticleDisplay({ slug }: { slug: string }) {
   return (
     <div className="space-y-6">
       {/* En-tête article */}
-      <div className="border-b pb-4">
+      <div className="border-b border-gradient-to-r from-blue-200 to-purple-200 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <Badge variant="secondary">{article.category}</Badge>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Clock className="h-4 w-4" />
-            <span>5 min</span>
+          <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border-0">
+            {article.category}
+          </Badge>
+          <div className="flex items-center gap-3 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4" />
+              <span>5 min</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Eye className="h-4 w-4" />
+              <span>{article.views || 0}</span>
+            </div>
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">{article.title}</h2>
-        <p className="text-gray-600">{article.description}</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          {article.title}
+        </h2>
+        <p className="text-gray-600 text-base leading-relaxed">{article.description}</p>
       </div>
 
       {/* Contenu article */}
       <div className="space-y-6">
         {article.sections.map((section, idx) => (
-          <div key={idx} className="space-y-4">
-            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <div key={idx} className="space-y-4 bg-white rounded-lg p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                {idx + 1}
+              </div>
               <Hash className="h-5 w-5 text-blue-600" />
               {section.title}
             </h3>
@@ -345,16 +358,20 @@ function ArticleDisplay({ slug }: { slug: string }) {
 
             {/* Points clés */}
             {section.keyPoints && (
-              <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <Lightbulb className="h-4 w-4 text-blue-600" />
+              <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 shadow-sm">
+                <h4 className="font-semibold mb-3 flex items-center gap-2 text-blue-800">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Lightbulb className="h-4 w-4 text-blue-600" />
+                  </div>
                   Points clés à retenir
                 </h4>
-                <ul className="space-y-1">
+                <ul className="space-y-2">
                   {section.keyPoints.map((point, kIdx) => (
-                    <li key={kIdx} className="flex items-start gap-2 text-sm">
-                      <ChevronRight className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span>{point}</span>
+                    <li key={kIdx} className="flex items-start gap-3 text-sm bg-white rounded-md p-2 shadow-sm">
+                      <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <ChevronRight className="h-3 w-3 text-blue-600" />
+                      </div>
+                      <span className="text-gray-700">{point}</span>
                     </li>
                   ))}
                 </ul>
@@ -363,23 +380,31 @@ function ArticleDisplay({ slug }: { slug: string }) {
 
             {/* Exemple pratique */}
             {section.example && (
-              <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-green-600" />
+              <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 shadow-sm">
+                <h4 className="font-semibold mb-3 flex items-center gap-2 text-green-800">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                    <TrendingUp className="h-4 w-4 text-green-600" />
+                  </div>
                   Exemple pratique
                 </h4>
-                <p className="text-sm text-gray-700">{section.example}</p>
+                <div className="bg-white rounded-md p-3 shadow-sm">
+                  <p className="text-sm text-gray-700 leading-relaxed">{section.example}</p>
+                </div>
               </div>
             )}
 
             {/* Avertissement */}
             {section.warning && (
-              <div className="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-yellow-600" />
+              <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200 shadow-sm">
+                <h4 className="font-semibold mb-3 flex items-center gap-2 text-yellow-800">
+                  <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <AlertCircle className="h-4 w-4 text-yellow-600" />
+                  </div>
                   Attention
                 </h4>
-                <p className="text-sm text-gray-700">{section.warning}</p>
+                <div className="bg-white rounded-md p-3 shadow-sm border-l-4 border-yellow-400">
+                  <p className="text-sm text-gray-700 leading-relaxed">{section.warning}</p>
+                </div>
               </div>
             )}
           </div>
@@ -500,36 +525,68 @@ export default function EducationFiscalePage() {
                     </CardHeader>
                     <CardContent className="p-0">
                       <div className="space-y-0">
-                        {theme.sousThemes.map((sousTheme: any) => (
+                        {theme.sousThemes.map((sousTheme: any, index: number) => (
                           <Collapsible key={sousTheme.id}>
                             <CollapsibleTrigger asChild>
-                              <div className="w-full p-4 text-left hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors">
+                              <div className="w-full p-4 text-left hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 border-b border-gray-100 cursor-pointer transition-all duration-200 group">
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-3">
-                                    <ChevronRight className="h-4 w-4 text-gray-400 transition-transform group-data-[state=open]:rotate-90" />
-                                    <span className="font-medium">{sousTheme.titre}</span>
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center text-xs font-bold text-blue-600">
+                                        {index + 1}
+                                      </div>
+                                      <ChevronRight className="h-4 w-4 text-gray-400 transition-transform group-data-[state=open]:rotate-90" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                      <span className="font-medium text-gray-900 group-hover:text-blue-700 transition-colors">{sousTheme.titre}</span>
+                                      {sousTheme.articles > 0 && (
+                                        <span className="text-xs text-gray-500 mt-0.5">Cliquez pour lire l'article complet</span>
+                                      )}
+                                    </div>
                                   </div>
                                   <div className="flex items-center gap-2">
                                     {sousTheme.articles > 0 ? (
-                                      <Badge variant="default">
-                                        {sousTheme.articles} article{sousTheme.articles > 1 ? 's' : ''}
-                                      </Badge>
+                                      <div className="flex items-center gap-2">
+                                        <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-200">
+                                          <BookOpen className="h-3 w-3 mr-1" />
+                                          {sousTheme.articles} article{sousTheme.articles > 1 ? 's' : ''}
+                                        </Badge>
+                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                      </div>
                                     ) : (
-                                      <Badge variant="secondary">Bientôt disponible</Badge>
+                                      <div className="flex items-center gap-2">
+                                        <Badge variant="secondary" className="bg-gray-100 text-gray-600">
+                                          <Clock className="h-3 w-3 mr-1" />
+                                          Bientôt disponible
+                                        </Badge>
+                                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                      </div>
                                     )}
                                   </div>
                                 </div>
                               </div>
                             </CollapsibleTrigger>
                             <CollapsibleContent>
-                              <div className="p-6 bg-gray-50">
+                              <div className="p-0">
                                 {sousTheme.slug ? (
-                                  <ArticleDisplay slug={sousTheme.slug} />
+                                  <div className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 border-t border-blue-100">
+                                    <div className="p-6">
+                                      <ArticleDisplay slug={sousTheme.slug} />
+                                    </div>
+                                  </div>
                                 ) : (
-                                  <div className="text-center py-8 text-gray-500">
-                                    <BookOpen className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                                    <p className="text-lg font-medium">Article en préparation</p>
-                                    <p className="text-sm">Ce contenu sera bientôt disponible</p>
+                                  <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100">
+                                    <div className="max-w-md mx-auto">
+                                      <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center">
+                                        <BookOpen className="h-8 w-8 text-gray-500" />
+                                      </div>
+                                      <h3 className="text-lg font-semibold text-gray-700 mb-2">Article en préparation</h3>
+                                      <p className="text-sm text-gray-600 mb-4">Ce contenu sera bientôt disponible dans notre centre d'éducation fiscale</p>
+                                      <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                                        <Clock className="h-3 w-3" />
+                                        <span>En cours de rédaction</span>
+                                      </div>
+                                    </div>
                                   </div>
                                 )}
                               </div>
