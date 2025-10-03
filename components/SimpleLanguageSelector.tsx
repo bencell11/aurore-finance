@@ -81,6 +81,15 @@ const translations = {
     articles: 'articles',
     keyPointsTitle: 'Points clés à retenir',
     practicalExample: 'Exemple pratique',
+    // Titres des articles
+    swissTaxSystem: 'Système fiscal suisse',
+    legalBases: 'Bases légales',
+    taxationPrinciples: 'Principes d\'imposition',
+    typesOfTaxes: 'Types d\'impôts',
+    taxableIncome: 'Salaires et revenus',
+    taxDeductions: 'Déductions fiscales',
+    wealthTax: 'Impôt sur la fortune',
+    taxableIncomeEmployees: 'Revenus imposables salariés',
   },
   de: {
     admin: 'Admin',
@@ -136,6 +145,15 @@ const translations = {
     articles: 'Artikel',
     keyPointsTitle: 'Wichtige Punkte zum Merken',
     practicalExample: 'Praktisches Beispiel',
+    // Titres des articles
+    swissTaxSystem: 'Schweizer Steuersystem',
+    legalBases: 'Rechtsgrundlagen',
+    taxationPrinciples: 'Besteuerungsprinzipien',
+    typesOfTaxes: 'Steuerarten',
+    taxableIncome: 'Löhne und Einkommen',
+    taxDeductions: 'Steuerabzüge',
+    wealthTax: 'Vermögenssteuer',
+    taxableIncomeEmployees: 'Steuerpflichtiges Einkommen Angestellte',
   },
   it: {
     admin: 'Admin',
@@ -191,6 +209,15 @@ const translations = {
     articles: 'articoli',
     keyPointsTitle: 'Punti chiave da ricordare',
     practicalExample: 'Esempio pratico',
+    // Titres des articles
+    swissTaxSystem: 'Sistema fiscale svizzero',
+    legalBases: 'Basi legali',
+    taxationPrinciples: 'Principi di tassazione',
+    typesOfTaxes: 'Tipi di tasse',
+    taxableIncome: 'Salari e redditi',
+    taxDeductions: 'Detrazioni fiscali',
+    wealthTax: 'Imposta sul patrimonio',
+    taxableIncomeEmployees: 'Reddito imponibile dipendenti',
   },
   en: {
     admin: 'Admin',
@@ -246,6 +273,15 @@ const translations = {
     articles: 'articles',
     keyPointsTitle: 'Key points to remember',
     practicalExample: 'Practical example',
+    // Titres des articles
+    swissTaxSystem: 'Swiss tax system',
+    legalBases: 'Legal bases',
+    taxationPrinciples: 'Taxation principles',
+    typesOfTaxes: 'Types of taxes',
+    taxableIncome: 'Wages and income',
+    taxDeductions: 'Tax deductions',
+    wealthTax: 'Wealth tax',
+    taxableIncomeEmployees: 'Taxable income employees',
   },
 };
 
@@ -262,8 +298,19 @@ export function SimpleLanguageSelector() {
       setCurrentLocale(validLocale.code);
     }
 
+    // Écouter les changements de langue
+    const handleLanguageChangeEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const newLocale = customEvent.detail as Locale;
+      setCurrentLocale(newLocale);
+    };
+
+    window.addEventListener('languageChange', handleLanguageChangeEvent);
+    
     // Émettre un événement personnalisé quand la langue change
     window.dispatchEvent(new CustomEvent('languageChange', { detail: validLocale?.code || 'fr' }));
+    
+    return () => window.removeEventListener('languageChange', handleLanguageChangeEvent);
   }, []);
 
   const handleLanguageChange = (locale: Locale) => {
@@ -273,9 +320,7 @@ export function SimpleLanguageSelector() {
     // Émettre un événement pour que les autres composants puissent se mettre à jour
     window.dispatchEvent(new CustomEvent('languageChange', { detail: locale }));
     
-    // Recharger la page pour appliquer les traductions (solution temporaire)
-    // Dans une vraie app, on utiliserait un contexte ou un state manager
-    window.location.reload();
+    // Pas de rechargement - les composants se mettront à jour automatiquement
   };
 
   const currentLanguage = languages.find(l => l.code === currentLocale);
@@ -313,12 +358,15 @@ export function useTranslation() {
   const [locale, setLocale] = useState<Locale>('fr');
   
   useEffect(() => {
+    // Initialiser avec la langue sauvegardée
     const savedLocale = (localStorage.getItem('locale') as Locale) || 'fr';
     setLocale(savedLocale);
     
+    // Écouter les changements de langue
     const handleLanguageChange = (e: Event) => {
       const customEvent = e as CustomEvent;
-      setLocale(customEvent.detail as Locale);
+      const newLocale = customEvent.detail as Locale;
+      setLocale(newLocale);
     };
     
     window.addEventListener('languageChange', handleLanguageChange);

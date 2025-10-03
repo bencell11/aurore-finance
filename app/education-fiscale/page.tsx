@@ -55,10 +55,10 @@ const getTranslatedThematiques = (t: any) => [
     icon: Book,
     description: t.introToTaxDesc,
     sousThemes: [
-      { id: 'systeme', titre: 'Système fiscal suisse', articles: 1, slug: 'systeme-fiscal-suisse' },
-      { id: 'bases-legales', titre: 'Bases légales', articles: 1, slug: 'bases-legales-fiscalite' },
-      { id: 'principes', titre: 'Principes d\'imposition', articles: 1, slug: 'principes-imposition' },
-      { id: 'types-impots', titre: 'Types d\'impôts', articles: 1, slug: 'types-impots' },
+      { id: 'systeme', titre: t.swissTaxSystem, articles: 1, slug: 'systeme-fiscal-suisse' },
+      { id: 'bases-legales', titre: t.legalBases, articles: 1, slug: 'bases-legales-fiscalite' },
+      { id: 'principes', titre: t.taxationPrinciples, articles: 1, slug: 'principes-imposition' },
+      { id: 'types-impots', titre: t.typesOfTaxes, articles: 1, slug: 'types-impots' },
       { id: 'domicile', titre: 'Domicile fiscal', articles: 1, slug: 'domicile-fiscal' },
       { id: 'baremes', titre: 'Barèmes et progressivité', articles: 1, slug: 'baremes-progressivite' }
     ]
