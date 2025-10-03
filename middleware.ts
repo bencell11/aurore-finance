@@ -1,6 +1,4 @@
-import createMiddleware from 'next-intl/middleware';
 import { NextResponse, NextRequest } from 'next/server';
-import { locales, defaultLocale } from './i18n';
 
 // Routes protégées (nécessitent un accès admin)
 const PROTECTED_ROUTES = [
@@ -48,13 +46,6 @@ function checkAdminAccess(request: NextRequest): boolean {
   }
 }
 
-// Créer le middleware i18n
-const intlMiddleware = createMiddleware({
-  locales,
-  defaultLocale,
-  localePrefix: 'as-needed' // Cacher /fr mais montrer /de, /it, /en
-});
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
@@ -65,44 +56,30 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  // Extraire le locale du pathname
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
-  
-  // Obtenir le chemin sans locale
-  let pathWithoutLocale = pathname;
-  if (pathnameHasLocale) {
-    const locale = pathname.split('/')[1];
-    pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
-  }
-  
   // Vérifier si c'est une route publique
   const isPublicRoute = PUBLIC_ROUTES.some(route => 
-    pathWithoutLocale === route || pathWithoutLocale.startsWith(route)
+    pathname === route || pathname.startsWith(route)
   );
   
   // Si ce n'est pas une route publique, vérifier l'authentification
   if (!isPublicRoute) {
-    const isProtectedRoute = PROTECTED_ROUTES.some(route => pathWithoutLocale.startsWith(route));
-    const isAdminRoute = ADMIN_ROUTES.some(route => pathWithoutLocale.startsWith(route));
+    const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+    const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
     
     if (isProtectedRoute || isAdminRoute) {
       const hasAdminAccess = checkAdminAccess(request);
       
       if (!hasAdminAccess) {
-        // Rediriger vers la page de login admin avec le locale
-        const locale = pathnameHasLocale ? pathname.split('/')[1] : defaultLocale;
+        // Rediriger vers la page de login admin
         const url = request.nextUrl.clone();
-        url.pathname = locale === defaultLocale ? '/admin/login-simple' : `/${locale}/admin/login-simple`;
+        url.pathname = '/admin/login-simple';
         url.searchParams.set('return', pathname);
         return NextResponse.redirect(url);
       }
     }
   }
   
-  // Appliquer le middleware i18n
-  return intlMiddleware(request);
+  return NextResponse.next();
 }
 
 export const config = {

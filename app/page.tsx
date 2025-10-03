@@ -30,7 +30,7 @@ import {
   X,
 } from "lucide-react";
 import { AdminNavLink } from "@/components/navigation/AdminNavLink";
-import { LanguageSelector } from "@/components/LanguageSelector";
+import { SimpleLanguageSelector } from "@/components/SimpleLanguageSelector";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -167,7 +167,7 @@ export default function HomePage() {
           
           {/* Language Selector et Admin Button */}
           <div className="flex items-center gap-2">
-            <LanguageSelector />
+            <SimpleLanguageSelector />
             <a
               href="/admin/login-simple"
               className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50"
