@@ -1,0 +1,133 @@
+{
+  "common": {
+    "admin": "Admin",
+    "legalNotices": "Mentions légales",
+    "privacy": "Confidentialité",
+    "contact": "Contact",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "email": "Email",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "logout": "Se déconnecter"
+  },
+  "homepage": {
+    "title": "Aurore Finances",
+    "subtitle": "Rejoignez la liste d'attente et soyez parmi les premiers à tester Aurore Finances en version bêta.",
+    "accessRestricted": "Cette fonctionnalité n'est disponible que dans la version complète. Accédez à l'espace admin pour débloquer toutes les fonctionnalités.",
+    "joinWaitlist": "Rejoindre la liste d'attente",
+    "enterEmail": "Entrer votre email",
+    "invalidEmail": "Adresse email invalide",
+    "alreadyRegistered": "Cet email est déjà inscrit sur la liste d'attente",
+    "subscribeSuccess": "Merci ! Vous êtes maintenant sur la liste d'attente.",
+    "peopleWaiting": "{count} personnes dans la liste d'attente",
+    "features": {
+      "title": "Découvrez la Version Complète",
+      "subtitle": "Accédez à tous les outils fiscaux dont vous avez besoin",
+      "calculators": {
+        "title": "Simulateurs Avancés",
+        "description": "Calculez vos impôts, optimisez votre fortune, planifiez votre retraite"
+      },
+      "ai": {
+        "title": "Assistant IA Fiscal",
+        "description": "Obtenez des conseils personnalisés 24/7 pour toutes vos questions fiscales"
+      },
+      "education": {
+        "title": "Centre d'Éducation",
+        "description": "Articles détaillés sur la fiscalité suisse, guides pratiques et formations"
+      },
+      "documents": {
+        "title": "Gestion Documents",
+        "description": "Organisez et préparez votre déclaration d'impôts facilement"
+      }
+    },
+    "whyChoose": {
+      "title": "Pourquoi Choisir Aurore Finances ?",
+      "swiss": {
+        "title": "100% Suisse",
+        "description": "Conçu spécifiquement pour le système fiscal suisse"
+      },
+      "secure": {
+        "title": "Sécurisé",
+        "description": "Vos données sont protégées et cryptées"
+      },
+      "upToDate": {
+        "title": "Toujours à jour",
+        "description": "Mis à jour avec les dernières lois fiscales"
+      },
+      "support": {
+        "title": "Support Expert",
+        "description": "Équipe d'experts fiscaux à votre service"
+      }
+    }
+  },
+  "admin": {
+    "title": "Espace Admin",
+    "loginTitle": "Connexion Admin",
+    "enterPassword": "Entrez le mot de passe admin",
+    "invalidPassword": "Mot de passe incorrect",
+    "dashboard": "Tableau de bord",
+    "users": "Utilisateurs",
+    "settings": "Paramètres"
+  },
+  "taxAssistant": {
+    "title": "Assistant Fiscal IA",
+    "subtitle": "Votre expert fiscal personnel disponible 24/7",
+    "placeholder": "Posez votre question fiscale...",
+    "send": "Envoyer",
+    "initialMessage": "Bonjour ! Je suis votre assistant fiscal IA. Je peux vous aider avec vos questions sur les impôts suisses, les déductions, l'optimisation fiscale et plus encore. Comment puis-je vous aider aujourd'hui ?",
+    "examples": {
+      "title": "Exemples de questions",
+      "q1": "Comment déduire mes frais de transport ?",
+      "q2": "Quel est le montant maximum pour le 3e pilier ?",
+      "q3": "Comment sont imposées les cryptomonnaies ?",
+      "q4": "Puis-je déduire mes frais de formation ?"
+    }
+  },
+  "education": {
+    "title": "Centre d'Éducation Fiscale Suisse",
+    "subtitle": "Maîtrisez la fiscalité suisse avec notre guide interactif et l'assistance IA",
+    "search": "Rechercher un thème fiscal...",
+    "tabs": {
+      "themes": "Thématiques",
+      "courses": "Parcours guidés",
+      "tools": "Outils pratiques",
+      "faq": "FAQ"
+    },
+    "readArticle": "Lire l'article",
+    "comingSoon": "Bientôt disponible",
+    "articleInProgress": "Article en préparation",
+    "clickToRead": "Cliquez pour lire l'article complet"
+  },
+  "simulators": {
+    "title": "Simulateurs Fiscaux",
+    "subtitle": "Calculez et optimisez vos impôts en quelques clics",
+    "tax": {
+      "title": "Simulateur d'impôts",
+      "description": "Calculez vos impôts 2024"
+    },
+    "real-estate": {
+      "title": "Immobilier",
+      "description": "Calculez la valeur locative"
+    },
+    "investment": {
+      "title": "Investissements",
+      "description": "Optimisez vos placements"
+    },
+    "retirement": {
+      "title": "Retraite",
+      "description": "Planifiez votre prévoyance"
+    }
+  },
+  "language": {
+    "select": "Sélectionner la langue",
+    "fr": "Français",
+    "de": "Deutsch",
+    "it": "Italiano",
+    "en": "English"
+  }
+}

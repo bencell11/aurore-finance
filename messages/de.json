@@ -1,0 +1,133 @@
+{
+  "common": {
+    "admin": "Admin",
+    "legalNotices": "Rechtliche Hinweise",
+    "privacy": "Datenschutz",
+    "contact": "Kontakt",
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "close": "Schließen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "login": "Anmelden",
+    "logout": "Abmelden"
+  },
+  "homepage": {
+    "title": "Aurore Finances",
+    "subtitle": "Treten Sie der Warteliste bei und gehören Sie zu den Ersten, die Aurore Finances in der Beta-Version testen.",
+    "accessRestricted": "Diese Funktion ist nur in der Vollversion verfügbar. Greifen Sie auf den Admin-Bereich zu, um alle Funktionen freizuschalten.",
+    "joinWaitlist": "Der Warteliste beitreten",
+    "enterEmail": "E-Mail eingeben",
+    "invalidEmail": "Ungültige E-Mail-Adresse",
+    "alreadyRegistered": "Diese E-Mail ist bereits auf der Warteliste",
+    "subscribeSuccess": "Danke! Sie sind jetzt auf der Warteliste.",
+    "peopleWaiting": "{count} Personen auf der Warteliste",
+    "features": {
+      "title": "Entdecken Sie die Vollversion",
+      "subtitle": "Zugriff auf alle Steuertools, die Sie benötigen",
+      "calculators": {
+        "title": "Erweiterte Rechner",
+        "description": "Berechnen Sie Ihre Steuern, optimieren Sie Ihr Vermögen, planen Sie Ihre Rente"
+      },
+      "ai": {
+        "title": "KI-Steuerassistent",
+        "description": "Erhalten Sie personalisierte Beratung 24/7 für alle Ihre Steuerfragen"
+      },
+      "education": {
+        "title": "Bildungszentrum",
+        "description": "Detaillierte Artikel zur Schweizer Besteuerung, praktische Anleitungen und Schulungen"
+      },
+      "documents": {
+        "title": "Dokumentenverwaltung",
+        "description": "Organisieren und bereiten Sie Ihre Steuererklärung einfach vor"
+      }
+    },
+    "whyChoose": {
+      "title": "Warum Aurore Finances wählen?",
+      "swiss": {
+        "title": "100% Schweiz",
+        "description": "Speziell für das Schweizer Steuersystem entwickelt"
+      },
+      "secure": {
+        "title": "Sicher",
+        "description": "Ihre Daten sind geschützt und verschlüsselt"
+      },
+      "upToDate": {
+        "title": "Immer aktuell",
+        "description": "Mit den neuesten Steuergesetzen aktualisiert"
+      },
+      "support": {
+        "title": "Experten-Support",
+        "description": "Team von Steuerexperten zu Ihren Diensten"
+      }
+    }
+  },
+  "admin": {
+    "title": "Admin-Bereich",
+    "loginTitle": "Admin-Anmeldung",
+    "enterPassword": "Admin-Passwort eingeben",
+    "invalidPassword": "Falsches Passwort",
+    "dashboard": "Dashboard",
+    "users": "Benutzer",
+    "settings": "Einstellungen"
+  },
+  "taxAssistant": {
+    "title": "KI-Steuerassistent",
+    "subtitle": "Ihr persönlicher Steuerexperte rund um die Uhr verfügbar",
+    "placeholder": "Stellen Sie Ihre Steuerfrage...",
+    "send": "Senden",
+    "initialMessage": "Hallo! Ich bin Ihr KI-Steuerassistent. Ich kann Ihnen bei Fragen zu Schweizer Steuern, Abzügen, Steueroptimierung und mehr helfen. Wie kann ich Ihnen heute helfen?",
+    "examples": {
+      "title": "Beispielfragen",
+      "q1": "Wie kann ich meine Transportkosten abziehen?",
+      "q2": "Was ist der Höchstbetrag für die 3. Säule?",
+      "q3": "Wie werden Kryptowährungen besteuert?",
+      "q4": "Kann ich meine Weiterbildungskosten abziehen?"
+    }
+  },
+  "education": {
+    "title": "Schweizer Steuerbildungszentrum",
+    "subtitle": "Meistern Sie die Schweizer Besteuerung mit unserem interaktiven Leitfaden und KI-Unterstützung",
+    "search": "Nach einem Steuerthema suchen...",
+    "tabs": {
+      "themes": "Themen",
+      "courses": "Geführte Pfade",
+      "tools": "Praktische Tools",
+      "faq": "FAQ"
+    },
+    "readArticle": "Artikel lesen",
+    "comingSoon": "Demnächst verfügbar",
+    "articleInProgress": "Artikel in Vorbereitung",
+    "clickToRead": "Klicken Sie, um den vollständigen Artikel zu lesen"
+  },
+  "simulators": {
+    "title": "Steuerrechner",
+    "subtitle": "Berechnen und optimieren Sie Ihre Steuern mit wenigen Klicks",
+    "tax": {
+      "title": "Steuerrechner",
+      "description": "Berechnen Sie Ihre Steuern 2024"
+    },
+    "real-estate": {
+      "title": "Immobilien",
+      "description": "Eigenmietwert berechnen"
+    },
+    "investment": {
+      "title": "Investitionen",
+      "description": "Optimieren Sie Ihre Anlagen"
+    },
+    "retirement": {
+      "title": "Ruhestand",
+      "description": "Planen Sie Ihre Vorsorge"
+    }
+  },
+  "language": {
+    "select": "Sprache wählen",
+    "fr": "Français",
+    "de": "Deutsch",
+    "it": "Italiano",
+    "en": "English"
+  }
+}

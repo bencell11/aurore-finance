@@ -1,0 +1,133 @@
+{
+  "common": {
+    "admin": "Admin",
+    "legalNotices": "Note Legali",
+    "privacy": "Privacy",
+    "contact": "Contatto",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "close": "Chiudi",
+    "email": "Email",
+    "password": "Password",
+    "login": "Accedi",
+    "logout": "Esci"
+  },
+  "homepage": {
+    "title": "Aurore Finances",
+    "subtitle": "Unisciti alla lista d'attesa e sii tra i primi a testare Aurore Finances in versione beta.",
+    "accessRestricted": "Questa funzionalità è disponibile solo nella versione completa. Accedi all'area admin per sbloccare tutte le funzionalità.",
+    "joinWaitlist": "Unisciti alla lista d'attesa",
+    "enterEmail": "Inserisci la tua email",
+    "invalidEmail": "Indirizzo email non valido",
+    "alreadyRegistered": "Questa email è già nella lista d'attesa",
+    "subscribeSuccess": "Grazie! Ora sei nella lista d'attesa.",
+    "peopleWaiting": "{count} persone in lista d'attesa",
+    "features": {
+      "title": "Scopri la Versione Completa",
+      "subtitle": "Accedi a tutti gli strumenti fiscali di cui hai bisogno",
+      "calculators": {
+        "title": "Calcolatori Avanzati",
+        "description": "Calcola le tue tasse, ottimizza il tuo patrimonio, pianifica la pensione"
+      },
+      "ai": {
+        "title": "Assistente Fiscale IA",
+        "description": "Ottieni consigli personalizzati 24/7 per tutte le tue domande fiscali"
+      },
+      "education": {
+        "title": "Centro Educativo",
+        "description": "Articoli dettagliati sulla fiscalità svizzera, guide pratiche e formazione"
+      },
+      "documents": {
+        "title": "Gestione Documenti",
+        "description": "Organizza e prepara facilmente la tua dichiarazione dei redditi"
+      }
+    },
+    "whyChoose": {
+      "title": "Perché Scegliere Aurore Finances?",
+      "swiss": {
+        "title": "100% Svizzero",
+        "description": "Progettato specificamente per il sistema fiscale svizzero"
+      },
+      "secure": {
+        "title": "Sicuro",
+        "description": "I tuoi dati sono protetti e crittografati"
+      },
+      "upToDate": {
+        "title": "Sempre aggiornato",
+        "description": "Aggiornato con le ultime leggi fiscali"
+      },
+      "support": {
+        "title": "Supporto Esperto",
+        "description": "Team di esperti fiscali al tuo servizio"
+      }
+    }
+  },
+  "admin": {
+    "title": "Area Admin",
+    "loginTitle": "Login Admin",
+    "enterPassword": "Inserisci la password admin",
+    "invalidPassword": "Password errata",
+    "dashboard": "Pannello di controllo",
+    "users": "Utenti",
+    "settings": "Impostazioni"
+  },
+  "taxAssistant": {
+    "title": "Assistente Fiscale IA",
+    "subtitle": "Il tuo esperto fiscale personale disponibile 24/7",
+    "placeholder": "Fai la tua domanda fiscale...",
+    "send": "Invia",
+    "initialMessage": "Ciao! Sono il tuo assistente fiscale IA. Posso aiutarti con domande sulle tasse svizzere, deduzioni, ottimizzazione fiscale e altro. Come posso aiutarti oggi?",
+    "examples": {
+      "title": "Domande di esempio",
+      "q1": "Come dedurre i costi di trasporto?",
+      "q2": "Qual è l'importo massimo per il 3° pilastro?",
+      "q3": "Come sono tassate le criptovalute?",
+      "q4": "Posso dedurre le spese di formazione?"
+    }
+  },
+  "education": {
+    "title": "Centro Educativo Fiscale Svizzero",
+    "subtitle": "Padroneggia la fiscalità svizzera con la nostra guida interattiva e assistenza IA",
+    "search": "Cerca un argomento fiscale...",
+    "tabs": {
+      "themes": "Temi",
+      "courses": "Percorsi Guidati",
+      "tools": "Strumenti Pratici",
+      "faq": "FAQ"
+    },
+    "readArticle": "Leggi l'articolo",
+    "comingSoon": "Prossimamente",
+    "articleInProgress": "Articolo in preparazione",
+    "clickToRead": "Clicca per leggere l'articolo completo"
+  },
+  "simulators": {
+    "title": "Calcolatori Fiscali",
+    "subtitle": "Calcola e ottimizza le tue tasse in pochi clic",
+    "tax": {
+      "title": "Calcolatore Tasse",
+      "description": "Calcola le tue tasse 2024"
+    },
+    "real-estate": {
+      "title": "Immobiliare",
+      "description": "Calcola il valore locativo"
+    },
+    "investment": {
+      "title": "Investimenti",
+      "description": "Ottimizza i tuoi investimenti"
+    },
+    "retirement": {
+      "title": "Pensione",
+      "description": "Pianifica la tua previdenza"
+    }
+  },
+  "language": {
+    "select": "Seleziona Lingua",
+    "fr": "Français",
+    "de": "Deutsch",
+    "it": "Italiano",
+    "en": "English"
+  }
+}

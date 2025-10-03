@@ -1,9 +1,11 @@
+import createMiddleware from 'next-intl/middleware';
 import { NextResponse, NextRequest } from 'next/server';
+import { locales, defaultLocale } from './i18n';
 
 // Routes protégées (nécessitent un accès admin)
 const PROTECTED_ROUTES = [
   '/demo',
-  '/assistant-fiscal',
+  '/assistant-fiscal', 
   '/dashboard',
   '/simulateurs',
   '/objectifs',
@@ -23,9 +25,7 @@ const PUBLIC_ROUTES = [
   '/contact',
   '/admin/login',
   '/admin/login-simple',
-  '/api/waitlist',
-  '/api/test-email',
-  '/api/admin/auth',
+  '/education-fiscale',
 ];
 
 function checkAdminAccess(request: NextRequest): boolean {
@@ -48,35 +48,61 @@ function checkAdminAccess(request: NextRequest): boolean {
   }
 }
 
+// Créer le middleware i18n
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: 'as-needed' // Cacher /fr mais montrer /de, /it, /en
+});
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Ignorer les routes publiques
-  const isPublicRoute = PUBLIC_ROUTES.some(route => 
-    pathname === route || pathname.startsWith(route)
-  );
-  
-  if (isPublicRoute) {
+  // Ignorer les fichiers statiques et API routes
+  if (pathname.includes('.') || 
+      pathname.startsWith('/_next') || 
+      pathname.startsWith('/api')) {
     return NextResponse.next();
   }
   
-  // Vérifier si c'est une route protégée
-  const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
-  const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
+  // Extraire le locale du pathname
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  );
   
-  if (isProtectedRoute || isAdminRoute) {
-    const hasAdminAccess = checkAdminAccess(request);
+  // Obtenir le chemin sans locale
+  let pathWithoutLocale = pathname;
+  if (pathnameHasLocale) {
+    const locale = pathname.split('/')[1];
+    pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
+  }
+  
+  // Vérifier si c'est une route publique
+  const isPublicRoute = PUBLIC_ROUTES.some(route => 
+    pathWithoutLocale === route || pathWithoutLocale.startsWith(route)
+  );
+  
+  // Si ce n'est pas une route publique, vérifier l'authentification
+  if (!isPublicRoute) {
+    const isProtectedRoute = PROTECTED_ROUTES.some(route => pathWithoutLocale.startsWith(route));
+    const isAdminRoute = ADMIN_ROUTES.some(route => pathWithoutLocale.startsWith(route));
     
-    if (!hasAdminAccess) {
-      // Rediriger vers la page de login admin
-      const url = request.nextUrl.clone();
-      url.pathname = '/admin/login-simple';
-      url.searchParams.set('return', pathname);
-      return NextResponse.redirect(url);
+    if (isProtectedRoute || isAdminRoute) {
+      const hasAdminAccess = checkAdminAccess(request);
+      
+      if (!hasAdminAccess) {
+        // Rediriger vers la page de login admin avec le locale
+        const locale = pathnameHasLocale ? pathname.split('/')[1] : defaultLocale;
+        const url = request.nextUrl.clone();
+        url.pathname = locale === defaultLocale ? '/admin/login-simple' : `/${locale}/admin/login-simple`;
+        url.searchParams.set('return', pathname);
+        return NextResponse.redirect(url);
+      }
     }
   }
   
-  return NextResponse.next();
+  // Appliquer le middleware i18n
+  return intlMiddleware(request);
 }
 
 export const config = {
@@ -86,9 +112,9 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - api/waitlist (public API)
-     * - api/emails (public API)
+     * - api routes
+     * - public assets
      */
-    '/((?!_next/static|_next/image|favicon.ico|api/waitlist|api/emails|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/.*|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

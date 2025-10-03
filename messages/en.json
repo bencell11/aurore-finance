@@ -1,0 +1,133 @@
+{
+  "common": {
+    "admin": "Admin",
+    "legalNotices": "Legal Notices",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "homepage": {
+    "title": "Aurore Finances",
+    "subtitle": "Join the waitlist and be among the first to test Aurore Finances in beta.",
+    "accessRestricted": "This feature is only available in the full version. Access the admin area to unlock all features.",
+    "joinWaitlist": "Join the Waitlist",
+    "enterEmail": "Enter your email",
+    "invalidEmail": "Invalid email address",
+    "alreadyRegistered": "This email is already on the waitlist",
+    "subscribeSuccess": "Thank you! You are now on the waitlist.",
+    "peopleWaiting": "{count} people on the waitlist",
+    "features": {
+      "title": "Discover the Full Version",
+      "subtitle": "Access all the tax tools you need",
+      "calculators": {
+        "title": "Advanced Calculators",
+        "description": "Calculate your taxes, optimize your wealth, plan your retirement"
+      },
+      "ai": {
+        "title": "AI Tax Assistant",
+        "description": "Get personalized advice 24/7 for all your tax questions"
+      },
+      "education": {
+        "title": "Education Center",
+        "description": "Detailed articles on Swiss taxation, practical guides and training"
+      },
+      "documents": {
+        "title": "Document Management",
+        "description": "Organize and prepare your tax return easily"
+      }
+    },
+    "whyChoose": {
+      "title": "Why Choose Aurore Finances?",
+      "swiss": {
+        "title": "100% Swiss",
+        "description": "Designed specifically for the Swiss tax system"
+      },
+      "secure": {
+        "title": "Secure",
+        "description": "Your data is protected and encrypted"
+      },
+      "upToDate": {
+        "title": "Always up-to-date",
+        "description": "Updated with the latest tax laws"
+      },
+      "support": {
+        "title": "Expert Support",
+        "description": "Team of tax experts at your service"
+      }
+    }
+  },
+  "admin": {
+    "title": "Admin Area",
+    "loginTitle": "Admin Login",
+    "enterPassword": "Enter admin password",
+    "invalidPassword": "Incorrect password",
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "settings": "Settings"
+  },
+  "taxAssistant": {
+    "title": "AI Tax Assistant",
+    "subtitle": "Your personal tax expert available 24/7",
+    "placeholder": "Ask your tax question...",
+    "send": "Send",
+    "initialMessage": "Hello! I'm your AI tax assistant. I can help you with questions about Swiss taxes, deductions, tax optimization and more. How can I help you today?",
+    "examples": {
+      "title": "Example questions",
+      "q1": "How to deduct my transport costs?",
+      "q2": "What's the maximum amount for the 3rd pillar?",
+      "q3": "How are cryptocurrencies taxed?",
+      "q4": "Can I deduct my training expenses?"
+    }
+  },
+  "education": {
+    "title": "Swiss Tax Education Center",
+    "subtitle": "Master Swiss taxation with our interactive guide and AI assistance",
+    "search": "Search for a tax topic...",
+    "tabs": {
+      "themes": "Topics",
+      "courses": "Guided Paths",
+      "tools": "Practical Tools",
+      "faq": "FAQ"
+    },
+    "readArticle": "Read article",
+    "comingSoon": "Coming soon",
+    "articleInProgress": "Article in preparation",
+    "clickToRead": "Click to read the full article"
+  },
+  "simulators": {
+    "title": "Tax Calculators",
+    "subtitle": "Calculate and optimize your taxes in a few clicks",
+    "tax": {
+      "title": "Tax Calculator",
+      "description": "Calculate your 2024 taxes"
+    },
+    "real-estate": {
+      "title": "Real Estate",
+      "description": "Calculate rental value"
+    },
+    "investment": {
+      "title": "Investments",
+      "description": "Optimize your investments"
+    },
+    "retirement": {
+      "title": "Retirement",
+      "description": "Plan your pension"
+    }
+  },
+  "language": {
+    "select": "Select Language",
+    "fr": "Français",
+    "de": "Deutsch",
+    "it": "Italiano",
+    "en": "English"
+  }
+}

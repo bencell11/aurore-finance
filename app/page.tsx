@@ -30,6 +30,7 @@ import {
   X,
 } from "lucide-react";
 import { AdminNavLink } from "@/components/navigation/AdminNavLink";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -164,14 +165,17 @@ export default function HomePage() {
             </span>
           </div>
           
-          {/* Admin Button - Même style sur tous les écrans */}
-          <a
-            href="/admin/login-simple"
-            className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50"
-          >
-            <Shield className="h-4 w-4" />
-            <span>Admin</span>
-          </a>
+          {/* Language Selector et Admin Button */}
+          <div className="flex items-center gap-2">
+            <LanguageSelector />
+            <a
+              href="/admin/login-simple"
+              className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50"
+            >
+              <Shield className="h-4 w-4" />
+              <span>Admin</span>
+            </a>
+          </div>
           
           {/* Desktop Navigation - Caché sur mobile */}
           <nav className="hidden md:flex items-center gap-6">
