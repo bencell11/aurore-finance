@@ -46,6 +46,8 @@ import {
 } from 'lucide-react';
 import { getArticlesByCategory, getArticleBySlug, getTranslatedArticle } from '@/lib/data/tax-articles';
 import { useTranslation } from '@/components/SimpleLanguageSelector';
+import GuidedCourse from '@/components/GuidedCourse';
+import PracticalTools from '@/components/PracticalTools';
 
 // Fonction pour traduire les thématiques
 const getTranslatedThematiques = (t: any) => [
@@ -99,7 +101,7 @@ const getTranslatedThematiques = (t: any) => [
       { id: 'titres', titre: t.securitiesValues, articles: 1, slug: 'titres-valeurs-mobilieres' },
       { id: 'crypto', titre: t.cryptocurrencies, articles: 1, slug: 'fiscalite-cryptomonnaies-suisse' },
       { id: 'prevoyance', titre: t.pensionProvision, articles: 1, slug: 'prevoyance-2e-3e-pilier' },
-      { id: 'luxe', titre: t.luxuryGoods, articles: 0, slug: null }
+      { id: 'luxe', titre: t.luxuryGoods, articles: 1, slug: 'biens-luxe-fiscalite' }
     ]
   },
   {
@@ -110,8 +112,8 @@ const getTranslatedThematiques = (t: any) => [
     sousThemes: [
       { id: 'frontaliers', titre: t.crossBorderWorkers, articles: 1, slug: 'frontaliers-imposition' },
       { id: 'cdi', titre: t.doubleTaxationConventions, articles: 1, slug: 'conventions-double-imposition' },
-      { id: 'expatries', titre: t.expatriatesImpatriates, articles: 0, slug: null },
-      { id: 'comptes-etrangers', titre: t.foreignAccounts, articles: 0, slug: null }
+      { id: 'expatries', titre: t.expatriatesImpatriates, articles: 1, slug: 'expatries-impatries-fiscalite' },
+      { id: 'comptes-etrangers', titre: t.foreignAccounts, articles: 1, slug: 'comptes-etrangers-fiscalite' }
     ]
   },
   {
@@ -123,7 +125,7 @@ const getTranslatedThematiques = (t: any) => [
       { id: 'declaration', titre: t.deadlinesProcedures, articles: 1, slug: 'declaration-impots-delais' },
       { id: 'documents', titre: t.requiredDocuments, articles: 1, slug: 'documents-necessaires-declaration' },
       { id: 'calendrier', titre: t.taxCalendar, articles: 1, slug: 'calendrier-fiscal-suisse' },
-      { id: 'taxation', titre: t.taxationCorrections, articles: 0, slug: null }
+      { id: 'taxation', titre: t.taxationCorrections, articles: 1, slug: 'taxation-corrections-fiscales' }
     ]
   },
   {
@@ -133,9 +135,9 @@ const getTranslatedThematiques = (t: any) => [
     description: t.analysisOptimizationDesc,
     sousThemes: [
       { id: 'strategies', titre: t.optimizationStrategies, articles: 1, slug: 'optimisation-fiscale-legale' },
-      { id: 'planification', titre: t.annualPlanning, articles: 0, slug: null },
+      { id: 'planification', titre: t.annualPlanning, articles: 1, slug: 'planification-fiscale-annuelle' },
       { id: '3e-pilier', titre: t.thirdPillarOptimization, articles: 1, slug: 'optimisation-troisieme-pilier' },
-      { id: 'succession', titre: t.successionPlanning, articles: 0, slug: null }
+      { id: 'succession', titre: t.successionPlanning, articles: 1, slug: 'planification-successorale-fiscale' }
     ]
   },
   {
@@ -145,9 +147,9 @@ const getTranslatedThematiques = (t: any) => [
     description: t.cantonalSpecificsDesc,
     sousThemes: [
       { id: 'comparatif', titre: t.intercantonalComparison, articles: 1, slug: 'comparatif-fiscal-cantonal' },
-      { id: 'vaud', titre: 'Vaud', articles: 0, slug: null },
-      { id: 'geneve', titre: 'Genève', articles: 0, slug: null },
-      { id: 'zurich', titre: 'Zurich', articles: 0, slug: null }
+      { id: 'vaud', titre: 'Vaud', articles: 1, slug: 'fiscalite-canton-vaud' },
+      { id: 'geneve', titre: 'Genève', articles: 1, slug: 'fiscalite-canton-geneve' },
+      { id: 'zurich', titre: 'Zurich', articles: 1, slug: 'fiscalite-canton-zurich' }
     ]
   }
 ];
@@ -449,6 +451,7 @@ export default function EducationFiscalePage() {
   const [selectedTheme, setSelectedTheme] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('themes');
+  const [showGuidedCourse, setShowGuidedCourse] = useState(false);
   const t = useTranslation();
 
   const thematiques = getTranslatedThematiques(t);
@@ -609,218 +612,12 @@ export default function EducationFiscalePage() {
 
           {/* Onglet Parcours guidés */}
           <TabsContent value="parcours" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5" />
-                    Salarié débutant
-                  </CardTitle>
-                  <CardDescription>
-                    Apprenez les bases de la fiscalité pour employés
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-sm font-bold text-green-600">1</div>
-                      <span className="text-sm">Comprendre votre certificat de salaire</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600">2</div>
-                      <span className="text-sm">Identifier vos déductions possibles</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600">3</div>
-                      <span className="text-sm">Optimiser avec le 3e pilier</span>
-                    </div>
-                  </div>
-                  <Button className="w-full mt-4">Commencer le parcours</Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Briefcase className="h-5 w-5" />
-                    Indépendant
-                  </CardTitle>
-                  <CardDescription>
-                    Maîtrisez la fiscalité des entrepreneurs
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-sm font-bold text-green-600">1</div>
-                      <span className="text-sm">Statut fiscal et forme juridique</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600">2</div>
-                      <span className="text-sm">TVA et comptabilité</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600">3</div>
-                      <span className="text-sm">Optimisation fiscale légale</span>
-                    </div>
-                  </div>
-                  <Button className="w-full mt-4">Commencer le parcours</Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5" />
-                    Famille
-                  </CardTitle>
-                  <CardDescription>
-                    Optimisez vos impôts en famille
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-sm font-bold text-green-600">1</div>
-                      <span className="text-sm">Déductions pour enfants</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600">2</div>
-                      <span className="text-sm">Frais de garde déductibles</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600">3</div>
-                      <span className="text-sm">Planification familiale</span>
-                    </div>
-                  </div>
-                  <Button className="w-full mt-4">Commencer le parcours</Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Globe className="h-5 w-5" />
-                    Frontalier
-                  </CardTitle>
-                  <CardDescription>
-                    Spécificités pour travailleurs frontaliers
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-sm font-bold text-green-600">1</div>
-                      <span className="text-sm">Accords fiscaux par pays</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600">2</div>
-                      <span className="text-sm">Impôt à la source</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600">3</div>
-                      <span className="text-sm">Rectification et remboursements</span>
-                    </div>
-                  </div>
-                  <Button className="w-full mt-4">Commencer le parcours</Button>
-                </CardContent>
-              </Card>
-            </div>
+            <GuidedCourse />
           </TabsContent>
 
           {/* Onglet Outils pratiques */}
           <TabsContent value="outils" className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Calculator className="h-5 w-5 text-blue-600" />
-                    Simulateur d'impôts
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Calculez vos impôts 2024 en quelques clics
-                  </p>
-                  <Button className="w-full" variant="outline">Calculer</Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <FileText className="h-5 w-5 text-green-600" />
-                    Check-list documents
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Liste complète des documents nécessaires
-                  </p>
-                  <Button className="w-full" variant="outline">{t.consult}</Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <TrendingUp className="h-5 w-5 text-purple-600" />
-                    Optimiseur fiscal
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Découvrez vos économies potentielles
-                  </p>
-                  <Button className="w-full" variant="outline">Analyser</Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <MapPin className="h-5 w-5 text-red-600" />
-                    Comparateur cantonal
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Comparez les impôts entre cantons
-                  </p>
-                  <Button className="w-full" variant="outline">Comparer</Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <PiggyBank className="h-5 w-5 text-yellow-600" />
-                    Calculateur 3e pilier
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Optimisez votre prévoyance
-                  </p>
-                  <Button className="w-full" variant="outline">Calculer</Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Scale className="h-5 w-5 text-indigo-600" />
-                    Lexique fiscal
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
-                    500+ termes fiscaux expliqués
-                  </p>
-                  <Button className="w-full" variant="outline">Explorer</Button>
-                </CardContent>
-              </Card>
-            </div>
+            <PracticalTools />
           </TabsContent>
 
           {/* Onglet FAQ */}
