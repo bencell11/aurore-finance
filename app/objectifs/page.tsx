@@ -28,12 +28,16 @@ import {
 } from 'lucide-react';
 import { FinancialGoal } from '@/types/user';
 import { GoalsService } from '@/lib/services/goals.service';
+import GoalCreationWizard from '@/components/goals/GoalCreationWizard';
+import GoalDetailView from '@/components/goals/GoalDetailView';
 
 export default function ObjectifsPage() {
   const [goals, setGoals] = useState<FinancialGoal[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedGoal, setSelectedGoal] = useState<FinancialGoal | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<FinancialGoal | null>(null);
   const goalsService = GoalsService.getInstance();
   
   const { user } = useAuth();
@@ -56,6 +60,68 @@ export default function ObjectifsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCreateGoal = async (goalData: Partial<FinancialGoal>) => {
+    if (!user?.id) return;
+    
+    try {
+      const newGoal: FinancialGoal = {
+        ...goalData as FinancialGoal,
+        userId: user.id,
+        id: `goal-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      await goalsService.createGoal(newGoal);
+      await loadGoals();
+      setShowCreateModal(false);
+    } catch (error) {
+      console.error('Erreur lors de la création de l\'objectif:', error);
+    }
+  };
+
+  const handleEditGoal = (goal: FinancialGoal) => {
+    setEditingGoal(goal);
+    setShowCreateModal(true);
+  };
+
+  const handleDeleteGoal = async (goalId: string) => {
+    try {
+      await goalsService.deleteGoal(goalId);
+      await loadGoals();
+      setShowDetailModal(false);
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'objectif:', error);
+    }
+  };
+
+  const handleAddTransaction = async (goalId: string, amount: number, type: 'deposit' | 'withdrawal') => {
+    try {
+      const transaction = {
+        date: new Date().toISOString(),
+        amount,
+        type,
+        description: type === 'deposit' ? 'Dépôt manuel' : 'Retrait manuel'
+      };
+      
+      await goalsService.addTransaction(goalId, transaction);
+      await loadGoals();
+      
+      // Mettre à jour l'objectif sélectionné si ouvert
+      if (selectedGoal?.id === goalId) {
+        const updatedGoal = goals.find(g => g.id === goalId);
+        if (updatedGoal) setSelectedGoal(updatedGoal);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de la transaction:', error);
+    }
+  };
+
+  const handleSelectGoal = (goal: FinancialGoal) => {
+    setSelectedGoal(goal);
+    setShowDetailModal(true);
   };
 
   const formatCurrency = (amount: number) => {
@@ -111,19 +177,6 @@ export default function ObjectifsPage() {
       abandonne: 'bg-red-100 text-red-600'
     };
     return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-600';
-  };
-
-  const handleCreateGoal = async (goalData: any) => {
-    if (!user?.id) return;
-    
-    try {
-      await goalsService.createGoal(user.id, goalData);
-      await goalsService.saveToStorage();
-      await loadGoals();
-      setShowCreateModal(false);
-    } catch (error) {
-      console.error('Erreur lors de la création de l\'objectif:', error);
-    }
   };
 
   const handleContribution = async (goalId: string, amount: number) => {
@@ -308,10 +361,10 @@ export default function ObjectifsPage() {
                               <Icon className="w-6 h-6" />
                             </div>
                             <div>
-                              <CardTitle className="text-lg">{goal.titre}</CardTitle>
+                              <CardTitle className="text-lg">{goal.title}</CardTitle>
                               <div className="flex items-center space-x-2 mt-1">
-                                <Badge className={getPriorityColor(goal.priorite)}>
-                                  {goal.priorite}
+                                <Badge className={getPriorityColor(goal.priority)}>
+                                  {goal.priority}
                                 </Badge>
                                 <Badge variant="outline">
                                   {goal.type}
@@ -320,10 +373,18 @@ export default function ObjectifsPage() {
                             </div>
                           </div>
                           <div className="flex space-x-1">
-                            <Button variant="ghost" size="sm">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleSelectGoal(goal)}
+                            >
                               <Eye className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="sm">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleEditGoal(goal)}
+                            >
                               <Edit className="w-4 h-4" />
                             </Button>
                             <Button variant="ghost" size="sm">
@@ -538,35 +599,29 @@ export default function ObjectifsPage() {
         </Tabs>
       </div>
 
-      {/* Modal de création (simplifié pour la démo) */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-semibold mb-4">Créer un nouvel objectif</h3>
-            <p className="text-gray-600 mb-4">
-              Cette fonctionnalité sera bientôt disponible. Utilisez le chatbot IA pour créer des objectifs personnalisés.
-            </p>
-            <div className="flex space-x-3">
-              <Button 
-                variant="outline" 
-                onClick={() => setShowCreateModal(false)}
-                className="flex-1"
-              >
-                Fermer
-              </Button>
-              <Button 
-                onClick={() => {
-                  setShowCreateModal(false);
-                  // Redirection vers le chatbot
-                  window.location.href = '/demo';
-                }}
-                className="flex-1"
-              >
-                Utiliser le chatbot
-              </Button>
-            </div>
-          </div>
-        </div>
+      {/* Modal de création d'objectif */}
+      <GoalCreationWizard
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setEditingGoal(null);
+        }}
+        onCreateGoal={handleCreateGoal}
+      />
+
+      {/* Modal de détails d'objectif */}
+      {selectedGoal && (
+        <GoalDetailView
+          goal={selectedGoal}
+          isOpen={showDetailModal}
+          onClose={() => {
+            setShowDetailModal(false);
+            setSelectedGoal(null);
+          }}
+          onEdit={handleEditGoal}
+          onDelete={handleDeleteGoal}
+          onAddTransaction={handleAddTransaction}
+        />
       )}
     </div>
     </ProtectedRoute>
