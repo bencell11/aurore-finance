@@ -245,10 +245,10 @@ export default function DashboardPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Objectifs actifs</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {dashboardData.performanceObjectifs.enCours}
+                    {dashboardData.objectifsActifs}
                   </p>
                   <p className="text-xs text-gray-600">
-                    {dashboardData.performanceObjectifs.atteints} atteints
+                    sur {dashboardData.objectifsTotal} total
                   </p>
                 </div>
               </div>
@@ -262,12 +262,10 @@ export default function DashboardPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Progression moyenne</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {dashboardData.objectifsActifs.length > 0 
-                      ? (dashboardData.objectifsActifs.reduce((sum, g) => sum + g.progressionPourcentage, 0) / dashboardData.objectifsActifs.length).toFixed(1)
-                      : '0'}%
+                    {dashboardData.progressionMoyenne.toFixed(1)}%
                   </p>
                   <p className="text-xs text-purple-600">
-                    Sur {dashboardData.objectifsActifs.length} objectifs
+                    Sur {dashboardData.objectifsActifs} objectifs
                   </p>
                 </div>
               </div>
