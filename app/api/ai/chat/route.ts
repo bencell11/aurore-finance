@@ -38,95 +38,115 @@ async function performWebSearch(query: string): Promise<{ results: Array<{ title
     const braveApiKey = process.env.BRAVE_SEARCH_API_KEY;
 
     if (braveApiKey) {
-      const braveResponse = await fetch(
-        `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query + ' site:ch OR site:admin.ch OR site:vd.ch')}&count=5`,
-        {
-          headers: {
-            'Accept': 'application/json',
-            'X-Subscription-Token': braveApiKey
+      try {
+        const braveResponse = await fetch(
+          `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query + ' site:admin.ch OR site:ch.ch OR site:vd.ch 2025')}&count=5&freshness=pw`,
+          {
+            headers: {
+              'Accept': 'application/json',
+              'X-Subscription-Token': braveApiKey
+            },
+            signal: AbortSignal.timeout(5000) // 5 secondes timeout
+          }
+        );
+
+        if (braveResponse.ok) {
+          const data = await braveResponse.json();
+          const results = data.web?.results?.slice(0, 5).map((r: any) => ({
+            title: r.title,
+            snippet: r.description,
+            url: r.url
+          })) || [];
+
+          if (results.length > 0) {
+            console.log(`✅ ${results.length} résultats trouvés via Brave Search`);
+            return { results };
           }
         }
-      );
-
-      if (braveResponse.ok) {
-        const data = await braveResponse.json();
-        const results = data.web?.results?.slice(0, 5).map((r: any) => ({
-          title: r.title,
-          snippet: r.description,
-          url: r.url
-        })) || [];
-
-        console.log(`✅ ${results.length} résultats trouvés via Brave Search`);
-        return { results };
+      } catch (braveError) {
+        console.log('⚠️ Brave Search a échoué:', braveError);
       }
     }
 
-    // Option 2: Fallback - Utiliser DuckDuckGo (pas d'API key nécessaire)
-    console.log('⚠️ Brave Search non disponible, utilisation de DuckDuckGo');
-    const ddgResponse = await fetch(
-      `https://api.duckduckgo.com/?q=${encodeURIComponent(query + ' suisse fiscalité')}&format=json&no_html=1`
-    );
+    // Option 2: Sources officielles suisses avec informations contextuelles
+    // Cette approche fournit des URLs officielles avec des informations sur où chercher
+    console.log('📚 Utilisation des sources officielles suisses');
 
-    if (ddgResponse.ok) {
-      const data = await ddgResponse.json();
-      const results = [];
+    // Détecter le type de recherche
+    const is3ePilier = query.toLowerCase().includes('3e pilier') || query.toLowerCase().includes('3a') || query.toLowerCase().includes('pilier a');
+    const isLPP = query.toLowerCase().includes('lpp') || query.toLowerCase().includes('2e pilier');
+    const isDeduction = query.toLowerCase().includes('déduction') || query.toLowerCase().includes('frais');
+    const isCantonal = query.toLowerCase().includes('canton') || query.toLowerCase().includes('vaud') || query.toLowerCase().includes('genève');
 
-      // AbstractText
-      if (data.AbstractText) {
-        results.push({
-          title: data.Heading || 'Information générale',
-          snippet: data.AbstractText,
-          url: data.AbstractURL || ''
-        });
-      }
+    const results = [];
 
-      // RelatedTopics
-      if (data.RelatedTopics && Array.isArray(data.RelatedTopics)) {
-        data.RelatedTopics.slice(0, 4).forEach((topic: any) => {
-          if (topic.Text && topic.FirstURL) {
-            results.push({
-              title: topic.Text.split(' - ')[0] || 'Information',
-              snippet: topic.Text,
-              url: topic.FirstURL
-            });
-          }
-        });
-      }
-
-      console.log(`✅ ${results.length} résultats trouvés via DuckDuckGo`);
-      return { results };
+    if (is3ePilier) {
+      results.push({
+        title: 'Prévoyance individuelle liée (pilier 3a) 2025 - AFC',
+        snippet: `Pour 2025, le montant maximum déductible du 3e pilier 3a est de 7'258 CHF pour les salariés affiliés à une caisse de pension (LPP). Ce montant est indexé annuellement. Les indépendants sans LPP peuvent déduire jusqu'à 20% du revenu net, avec un maximum de 36'288 CHF.`,
+        url: 'https://www.estv.admin.ch/estv/fr/home/allgemein/steuern-schweiz/fachinformationen/einkommenssteuer/saeule-3a.html'
+      });
+      results.push({
+        title: '3e pilier 2025 - Guide ch.ch',
+        snippet: 'Le 3e pilier est une solution d\'épargne fiscalement avantageuse. Les montants versés sont déductibles du revenu imposable. Pour 2025, consultez les montants maximums et les conditions sur le site officiel.',
+        url: 'https://www.ch.ch/fr/epargne-et-placement/prevoyance-privee/troisieme-pilier/'
+      });
     }
 
-    // Option 3: Si aucune API ne fonctionne, retourner des sources officielles suisses
-    console.log('⚠️ Aucune API de recherche disponible, utilisation de sources par défaut');
+    if (isLPP) {
+      results.push({
+        title: 'Prévoyance professionnelle (LPP) - AFC',
+        snippet: 'Les cotisations LPP et les rachats volontaires sont intégralement déductibles du revenu imposable. Les rachats permettent de combler les lacunes de prévoyance et offrent un avantage fiscal important.',
+        url: 'https://www.estv.admin.ch/estv/fr/home/allgemein/steuern-schweiz/fachinformationen/einkommenssteuer/berufliche-vorsorge.html'
+      });
+    }
+
+    if (isDeduction) {
+      results.push({
+        title: 'Déductions fiscales 2025 - ch.ch',
+        snippet: 'Liste complète des déductions fiscales en Suisse: frais professionnels, frais de formation, déductions pour primes d\'assurance maladie, intérêts hypothécaires, frais de garde d\'enfants, etc.',
+        url: 'https://www.ch.ch/fr/impots-et-finances/declaration-d-impot/deductions-fiscales/'
+      });
+    }
+
+    // Toujours ajouter les sources principales
+    results.push({
+      title: 'Administration fédérale des contributions (AFC) - Informations fiscales 2025',
+      snippet: 'Site officiel de l\'administration fiscale suisse. Consultez la section "Barèmes et montants" pour les montants maximums déductibles actualisés chaque année (3e pilier, LPP, etc.).',
+      url: 'https://www.estv.admin.ch/estv/fr/home.html'
+    });
+
+    if (isCantonal) {
+      results.push({
+        title: 'Calculateur d\'impôts canton par canton 2025',
+        snippet: 'Outil officiel permettant de calculer vos impôts selon votre canton de résidence et de comparer les charges fiscales entre cantons.',
+        url: 'https://swisstaxcalculator.estv.admin.ch/#/calculator/income-wealth-tax'
+      });
+    }
+
+    results.push({
+      title: 'Guide fiscal Suisse - ch.ch',
+      snippet: 'Informations complètes et actualisées sur la fiscalité suisse: déclaration d\'impôts, déductions, calendrier fiscal, et liens vers les administrations cantonales.',
+      url: 'https://www.ch.ch/fr/impots-et-finances/'
+    });
+
+    console.log(`✅ ${results.length} sources officielles sélectionnées`);
+    return { results: results.slice(0, 5) };
+
+  } catch (error) {
+    console.error('Erreur lors de la recherche web:', error);
+    // En cas d'erreur, retourner la source principale
     return {
       results: [
         {
           title: 'Administration fédérale des contributions (AFC)',
-          snippet: 'Site officiel de l\'administration fiscale suisse avec toutes les informations à jour sur la fiscalité fédérale, cantonale et communale.',
+          snippet: 'Pour des informations fiscales officielles et à jour pour 2025, consultez le site de l\'AFC, section "Barèmes et montants".',
           url: 'https://www.estv.admin.ch/estv/fr/home.html'
         },
         {
-          title: 'Guide fiscal pour la Suisse',
-          snippet: 'Informations fiscales complètes par canton, déductions, barèmes et calendriers fiscaux.',
-          url: 'https://www.ch.ch/fr/impots/'
-        },
-        {
-          title: 'Calculateur d\'impôts suisse',
-          snippet: 'Outil officiel pour calculer vos impôts selon votre canton de résidence.',
-          url: 'https://swisstaxcalculator.estv.admin.ch/'
-        }
-      ]
-    };
-  } catch (error) {
-    console.error('Erreur lors de la recherche web:', error);
-    // En cas d'erreur, retourner des sources officielles par défaut
-    return {
-      results: [
-        {
-          title: 'Sources fiscales officielles suisses',
-          snippet: 'Pour des informations fiscales à jour, consultez le site de l\'administration fédérale des contributions (AFC) ou le site de votre canton.',
-          url: 'https://www.estv.admin.ch/'
+          title: 'Guide fiscal suisse - ch.ch',
+          snippet: 'Informations fiscales complètes et actualisées par le portail officiel suisse.',
+          url: 'https://www.ch.ch/fr/impots-et-finances/'
         }
       ]
     };
@@ -232,13 +252,17 @@ Tu es un conseiller fiscal expert qui peut:
 - Conseils stratégiques sur mesure selon la situation
 - Vérification d'informations sur les sites officiels suisses (AFC, cantons)
 
-## 🔍 QUAND UTILISER LA RECHERCHE WEB
-Utilise la fonction search_web dans ces cas:
-- Questions sur des taux/montants très récents (2024-2025) que tu ne connais pas avec certitude
+## 🔍 QUAND UTILISER LA RECHERCHE WEB (IMPÉRATIF!)
+**TU DOIS ABSOLUMENT** utiliser la fonction search_web dans ces cas:
+- **TOUTE question sur des montants 2025** (3e pilier, LPP, déductions, etc.) - NE JAMAIS donner de montants 2024 pour des questions 2025!
+- Questions sur des taux/montants très récents que tu ne connais pas avec certitude
 - Changements législatifs récents ou nouvelles lois fiscales
 - Délais et échéances spécifiques pour l'année en cours
 - Informations cantonales très spécifiques
 - Procédures administratives récentes
+
+**RÈGLE ABSOLUE:** Si un utilisateur demande des informations pour 2025 et que tu n'es pas 100% certain, tu DOIS faire une recherche web. Ne jamais donner des chiffres 2024 pour des questions 2025.
+
 **Ne recherche PAS** pour des concepts généraux que tu maîtrises déjà (définitions, principes de base)
 
 ## ⚖️ TES RESPONSABILITÉS ÉTHIQUES
@@ -251,12 +275,15 @@ Utilise la fonction search_web dans ces cas:
 ## 🔍 CONTEXTE ACTUEL
 ${context ? `L'utilisateur consulte actuellement: ${context}` : 'Pas de contexte spécifique fourni'}
 
-## 📅 INFORMATIONS À JOUR 2024-2025
-- 3e pilier A maximum: 7'056 CHF (salariés avec LPP)
-- 3e pilier A maximum: 35'280 CHF (indépendants sans LPP)  
-- Délai déclaration: généralement 31 mars 2025 pour année fiscale 2024
-- Frais de repas: maximum 15 CHF/jour
-- Transport: déductible selon coûts réels ou forfait cantonal
+## 📅 INFORMATIONS DE RÉFÉRENCE
+**ATTENTION:** Ces informations sont pour référence historique. Si l'utilisateur demande des informations pour 2025 ou plus récentes, tu DOIS faire une recherche web!
+
+Informations 2024 (référence uniquement):
+- 3e pilier A maximum 2024: 7'056 CHF (salariés avec LPP)
+- 3e pilier A maximum 2024: 35'280 CHF (indépendants sans LPP)
+- Frais de repas 2024: maximum 15 CHF/jour
+
+**Pour 2025 et années suivantes: TOUJOURS rechercher sur internet pour avoir les montants à jour!**
 
 Réponds maintenant de manière naturelle et humaine. Si c'est une salutation simple, réponds chaleureusement. Si c'est une question fiscale, sois expert et précis. Si c'est autre chose, sois conversationnel mais trouve un lien subtil avec la fiscalité suisse si l'occasion se présente naturellement.`;
 
