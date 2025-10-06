@@ -49,19 +49,43 @@ export default function DashboardPage() {
 
   const loadDashboard = async () => {
     if (!user?.id) return;
-    
+
     try {
       await userProfileService.loadFromStorage();
       await goalsService.loadFromStorage();
-      
+
       const data = await userProfileService.getDashboardData(user.id);
       const userInsights = await userProfileService.generateFinancialInsights(user.id);
       const goalInsights = await goalsService.generateGoalInsights(user.id);
-      
-      setDashboardData(data);
+
+      // Si pas de données, créer un dashboard par défaut
+      if (!data) {
+        setDashboardData({
+          capaciteEpargne: 0,
+          tauxEpargne: 0,
+          objectifsActifs: 0,
+          objectifsTotal: 0,
+          progressionMoyenne: 0,
+          montantEpargneTotal: 0,
+          montantObjectifTotal: 0
+        });
+      } else {
+        setDashboardData(data);
+      }
+
       setInsights([...userInsights, ...goalInsights]);
     } catch (error) {
       console.error('Erreur lors du chargement du dashboard:', error);
+      // En cas d'erreur, créer un dashboard vide
+      setDashboardData({
+        capaciteEpargne: 0,
+        tauxEpargne: 0,
+        objectifsActifs: 0,
+        objectifsTotal: 0,
+        progressionMoyenne: 0,
+        montantEpargneTotal: 0,
+        montantObjectifTotal: 0
+      });
     } finally {
       setLoading(false);
     }
@@ -126,18 +150,6 @@ export default function DashboardPage() {
 
   // Vérifier si l'utilisateur a un profil complet
   const hasCompleteProfile = user?.profil && user.profil.revenuBrutAnnuel > 0;
-
-  // Si pas de données dashboard, afficher un loader
-  if (!dashboardData) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Génération de votre tableau de bord...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <ProtectedRoute>
