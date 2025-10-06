@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   TrendingUp, 
   TrendingDown,
@@ -314,17 +313,11 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Contenu principal */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-4 w-full">
-            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-            <TabsTrigger value="goals">Objectifs</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-            <TabsTrigger value="activity">Activité</TabsTrigger>
-          </TabsList>
-
+        {/* Contenu principal - Tout sur une seule page */}
+        <div className="space-y-8">
           {/* Vue d'ensemble */}
-          <TabsContent value="overview" className="space-y-6">
+          <section className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">Vue d'ensemble</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Évolution du patrimoine */}
               <Card>
@@ -393,12 +386,12 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
+          </section>
 
           {/* Objectifs */}
-          <TabsContent value="goals" className="space-y-6">
+          <section className="space-y-6">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Mes objectifs financiers</h3>
+              <h2 className="text-2xl font-bold text-gray-900">Objectifs</h2>
               <Button onClick={() => window.location.href = '/objectifs'}>
                 <Plus className="w-4 h-4 mr-2" />
                 Nouvel objectif
@@ -465,12 +458,12 @@ export default function DashboardPage() {
                 ))}
               </div>
             )}
-          </TabsContent>
+          </section>
 
           {/* Insights */}
-          <TabsContent value="insights" className="space-y-6">
+          <section className="space-y-6">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Analyses et recommandations</h3>
+              <h2 className="text-2xl font-bold text-gray-900">Insights</h2>
               <Badge variant="outline">
                 {insights.length} insights disponibles
               </Badge>
@@ -526,12 +519,12 @@ export default function DashboardPage() {
                 })}
               </div>
             )}
-          </TabsContent>
+          </section>
 
           {/* Activité */}
-          <TabsContent value="activity" className="space-y-6">
+          <section className="space-y-6">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Activité récente</h3>
+              <h2 className="text-2xl font-bold text-gray-900">Activité</h2>
               <Button variant="outline" size="sm">
                 <Calendar className="w-4 h-4 mr-2" />
                 Voir tout
@@ -566,8 +559,8 @@ export default function DashboardPage() {
                 </Card>
               ))}
             </div>
-          </TabsContent>
-        </Tabs>
+          </section>
+        </div>
       </div>
     </div>
     </ProtectedRoute>
