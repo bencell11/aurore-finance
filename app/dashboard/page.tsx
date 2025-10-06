@@ -50,17 +50,17 @@ export default function DashboardPage() {
     } else {
       // Si pas d'utilisateur après chargement auth, créer dashboard vide
       setDashboardData({
-        capaciteEpargne: 0,
-        tauxEpargne: 0,
-        objectifsActifs: 0,
-        objectifsTotal: 0,
-        progressionMoyenne: 0,
-        montantEpargneTotal: 0,
-        montantObjectifTotal: 0,
+        patrimoineNet: 0,
         evolutionPatrimoine: [],
+        objectifsActifs: [],
         prochainesToches: [],
-        dernièresActions: []
-      } as any);
+        dernièresActions: [],
+        performanceObjectifs: {
+          enCours: 0,
+          atteints: 0,
+          enRetard: 0
+        }
+      });
       setLoading(false);
     }
   }, [user, authLoading]);
@@ -79,17 +79,17 @@ export default function DashboardPage() {
       // Si pas de données, créer un dashboard par défaut
       if (!data) {
         setDashboardData({
-          capaciteEpargne: 0,
-          tauxEpargne: 0,
-          objectifsActifs: 0,
-          objectifsTotal: 0,
-          progressionMoyenne: 0,
-          montantEpargneTotal: 0,
-          montantObjectifTotal: 0,
+          patrimoineNet: 0,
           evolutionPatrimoine: [],
+          objectifsActifs: [],
           prochainesToches: [],
-          dernièresActions: []
-        } as any);
+          dernièresActions: [],
+          performanceObjectifs: {
+            enCours: 0,
+            atteints: 0,
+            enRetard: 0
+          }
+        });
       } else {
         setDashboardData(data);
       }
@@ -99,17 +99,17 @@ export default function DashboardPage() {
       console.error('Erreur lors du chargement du dashboard:', error);
       // En cas d'erreur, créer un dashboard vide
       setDashboardData({
-        capaciteEpargne: 0,
-        tauxEpargne: 0,
-        objectifsActifs: 0,
-        objectifsTotal: 0,
-        progressionMoyenne: 0,
-        montantEpargneTotal: 0,
-        montantObjectifTotal: 0,
+        patrimoineNet: 0,
         evolutionPatrimoine: [],
+        objectifsActifs: [],
         prochainesToches: [],
-        dernièresActions: []
-      } as any);
+        dernièresActions: [],
+        performanceObjectifs: {
+          enCours: 0,
+          atteints: 0,
+          enRetard: 0
+        }
+      });
     } finally {
       setLoading(false);
     }
@@ -252,12 +252,12 @@ export default function DashboardPage() {
               <div className="flex items-center">
                 <Target className="w-8 h-8 text-blue-600 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Objectifs actifs</p>
+                  <p className="text-sm font-medium text-gray-600">Objectifs en cours</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {dashboardData.objectifsActifs}
+                    {dashboardData.performanceObjectifs.enCours}
                   </p>
                   <p className="text-xs text-gray-600">
-                    sur {dashboardData.objectifsTotal} total
+                    {dashboardData.performanceObjectifs.atteints} atteints
                   </p>
                 </div>
               </div>
@@ -271,10 +271,12 @@ export default function DashboardPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Progression moyenne</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {dashboardData.progressionMoyenne.toFixed(1)}%
+                    {dashboardData.objectifsActifs.length > 0
+                      ? (dashboardData.objectifsActifs.reduce((sum, goal) => sum + goal.progressionPourcentage, 0) / dashboardData.objectifsActifs.length).toFixed(1)
+                      : '0.0'}%
                   </p>
                   <p className="text-xs text-purple-600">
-                    Sur {dashboardData.objectifsActifs} objectifs
+                    Sur {dashboardData.objectifsActifs.length} objectifs
                   </p>
                 </div>
               </div>
