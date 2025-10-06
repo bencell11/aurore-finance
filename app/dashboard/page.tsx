@@ -56,8 +56,11 @@ export default function DashboardPage() {
         objectifsTotal: 0,
         progressionMoyenne: 0,
         montantEpargneTotal: 0,
-        montantObjectifTotal: 0
-      });
+        montantObjectifTotal: 0,
+        evolutionPatrimoine: [],
+        prochainesToches: [],
+        dernièresActions: []
+      } as any);
       setLoading(false);
     }
   }, [user, authLoading]);
@@ -82,8 +85,11 @@ export default function DashboardPage() {
           objectifsTotal: 0,
           progressionMoyenne: 0,
           montantEpargneTotal: 0,
-          montantObjectifTotal: 0
-        });
+          montantObjectifTotal: 0,
+          evolutionPatrimoine: [],
+          prochainesToches: [],
+          dernièresActions: []
+        } as any);
       } else {
         setDashboardData(data);
       }
@@ -99,8 +105,11 @@ export default function DashboardPage() {
         objectifsTotal: 0,
         progressionMoyenne: 0,
         montantEpargneTotal: 0,
-        montantObjectifTotal: 0
-      });
+        montantObjectifTotal: 0,
+        evolutionPatrimoine: [],
+        prochainesToches: [],
+        dernièresActions: []
+      } as any);
     } finally {
       setLoading(false);
     }
