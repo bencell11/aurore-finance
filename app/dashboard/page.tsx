@@ -65,6 +65,19 @@ export default function DashboardPage() {
     }
   }, [user, authLoading]);
 
+  // Détecter le paramètre refreshProfile pour forcer le rechargement
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('refreshProfile') === 'true' && user?.id) {
+        // Forcer le rechargement des données
+        setTimeout(() => loadDashboard(), 500);
+        // Nettoyer l'URL
+        window.history.replaceState({}, '', '/dashboard');
+      }
+    }
+  }, [user]);
+
   const loadDashboard = async () => {
     if (!user?.id) return;
 

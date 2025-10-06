@@ -304,20 +304,24 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
     // Sauvegarder le profil complet
     if (user?.id) {
       const userProfileService = UserProfileService.getInstance();
-      await userProfileService.updateProfile(user.id, {
+
+      // Créer ou mettre à jour le profil utilisateur
+      await userProfileService.updateUserProfile(user.id, {
         age: onboardingData.age,
         situationFamiliale: onboardingData.situationFamiliale,
-        canton: onboardingData.canton,
+        canton: onboardingData.canton
+      });
+
+      // Créer ou mettre à jour le profil financier
+      await userProfileService.createOrUpdateFinancialProfile(user.id, {
         revenuBrutAnnuel: onboardingData.revenus?.salaireBrut || 0,
         autresRevenus: onboardingData.revenus?.autresRevenus || 0,
-        chargesMensuelles: {
-          loyer: onboardingData.charges?.loyer || 0,
-          assurances: onboardingData.charges?.assurances || 0,
-          autres: onboardingData.charges?.autresCharges || 0
-        },
+        chargesLogement: onboardingData.charges?.loyer || 0,
+        chargesAssurances: onboardingData.charges?.assurances || 0,
+        autresCharges: onboardingData.charges?.autresCharges || 0,
         objectifsFinanciers: onboardingData.objectifsFinanciers || [],
         toleranceRisque: onboardingData.toleranceRisque || 'moderee',
-        horizonInvestissement: onboardingData.horizonInvestissement,
+        horizonInvestissement: onboardingData.horizonInvestissement || '5-10 ans',
         niveauConnaissances: onboardingData.connaissancesFinancieres || 'debutant'
       });
     }

@@ -227,7 +227,8 @@ export default function OnboardingPage() {
   };
 
   const goToDashboard = () => {
-    router.push('/dashboard');
+    // Forcer un refresh complet pour que le dashboard recharge les nouvelles données
+    router.push('/dashboard?refreshProfile=true');
   };
 
   if (!isComplete) {
