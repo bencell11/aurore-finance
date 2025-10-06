@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { FinancialGoal } from '@/types/user';
 import { GoalsService } from '@/lib/services/goals.service';
+import { GoalsRecommendationsService } from '@/lib/services/goals-recommendations.service';
 import GoalCreationWizard from '@/components/goals/GoalCreationWizard';
 import GoalDetailView from '@/components/goals/GoalDetailView';
 
@@ -39,7 +40,8 @@ export default function ObjectifsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<FinancialGoal | null>(null);
   const goalsService = GoalsService.getInstance();
-  
+  const recommendationsService = GoalsRecommendationsService.getInstance();
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -361,10 +363,10 @@ export default function ObjectifsPage() {
                               <Icon className="w-6 h-6" />
                             </div>
                             <div>
-                              <CardTitle className="text-lg">{goal.title}</CardTitle>
+                              <CardTitle className="text-lg">{goal.titre}</CardTitle>
                               <div className="flex items-center space-x-2 mt-1">
-                                <Badge className={getPriorityColor(goal.priority)}>
-                                  {goal.priority}
+                                <Badge className={getPriorityColor(goal.priorite)}>
+                                  {goal.priorite}
                                 </Badge>
                                 <Badge variant="outline">
                                   {goal.type}
@@ -542,59 +544,251 @@ export default function ObjectifsPage() {
           </TabsContent>
 
           {/* Analyse */}
-          <TabsContent value="analyse">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Vue d'ensemble</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span>Montant total ciblé</span>
-                      <span className="font-semibold">{formatCurrency(totalTargetAmount)}</span>
-                    </div>
-                    <div className="flex justify-between mb-2">
-                      <span>Montant épargné</span>
-                      <span className="font-semibold text-green-600">{formatCurrency(totalCurrentAmount)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Progression globale</span>
-                      <span className="font-semibold">{averageProgress.toFixed(1)}%</span>
-                    </div>
-                  </div>
-                  <Progress value={averageProgress} className="h-3" />
-                </CardContent>
-              </Card>
+          <TabsContent value="analyse" className="space-y-6">
+            {/* Insights financiers */}
+            {user?.profil && (() => {
+              const insights = recommendationsService.generateInsights(user.profil, goals);
+              const budget = recommendationsService.analyzeBudget(user.profil);
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recommandations</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-start space-x-2">
-                      <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5" />
-                      <div>
-                        <p className="font-medium">Diversifiez vos objectifs</p>
-                        <p className="text-sm text-gray-600">
-                          Équilibrez épargne court terme et investissements long terme
+              return (
+                <>
+                  {/* Section insights */}
+                  {insights.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-gray-900">Insights personnalisés</h3>
+                      {insights.map((insight, index) => (
+                        <Card key={index} className={`border-l-4 ${
+                          insight.type === 'success' ? 'border-green-500 bg-green-50' :
+                          insight.type === 'warning' ? 'border-yellow-500 bg-yellow-50' :
+                          insight.type === 'danger' ? 'border-red-500 bg-red-50' :
+                          'border-blue-500 bg-blue-50'
+                        }`}>
+                          <CardContent className="pt-6">
+                            <div className="flex items-start space-x-3">
+                              {insight.type === 'success' && <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />}
+                              {insight.type === 'warning' && <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />}
+                              {insight.type === 'danger' && <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />}
+                              {insight.type === 'info' && <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />}
+                              <div className="flex-1">
+                                <p className="font-semibold text-gray-900">{insight.titre}</p>
+                                <p className="text-sm text-gray-700 mt-1">{insight.message}</p>
+                                {insight.action && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="mt-2"
+                                    onClick={() => insight.actionUrl && (window.location.href = insight.actionUrl)}
+                                  >
+                                    {insight.action}
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Analyse budget */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Analyse de votre budget</CardTitle>
+                      <CardDescription>
+                        Basé sur votre profil financier
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Revenu net mensuel</span>
+                            <span className="font-semibold">{formatCurrency(budget.revenuNetMensuel)}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Charges fixes estimées</span>
+                            <span className="font-semibold text-orange-600">-{formatCurrency(budget.chargesFixesEstimees)}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Dépenses courantes estimées</span>
+                            <span className="font-semibold text-orange-600">-{formatCurrency(budget.depensesEstimees)}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Marge de sécurité (10%)</span>
+                            <span className="font-semibold text-gray-500">-{formatCurrency(budget.margeSecurite)}</span>
+                          </div>
+                          <div className="h-px bg-gray-300 my-2"></div>
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-gray-900">Capacité d'épargne mensuelle</span>
+                            <span className="font-bold text-green-600 text-lg">{formatCurrency(budget.capaciteEpargneMensuelle)}</span>
+                          </div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-6">
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600 mb-2">Taux d'épargne</p>
+                            <p className="text-4xl font-bold text-blue-600 mb-2">
+                              {budget.tauxEpargne.toFixed(1)}%
+                            </p>
+                            <Progress value={Math.min(budget.tauxEpargne, 100)} className="h-2 mb-2" />
+                            <p className="text-xs text-gray-600">
+                              {budget.tauxEpargne < 10 ? 'Augmentez votre épargne' :
+                               budget.tauxEpargne < 20 ? 'Bon niveau d\'épargne' :
+                               budget.tauxEpargne < 30 ? 'Excellent taux d\'épargne !' :
+                               'Épargne exceptionnelle !'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Engagement actuel vs capacité */}
+                      <div className="mt-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-700">Engagements mensuels actuels</span>
+                          <span className="font-semibold">
+                            {formatCurrency(activeGoals.reduce((sum, g) => sum + g.versementMensuelPlan, 0))}
+                          </span>
+                        </div>
+                        <Progress
+                          value={Math.min((activeGoals.reduce((sum, g) => sum + g.versementMensuelPlan, 0) / budget.capaciteEpargneMensuelle) * 100, 100)}
+                          className="h-3"
+                        />
+                        <p className="text-xs text-gray-600 mt-1">
+                          {((activeGoals.reduce((sum, g) => sum + g.versementMensuelPlan, 0) / budget.capaciteEpargneMensuelle) * 100).toFixed(1)}% de votre capacité utilisée
                         </p>
                       </div>
-                    </div>
-                    <div className="flex items-start space-x-2">
-                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
-                      <div>
-                        <p className="font-medium">Automatisez vos versements</p>
-                        <p className="text-sm text-gray-600">
-                          Configurez des virements automatiques pour atteindre vos objectifs
-                        </p>
-                      </div>
-                    </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Vue d'ensemble des objectifs */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Vue d'ensemble</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <div className="flex justify-between mb-2">
+                            <span>Montant total ciblé</span>
+                            <span className="font-semibold">{formatCurrency(totalTargetAmount)}</span>
+                          </div>
+                          <div className="flex justify-between mb-2">
+                            <span>Montant épargné</span>
+                            <span className="font-semibold text-green-600">{formatCurrency(totalCurrentAmount)}</span>
+                          </div>
+                          <div className="flex justify-between mb-2">
+                            <span>Montant restant</span>
+                            <span className="font-semibold text-orange-600">{formatCurrency(totalTargetAmount - totalCurrentAmount)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Progression globale</span>
+                            <span className="font-semibold">{averageProgress.toFixed(1)}%</span>
+                          </div>
+                        </div>
+                        <Progress value={averageProgress} className="h-3" />
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Répartition par type</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {Array.from(new Set(goals.map(g => g.type))).map(type => {
+                            const typeGoals = goals.filter(g => g.type === type);
+                            const total = typeGoals.reduce((sum, g) => sum + g.montantCible, 0);
+                            const percentage = (total / totalTargetAmount) * 100;
+                            return (
+                              <div key={type}>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-sm capitalize">{type}</span>
+                                  <span className="text-sm font-medium">{formatCurrency(total)}</span>
+                                </div>
+                                <Progress value={percentage} className="h-2" />
+                                <p className="text-xs text-gray-500 mt-1">{percentage.toFixed(1)}% du total</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+
+                  {/* Recommandations d'objectifs */}
+                  {(() => {
+                    const recommendations = recommendationsService.generateRecommendations(user.profil, goals);
+                    if (recommendations.length === 0) return null;
+
+                    return (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Objectifs recommandés pour vous</CardTitle>
+                          <CardDescription>
+                            Basé sur votre profil, voici des objectifs qui pourraient vous intéresser
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            {recommendations.slice(0, 4).map((rec, index) => (
+                              <Card key={index} className="border-2 border-blue-100 hover:border-blue-300 transition-colors cursor-pointer">
+                                <CardHeader>
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex items-center space-x-3">
+                                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getGoalColor(rec.type)}`}>
+                                        {React.createElement(getGoalIcon(rec.type), { className: "w-5 h-5" })}
+                                      </div>
+                                      <div>
+                                        <CardTitle className="text-base">{rec.titre}</CardTitle>
+                                        <div className="flex gap-2 mt-1">
+                                          <Badge className={getPriorityColor(rec.priorite)} variant="outline">
+                                            {rec.priorite}
+                                          </Badge>
+                                          <Badge variant="outline" className="text-xs">
+                                            {rec.difficulte}
+                                          </Badge>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                  <p className="text-sm text-gray-600">{rec.description}</p>
+                                  <div className="bg-blue-50 rounded-lg p-3 text-sm">
+                                    <p className="text-gray-700">{rec.raisonnement}</p>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-3 text-sm">
+                                    <div>
+                                      <span className="text-gray-600">Montant:</span>
+                                      <p className="font-semibold">{formatCurrency(rec.montantSuggere)}</p>
+                                    </div>
+                                    <div>
+                                      <span className="text-gray-600">Par mois:</span>
+                                      <p className="font-semibold">{formatCurrency(rec.versementMensuelSuggere)}</p>
+                                    </div>
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => {
+                                      // Pré-remplir le formulaire avec la recommandation
+                                      setShowCreateModal(true);
+                                    }}
+                                  >
+                                    <Plus className="w-4 h-4 mr-1" />
+                                    Créer cet objectif
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })()}
+                </>
+              );
+            })()}
           </TabsContent>
         </Tabs>
       </div>
