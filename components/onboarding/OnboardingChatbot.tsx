@@ -17,6 +17,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { useAuthContext } from '@/lib/contexts/AuthContext';
+import { UserProfileService } from '@/lib/services/user-profile.service';
 
 interface Message {
   id: string;
@@ -154,13 +155,15 @@ const ONBOARDING_QUESTIONS = [
 ];
 
 export default function OnboardingChatbot({ onComplete }: { onComplete: (data: OnboardingData, scoring: string) => void }) {
-  const { user, updateUserProfile } = useAuthContext();
+  const { user } = useAuthContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentInput, setCurrentInput] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({});
   const [isTyping, setIsTyping] = useState(false);
   const [selectedChoices, setSelectedChoices] = useState<string[]>([]);
+  const [isReviewMode, setIsReviewMode] = useState(false);
+  const [editingData, setEditingData] = useState<OnboardingData>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -281,48 +284,47 @@ export default function OnboardingChatbot({ onComplete }: { onComplete: (data: O
   };
 
   const finishOnboarding = async (data: OnboardingData) => {
-    // Calculer le scoring
-    const scoring = calculateScoring(data);
+    // Afficher le récapitulatif pour révision
+    setIsReviewMode(true);
 
-    // Message de fin personnalisé
     const summaryMessage = `
-🎉 **Profil complété avec succès !**
+✅ **Toutes les questions sont complétées !**
 
-Voici votre profil :
-• Niveau : **${scoring.toUpperCase()}**
-• Canton : ${data.canton}
-• Revenus annuels : ${formatCurrency((data.revenus?.salaireBrut || 0) + (data.revenus?.autresRevenus || 0))}
-• Charges mensuelles : ${formatCurrency((data.charges?.loyer || 0) + (data.charges?.assurances || 0) + (data.charges?.autresCharges || 0))}
-• Tolérance au risque : ${data.toleranceRisque}
-
-Je génère maintenant votre document d'optimisation personnalisé...
+Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous avant de valider.
     `.trim();
 
     addAssistantMessage(summaryMessage);
+  };
+
+  const confirmAndComplete = async () => {
+    const scoring = calculateScoring(onboardingData);
+
+    addAssistantMessage('🎉 Merci ! Je génère maintenant votre document d\'optimisation personnalisé...');
 
     // Sauvegarder le profil complet
     if (user?.id) {
-      await updateUserProfile(user.id, {
-        age: data.age,
-        situationFamiliale: data.situationFamiliale,
-        canton: data.canton,
-        revenuAnnuelBrut: data.revenus?.salaireBrut || 0,
-        autresRevenus: data.revenus?.autresRevenus || 0,
+      const userProfileService = UserProfileService.getInstance();
+      await userProfileService.updateProfile(user.id, {
+        age: onboardingData.age,
+        situationFamiliale: onboardingData.situationFamiliale,
+        canton: onboardingData.canton,
+        revenuBrutAnnuel: onboardingData.revenus?.salaireBrut || 0,
+        autresRevenus: onboardingData.revenus?.autresRevenus || 0,
         chargesMensuelles: {
-          loyer: data.charges?.loyer || 0,
-          assurances: data.charges?.assurances || 0,
-          autres: data.charges?.autresCharges || 0
+          loyer: onboardingData.charges?.loyer || 0,
+          assurances: onboardingData.charges?.assurances || 0,
+          autres: onboardingData.charges?.autresCharges || 0
         },
-        objectifsFinanciers: data.objectifsFinanciers || [],
-        toleranceRisque: data.toleranceRisque || 'moderee',
-        horizonInvestissement: data.horizonInvestissement,
-        niveauConnaissances: data.connaissancesFinancieres || 'debutant'
+        objectifsFinanciers: onboardingData.objectifsFinanciers || [],
+        toleranceRisque: onboardingData.toleranceRisque || 'moderee',
+        horizonInvestissement: onboardingData.horizonInvestissement,
+        niveauConnaissances: onboardingData.connaissancesFinancieres || 'debutant'
       });
     }
 
     setTimeout(() => {
-      onComplete(data, scoring);
-    }, 2000);
+      onComplete(onboardingData, scoring);
+    }, 1500);
   };
 
   const calculateScoring = (data: OnboardingData): string => {
@@ -442,40 +444,134 @@ Je génère maintenant votre document d'optimisation personnalisé...
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div className="border-t bg-white p-4 rounded-b-xl">
-        {currentQuestion?.type === 'multiple' && selectedChoices.length > 0 ? (
-          <div className="flex gap-2">
-            <div className="flex-1 flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="text-sm text-gray-600">{selectedChoices.length} sélectionné(s)</span>
+      {/* Input ou Panneau de révision */}
+      {isReviewMode ? (
+        <div className="border-t bg-white p-6 rounded-b-xl max-h-[300px] overflow-y-auto">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            Révision de vos informations
+          </h3>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Âge</label>
+              <Input
+                type="number"
+                value={onboardingData.age || ''}
+                onChange={(e) => setOnboardingData({ ...onboardingData, age: parseInt(e.target.value) })}
+                className="w-full"
+              />
             </div>
-            <Button onClick={handleConfirmMultiple} className="bg-blue-600 hover:bg-blue-700">
-              Confirmer
-              <Send className="w-4 h-4 ml-2" />
-            </Button>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Canton</label>
+              <Input
+                value={onboardingData.canton || ''}
+                onChange={(e) => setOnboardingData({ ...onboardingData, canton: e.target.value })}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Salaire brut annuel (CHF)</label>
+              <Input
+                type="number"
+                value={onboardingData.revenus?.salaireBrut || ''}
+                onChange={(e) => setOnboardingData({
+                  ...onboardingData,
+                  revenus: { ...onboardingData.revenus, salaireBrut: parseInt(e.target.value) || 0 }
+                })}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Autres revenus (CHF)</label>
+              <Input
+                type="number"
+                value={onboardingData.revenus?.autresRevenus || ''}
+                onChange={(e) => setOnboardingData({
+                  ...onboardingData,
+                  revenus: { ...onboardingData.revenus, autresRevenus: parseInt(e.target.value) || 0 }
+                })}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Loyer mensuel (CHF)</label>
+              <Input
+                type="number"
+                value={onboardingData.charges?.loyer || ''}
+                onChange={(e) => setOnboardingData({
+                  ...onboardingData,
+                  charges: { ...onboardingData.charges, loyer: parseInt(e.target.value) || 0 }
+                })}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Assurances mensuelles (CHF)</label>
+              <Input
+                type="number"
+                value={onboardingData.charges?.assurances || ''}
+                onChange={(e) => setOnboardingData({
+                  ...onboardingData,
+                  charges: { ...onboardingData.charges, assurances: parseInt(e.target.value) || 0 }
+                })}
+                className="w-full"
+              />
+            </div>
           </div>
-        ) : currentQuestion?.type === 'choice' ? null : (
-          <div className="flex gap-2">
-            <Input
-              value={currentInput}
-              onChange={(e) => setCurrentInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder={currentQuestion?.type === 'number' ? 'Entrez un nombre...' : 'Votre réponse...'}
-              type={currentQuestion?.type === 'number' ? 'number' : 'text'}
-              className="flex-1"
-              disabled={isTyping}
-            />
+          <div className="flex gap-3 justify-end">
             <Button
-              onClick={() => handleSendMessage()}
-              disabled={!currentInput.trim() || isTyping}
-              className="bg-blue-600 hover:bg-blue-700"
+              variant="outline"
+              onClick={() => {
+                setIsReviewMode(false);
+                setCurrentStep(ONBOARDING_QUESTIONS.length - 1);
+              }}
             >
-              <Send className="w-4 h-4" />
+              Modifier plus
+            </Button>
+            <Button
+              onClick={confirmAndComplete}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <CheckCircle className="w-4 h-4 mr-2" />
+              Valider et continuer
             </Button>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="border-t bg-white p-4 rounded-b-xl">
+          {currentQuestion?.type === 'multiple' && selectedChoices.length > 0 ? (
+            <div className="flex gap-2">
+              <div className="flex-1 flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="text-sm text-gray-600">{selectedChoices.length} sélectionné(s)</span>
+              </div>
+              <Button onClick={handleConfirmMultiple} className="bg-blue-600 hover:bg-blue-700">
+                Confirmer
+                <Send className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          ) : currentQuestion?.type === 'choice' ? null : (
+            <div className="flex gap-2">
+              <Input
+                value={currentInput}
+                onChange={(e) => setCurrentInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                placeholder={currentQuestion?.type === 'number' ? 'Entrez un nombre...' : 'Votre réponse...'}
+                type={currentQuestion?.type === 'number' ? 'number' : 'text'}
+                className="flex-1"
+                disabled={isTyping}
+              />
+              <Button
+                onClick={() => handleSendMessage()}
+                disabled={!currentInput.trim() || isTyping}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
