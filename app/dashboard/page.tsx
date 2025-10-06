@@ -34,7 +34,7 @@ import { GoalsService } from '@/lib/services/goals.service';
 import { DashboardData, UserInsight, FinancialGoal } from '@/types/user';
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [insights, setInsights] = useState<UserInsight[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,10 +42,25 @@ export default function DashboardPage() {
   const goalsService = GoalsService.getInstance();
 
   useEffect(() => {
+    // Attendre que l'auth soit chargé
+    if (authLoading) return;
+
     if (user?.id) {
       loadDashboard();
+    } else {
+      // Si pas d'utilisateur après chargement auth, créer dashboard vide
+      setDashboardData({
+        capaciteEpargne: 0,
+        tauxEpargne: 0,
+        objectifsActifs: 0,
+        objectifsTotal: 0,
+        progressionMoyenne: 0,
+        montantEpargneTotal: 0,
+        montantObjectifTotal: 0
+      });
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   const loadDashboard = async () => {
     if (!user?.id) return;
