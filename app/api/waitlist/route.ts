@@ -111,7 +111,7 @@ async function sendEmailWithFallback({ to, subject, html }: { to: string, subjec
     try {
       const resend = new Resend(resendKey);
       await resend.emails.send({
-        from: 'Aurore Finances <noreply@aurore-finance.com>',
+        from: 'Aurore Finances <noreply@aurorefinances.ch>',
         to: [to],
         subject,
         html
@@ -260,7 +260,7 @@ function generateConfirmationEmailHTML(email: string): string {
           
           <!-- Bouton d'action -->
           <div style="text-align: center; margin: 40px 0;">
-            <a href="mailto:contact@aurore-finance.com" style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); transition: transform 0.2s;">
+            <a href="mailto:hello@aurorefinances.ch" style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); transition: transform 0.2s;">
               💬 Nous contacter
             </a>
           </div>

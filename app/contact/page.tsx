@@ -120,13 +120,13 @@ export default function ContactPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 mb-2">Pour toute question générale :</p>
-                <a href="mailto:contact@aurorefinances.ch" className="text-blue-600 hover:underline font-medium">
-                  contact@aurorefinances.ch
+                <a href="mailto:hello@aurorefinances.ch" className="text-blue-600 hover:underline font-medium">
+                  hello@aurorefinances.ch
                 </a>
-                
+
                 <p className="text-gray-600 mb-2 mt-4">Pour les questions de confidentialité :</p>
-                <a href="mailto:privacy@aurorefinances.ch" className="text-blue-600 hover:underline font-medium">
-                  privacy@aurorefinances.ch
+                <a href="mailto:hello@aurorefinances.ch" className="text-blue-600 hover:underline font-medium">
+                  hello@aurorefinances.ch
                 </a>
               </CardContent>
             </Card>

@@ -137,8 +137,8 @@ export default function ConfidentialitePage() {
               exercer vos droits, contactez-nous :
             </p>
             <p>
-              Email : <a href="mailto:privacy@aurorefinances.ch" className="text-blue-600 hover:underline">
-              privacy@aurorefinances.ch</a><br />
+              Email : <a href="mailto:hello@aurorefinances.ch" className="text-blue-600 hover:underline">
+              hello@aurorefinances.ch</a><br />
               Adresse : [À compléter]
             </p>
           </div>

@@ -31,7 +31,7 @@ export default function MentionsLegalesPage() {
               <strong>Forme juridique :</strong> [À compléter]<br />
               <strong>Adresse :</strong> [À compléter]<br />
               <strong>Pays :</strong> Suisse<br />
-              <strong>Email :</strong> contact@aurorefinances.ch
+              <strong>Email :</strong> hello@aurorefinances.ch
             </p>
 
             <h2 className="text-xl font-semibold text-gray-900">Directeur de la publication</h2>
@@ -88,8 +88,8 @@ export default function MentionsLegalesPage() {
             <h2 className="text-xl font-semibold text-gray-900">Contact</h2>
             <p>
               Pour toute question relative aux présentes mentions légales, vous pouvez nous 
-              contacter à l'adresse : <a href="mailto:contact@aurorefinances.ch" className="text-blue-600 hover:underline">
-              contact@aurorefinances.ch</a>
+              contacter à l'adresse : <a href="mailto:hello@aurorefinances.ch" className="text-blue-600 hover:underline">
+              hello@aurorefinances.ch</a>
             </p>
           </div>
         </div>

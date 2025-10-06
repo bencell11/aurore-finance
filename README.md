@@ -262,9 +262,8 @@ Projet propriétaire - Tous droits réservés © 2024 Aurore Finance
 
 ## 📞 Contact
 
-- **Site web** : [aurore-finance.com](https://aurore-finance.com)
-- **Email** : contact@aurore-finance.com
-- **Support** : support@aurore-finance.com
+- **Site web** : [aurorefinances.ch](https://aurorefinances.ch)
+- **Email** : hello@aurorefinances.ch
 
 ---
 
