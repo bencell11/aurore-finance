@@ -29,8 +29,8 @@ export default function ChatBubble() {
     <>
       {/* Chat Interface */}
       {isOpen && (
-        <div 
-          className={`fixed bottom-20 right-4 z-50 transition-all duration-300 ease-in-out ${
+        <div
+          className={`fixed bottom-24 right-4 z-40 md:bottom-20 md:z-50 transition-all duration-300 ease-in-out ${
             isMinimized ? 'scale-95 opacity-0 pointer-events-none' : 'scale-100 opacity-100'
           }`}
         >
@@ -77,7 +77,7 @@ export default function ChatBubble() {
       )}
 
       {/* Floating Bubble */}
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-20 right-4 z-40 md:bottom-4 md:z-50">
         {!isOpen || isMinimized ? (
           <Button
             onClick={toggleChat}
