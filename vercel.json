@@ -1,0 +1,26 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "aurorefinances.com"
+        }
+      ],
+      "destination": "https://aurorefinances.ch/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.aurorefinances.com"
+        }
+      ],
+      "destination": "https://www.aurorefinances.ch/:path*",
+      "permanent": true
+    }
+  ]
+}
