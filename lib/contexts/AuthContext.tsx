@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { authService, User as AuthUser } from '@/lib/services/auth.service';
 
 interface User {
   email: string;
@@ -23,54 +24,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
-  // Charger l'utilisateur depuis localStorage au démarrage
+  // Charger l'utilisateur depuis authService au démarrage
   useEffect(() => {
-    const savedUser = localStorage.getItem('aurore_user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        localStorage.removeItem('aurore_user');
-      }
+    const currentUser = authService.getCurrentUser();
+    if (currentUser) {
+      setUser({
+        email: currentUser.email,
+        nom: currentUser.nom,
+        prenom: currentUser.prenom
+      });
     }
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Pour le mode démo, accepter n'importe quel email/password
-    if (email && password) {
-      const newUser = { email, nom: 'Demo', prenom: 'User' };
-      setUser(newUser);
-      localStorage.setItem('aurore_user', JSON.stringify(newUser));
-      
-      // Définir aussi le cookie pour le middleware
-      document.cookie = `admin_token=demo_token_${Date.now()}; path=/; max-age=86400`;
-      
+    const response = await authService.login({ email, password });
+    if (response.success && response.user) {
+      setUser({
+        email: response.user.email,
+        nom: response.user.nom,
+        prenom: response.user.prenom
+      });
       return true;
     }
     return false;
   };
 
   const register = async (email: string, password: string, nom: string, prenom: string): Promise<boolean> => {
-    if (email && password && nom && prenom) {
-      const newUser = { email, nom, prenom };
-      setUser(newUser);
-      localStorage.setItem('aurore_user', JSON.stringify(newUser));
-      
-      // Définir aussi le cookie pour le middleware
-      document.cookie = `admin_token=demo_token_${Date.now()}; path=/; max-age=86400`;
-      
+    const response = await authService.register({ email, password, nom, prenom });
+    if (response.success && response.user) {
+      setUser({
+        email: response.user.email,
+        nom: response.user.nom,
+        prenom: response.user.prenom
+      });
       return true;
     }
     return false;
   };
 
   const logout = () => {
+    authService.logout();
     setUser(null);
-    localStorage.removeItem('aurore_user');
-    
-    // Supprimer le cookie
-    document.cookie = 'admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    
     router.push('/');
   };
 
