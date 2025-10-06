@@ -27,6 +27,112 @@ function getOpenAIClient(): OpenAI | null {
   return openai;
 }
 
+/**
+ * Effectue une recherche web pour obtenir des informations fiscales à jour
+ */
+async function performWebSearch(query: string): Promise<{ results: Array<{ title: string; snippet: string; url: string }> }> {
+  try {
+    console.log('🔍 Recherche web:', query);
+
+    // Option 1: Utiliser l'API Brave Search (gratuite, bonne qualité)
+    const braveApiKey = process.env.BRAVE_SEARCH_API_KEY;
+
+    if (braveApiKey) {
+      const braveResponse = await fetch(
+        `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query + ' site:ch OR site:admin.ch OR site:vd.ch')}&count=5`,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'X-Subscription-Token': braveApiKey
+          }
+        }
+      );
+
+      if (braveResponse.ok) {
+        const data = await braveResponse.json();
+        const results = data.web?.results?.slice(0, 5).map((r: any) => ({
+          title: r.title,
+          snippet: r.description,
+          url: r.url
+        })) || [];
+
+        console.log(`✅ ${results.length} résultats trouvés via Brave Search`);
+        return { results };
+      }
+    }
+
+    // Option 2: Fallback - Utiliser DuckDuckGo (pas d'API key nécessaire)
+    console.log('⚠️ Brave Search non disponible, utilisation de DuckDuckGo');
+    const ddgResponse = await fetch(
+      `https://api.duckduckgo.com/?q=${encodeURIComponent(query + ' suisse fiscalité')}&format=json&no_html=1`
+    );
+
+    if (ddgResponse.ok) {
+      const data = await ddgResponse.json();
+      const results = [];
+
+      // AbstractText
+      if (data.AbstractText) {
+        results.push({
+          title: data.Heading || 'Information générale',
+          snippet: data.AbstractText,
+          url: data.AbstractURL || ''
+        });
+      }
+
+      // RelatedTopics
+      if (data.RelatedTopics && Array.isArray(data.RelatedTopics)) {
+        data.RelatedTopics.slice(0, 4).forEach((topic: any) => {
+          if (topic.Text && topic.FirstURL) {
+            results.push({
+              title: topic.Text.split(' - ')[0] || 'Information',
+              snippet: topic.Text,
+              url: topic.FirstURL
+            });
+          }
+        });
+      }
+
+      console.log(`✅ ${results.length} résultats trouvés via DuckDuckGo`);
+      return { results };
+    }
+
+    // Option 3: Si aucune API ne fonctionne, retourner des sources officielles suisses
+    console.log('⚠️ Aucune API de recherche disponible, utilisation de sources par défaut');
+    return {
+      results: [
+        {
+          title: 'Administration fédérale des contributions (AFC)',
+          snippet: 'Site officiel de l\'administration fiscale suisse avec toutes les informations à jour sur la fiscalité fédérale, cantonale et communale.',
+          url: 'https://www.estv.admin.ch/estv/fr/home.html'
+        },
+        {
+          title: 'Guide fiscal pour la Suisse',
+          snippet: 'Informations fiscales complètes par canton, déductions, barèmes et calendriers fiscaux.',
+          url: 'https://www.ch.ch/fr/impots/'
+        },
+        {
+          title: 'Calculateur d\'impôts suisse',
+          snippet: 'Outil officiel pour calculer vos impôts selon votre canton de résidence.',
+          url: 'https://swisstaxcalculator.estv.admin.ch/'
+        }
+      ]
+    };
+  } catch (error) {
+    console.error('Erreur lors de la recherche web:', error);
+    // En cas d'erreur, retourner des sources officielles par défaut
+    return {
+      results: [
+        {
+          title: 'Sources fiscales officielles suisses',
+          snippet: 'Pour des informations fiscales à jour, consultez le site de l\'administration fédérale des contributions (AFC) ou le site de votre canton.',
+          url: 'https://www.estv.admin.ch/'
+        }
+      ]
+    };
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -122,9 +228,18 @@ Tu es un conseiller fiscal expert qui peut:
 - Calculs fiscaux précis en temps réel
 - Comparaisons cantonales détaillées avec chiffres exacts
 - Simulations d'optimisation personnalisées
-- Recherche et vérification d'informations fiscales actuelles
+- **Recherche web en temps réel**: Tu peux effectuer des recherches sur internet pour obtenir des informations fiscales actualisées (nouveaux taux, changements législatifs, délais récents)
 - Conseils stratégiques sur mesure selon la situation
-- Capacité à faire des recherches sur internet pour informations actualisées
+- Vérification d'informations sur les sites officiels suisses (AFC, cantons)
+
+## 🔍 QUAND UTILISER LA RECHERCHE WEB
+Utilise la fonction search_web dans ces cas:
+- Questions sur des taux/montants très récents (2024-2025) que tu ne connais pas avec certitude
+- Changements législatifs récents ou nouvelles lois fiscales
+- Délais et échéances spécifiques pour l'année en cours
+- Informations cantonales très spécifiques
+- Procédures administratives récentes
+**Ne recherche PAS** pour des concepts généraux que tu maîtrises déjà (définitions, principes de base)
 
 ## ⚖️ TES RESPONSABILITÉS ÉTHIQUES
 - Respecter la confidentialité absolue
@@ -145,6 +260,32 @@ ${context ? `L'utilisateur consulte actuellement: ${context}` : 'Pas de contexte
 
 Réponds maintenant de manière naturelle et humaine. Si c'est une salutation simple, réponds chaleureusement. Si c'est une question fiscale, sois expert et précis. Si c'est autre chose, sois conversationnel mais trouve un lien subtil avec la fiscalité suisse si l'occasion se présente naturellement.`;
 
+  // Définition de la fonction de recherche web pour function calling
+  const tools = [
+    {
+      type: "function" as const,
+      function: {
+        name: "search_web",
+        description: "Recherche sur internet pour obtenir des informations fiscales actualisées, des taux d'imposition récents, ou des changements législatifs en Suisse. Utilise cette fonction quand tu as besoin d'informations très récentes ou spécifiques qui pourraient avoir changé.",
+        parameters: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "La requête de recherche en français, optimisée pour trouver des informations fiscales suisses"
+            },
+            focus: {
+              type: "string",
+              enum: ["legislation", "taux", "deadline", "procedure", "general"],
+              description: "Le type d'information recherchée"
+            }
+          },
+          required: ["query"]
+        }
+      }
+    }
+  ];
+
   const completion = await client.chat.completions.create({
     model: "gpt-4o",
     messages: [
@@ -157,12 +298,59 @@ Réponds maintenant de manière naturelle et humaine. Si c'est une salutation si
         content: message
       }
     ],
+    tools: tools,
+    tool_choice: "auto", // Le modèle décide s'il a besoin de rechercher
     max_tokens: 1200,
     temperature: 0.8,
   });
 
-  const response = completion.choices[0]?.message?.content;
-  
+  const responseMessage = completion.choices[0]?.message;
+
+  // Vérifier si le modèle veut utiliser la fonction de recherche
+  if (responseMessage?.tool_calls && responseMessage.tool_calls.length > 0) {
+    const toolCall = responseMessage.tool_calls[0];
+
+    if (toolCall.function.name === "search_web") {
+      const searchArgs = JSON.parse(toolCall.function.arguments);
+      console.log('🔍 Recherche web demandée:', searchArgs.query);
+
+      // Effectuer la recherche web
+      const searchResults = await performWebSearch(searchArgs.query);
+
+      // Envoyer les résultats au modèle pour qu'il génère une réponse enrichie
+      const secondCompletion = await client.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt
+          },
+          {
+            role: "user",
+            content: message
+          },
+          responseMessage,
+          {
+            role: "tool",
+            tool_call_id: toolCall.id,
+            content: JSON.stringify(searchResults)
+          }
+        ],
+        max_tokens: 1500,
+        temperature: 0.8,
+      });
+
+      const finalResponse = secondCompletion.choices[0]?.message?.content;
+      if (!finalResponse) {
+        throw new Error('Aucune réponse générée après recherche');
+      }
+      return finalResponse;
+    }
+  }
+
+  // Réponse directe sans recherche
+  const response = responseMessage?.content;
+
   if (!response) {
     throw new Error('Aucune réponse générée par OpenAI');
   }
