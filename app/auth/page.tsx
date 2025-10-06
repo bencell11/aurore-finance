@@ -65,7 +65,12 @@ export default function AuthPage() {
       if (result) {
         setSuccess(mode === 'login' ? 'Connexion réussie!' : 'Compte créé avec succès!');
         setTimeout(() => {
-          router.push('/dashboard');
+          // Rediriger vers l'onboarding pour les nouveaux utilisateurs, dashboard pour connexion
+          if (mode === 'register') {
+            router.push('/onboarding');
+          } else {
+            router.push('/dashboard');
+          }
         }, 500);
       } else {
         setError('Email ou mot de passe incorrect');
