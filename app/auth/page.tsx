@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthContext } from '@/lib/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,12 +21,14 @@ import {
 
 export default function AuthPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, register } = useAuthContext();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -34,6 +36,14 @@ export default function AuthPage() {
     nom: '',
     prenom: ''
   });
+
+  // Récupérer l'URL de retour depuis les paramètres
+  useEffect(() => {
+    const returnParam = searchParams.get('return');
+    if (returnParam) {
+      setReturnUrl(returnParam);
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,11 +75,11 @@ export default function AuthPage() {
       if (result) {
         setSuccess(mode === 'login' ? 'Connexion réussie!' : 'Compte créé avec succès!');
         setTimeout(() => {
-          // Rediriger vers l'onboarding pour les nouveaux utilisateurs, dashboard pour connexion
+          // Rediriger vers l'URL de retour ou destination par défaut
           if (mode === 'register') {
             router.push('/onboarding');
           } else {
-            router.push('/dashboard');
+            router.push(returnUrl || '/dashboard');
           }
         }, 500);
       } else {

@@ -173,6 +173,9 @@ class AuthService {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(this.STORAGE_KEY);
       localStorage.removeItem(this.TOKEN_KEY);
+
+      // Supprimer aussi le cookie
+      document.cookie = 'aurore_auth_token=; path=/; max-age=0';
     }
   }
 
@@ -276,6 +279,9 @@ class AuthService {
     if (typeof window !== 'undefined') {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
       localStorage.setItem(this.TOKEN_KEY, token);
+
+      // Sauvegarder aussi dans les cookies pour le middleware
+      document.cookie = `aurore_auth_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
     }
   }
 

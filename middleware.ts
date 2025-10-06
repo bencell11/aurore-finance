@@ -1,16 +1,15 @@
 import { NextResponse, NextRequest } from 'next/server';
 
-// Routes protégées (nécessitent un accès admin)
+// Routes protégées (nécessitent une authentification utilisateur)
 const PROTECTED_ROUTES = [
-  '/demo',
-  '/assistant-fiscal', 
   '/dashboard',
   '/simulateurs',
   '/objectifs',
   '/profil',
+  '/onboarding',
 ];
 
-// Routes admin uniquement
+// Routes admin uniquement (nécessitent un token admin)
 const ADMIN_ROUTES = [
   '/admin',
 ];
@@ -21,25 +20,47 @@ const PUBLIC_ROUTES = [
   '/mentions-legales',
   '/confidentialite',
   '/contact',
+  '/auth',
   '/admin/login',
   '/admin/login-simple',
   '/education-fiscale',
+  '/demo',
+  '/assistant-fiscal',
 ];
+
+function checkUserAuth(request: NextRequest): boolean {
+  try {
+    // Vérifier la présence du token utilisateur dans les cookies
+    const userToken = request.cookies.get('aurore_auth_token')?.value;
+
+    if (!userToken || userToken === '') {
+      return false;
+    }
+
+    // Vérifier la validité du token (simple vérification)
+    try {
+      const payload = JSON.parse(atob(userToken));
+      const isExpired = Date.now() - payload.timestamp > 7 * 24 * 60 * 60 * 1000;
+      return !isExpired;
+    } catch {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
 
 function checkAdminAccess(request: NextRequest): boolean {
   try {
-    // Pour simplifier, on vérifie juste la présence d'un token
-    // La vérification JWT complète se fait côté API
+    // Pour l'admin, vérifier le token admin
     const authHeader = request.headers.get('authorization');
     const cookieToken = request.cookies.get('admin_token')?.value;
     const token = authHeader?.replace('Bearer ', '') || cookieToken;
-    
-    // Si pas de token, pas d'accès
+
     if (!token || token === '') {
       return false;
     }
 
-    // Si un token existe, on fait confiance (vérification complète dans l'API)
     return true;
   } catch (error) {
     return false;
@@ -48,37 +69,50 @@ function checkAdminAccess(request: NextRequest): boolean {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // Ignorer les fichiers statiques et API routes
-  if (pathname.includes('.') || 
-      pathname.startsWith('/_next') || 
+  if (pathname.includes('.') ||
+      pathname.startsWith('/_next') ||
       pathname.startsWith('/api')) {
     return NextResponse.next();
   }
-  
+
   // Vérifier si c'est une route publique
-  const isPublicRoute = PUBLIC_ROUTES.some(route => 
+  const isPublicRoute = PUBLIC_ROUTES.some(route =>
     pathname === route || pathname.startsWith(route)
   );
-  
-  // Si ce n'est pas une route publique, vérifier l'authentification
-  if (!isPublicRoute) {
-    const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
-    const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
-    
-    if (isProtectedRoute || isAdminRoute) {
-      const hasAdminAccess = checkAdminAccess(request);
-      
-      if (!hasAdminAccess) {
-        // Rediriger vers la page de login admin
-        const url = request.nextUrl.clone();
-        url.pathname = '/admin/login-simple';
-        url.searchParams.set('return', pathname);
-        return NextResponse.redirect(url);
-      }
+
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
+
+  // Vérifier les routes admin
+  const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
+  if (isAdminRoute) {
+    const hasAdminAccess = checkAdminAccess(request);
+
+    if (!hasAdminAccess) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/admin/login-simple';
+      url.searchParams.set('return', pathname);
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
+  }
+
+  // Vérifier les routes protégées utilisateur
+  const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+  if (isProtectedRoute) {
+    const hasUserAuth = checkUserAuth(request);
+
+    if (!hasUserAuth) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/auth';
+      url.searchParams.set('return', pathname);
+      return NextResponse.redirect(url);
     }
   }
-  
+
   return NextResponse.next();
 }
 
