@@ -4,10 +4,28 @@ import OpenAI from 'openai';
 // Simple session store en mémoire (pour démo)
 const sessions = new Map();
 
-// Configuration OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Configuration OpenAI - Lazy initialization pour éviter les erreurs de build
+let openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI | null {
+  if (!process.env.OPENAI_API_KEY) {
+    console.log('⚠️ OpenAI API key not configured');
+    return null;
+  }
+
+  if (!openai) {
+    try {
+      openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+    } catch (error) {
+      console.error('Failed to initialize OpenAI client:', error);
+      return null;
+    }
+  }
+
+  return openai;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -65,6 +83,12 @@ export async function POST(request: NextRequest) {
 }
 
 async function generateExpertFiscalResponse(message: string, context?: string): Promise<string> {
+  const client = getOpenAIClient();
+
+  if (!client) {
+    throw new Error('OpenAI client not available');
+  }
+
   const systemPrompt = `Tu es Claude, un expert fiscal suisse de niveau professionnel avec accès aux dernières informations fiscales. Tu fonctionnes exactement comme ChatGPT mais tu es spécialisé en fiscalité suisse.
 
 ## 🎯 TON IDENTITÉ
@@ -121,7 +145,7 @@ ${context ? `L'utilisateur consulte actuellement: ${context}` : 'Pas de contexte
 
 Réponds maintenant de manière naturelle et humaine. Si c'est une salutation simple, réponds chaleureusement. Si c'est une question fiscale, sois expert et précis. Si c'est autre chose, sois conversationnel mais trouve un lien subtil avec la fiscalité suisse si l'occasion se présente naturellement.`;
 
-  const completion = await openai.chat.completions.create({
+  const completion = await client.chat.completions.create({
     model: "gpt-4o",
     messages: [
       {
