@@ -250,7 +250,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Input
                   type="email"
-                  placeholder={t.emailPlaceholder}
+                  placeholder={t.emailPlaceholder || "votre@email.com"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -267,7 +267,7 @@ export default function HomePage() {
                       {t.registeredButton}
                     </>
                   ) : isSubmitting ? (
-                    t.submitting
+                    t.submitting || "Envoi..."
                   ) : (
                     t.joinWaitlist
                   )}
@@ -292,13 +292,15 @@ export default function HomePage() {
             </div>
           )}
 
-          <p className="text-gray-500 text-sm">
-            {t.alreadyMore}{" "}
-            <span className="font-semibold text-blue-600">
-              {waitlistCount}
-            </span>{" "}
-            {t.joinMovement}
-          </p>
+          {waitlistCount > 0 && (
+            <p className="text-gray-500 text-sm">
+              {t.alreadyMore}{" "}
+              <span className="font-semibold text-blue-600">
+                {waitlistCount}
+              </span>{" "}
+              {t.joinMovement}
+            </p>
+          )}
         </div>
       </section>
 
@@ -307,13 +309,10 @@ export default function HomePage() {
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              La gestion de vos finances n'a jamais été aussi simple.
+              {t.promise?.title || "La gestion de vos finances n'a jamais été aussi simple."}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Nous construisons une application qui vous aide à piloter vos
-              finances de manière claire, personnalisée et intelligente. Un
-              tableau de bord, une boussole, et des conseils concrets pour
-              atteindre vos objectifs.
+              {t.promise?.description || "Nous construisons une application qui vous aide à piloter vos finances de manière claire, personnalisée et intelligente. Un tableau de bord, une boussole, et des conseils concrets pour atteindre vos objectifs."}
             </p>
           </div>
 
@@ -324,7 +323,7 @@ export default function HomePage() {
                   <BarChart3 className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-xl text-gray-900">
-                  Visualisez l'ensemble de vos comptes en un seul endroit
+                  {t.promise?.visualize?.title || "Visualisez l'ensemble de vos comptes en un seul endroit"}
                 </CardTitle>
               </CardHeader>
             </Card>
@@ -335,7 +334,7 @@ export default function HomePage() {
                   <Brain className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-xl text-gray-900">
-                  Recevez des recommandations personnalisées grâce à l'IA
+                  {t.promise?.recommendations?.title || "Recevez des recommandations personnalisées grâce à l'IA"}
                 </CardTitle>
               </CardHeader>
             </Card>
@@ -346,7 +345,7 @@ export default function HomePage() {
                   <Globe className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-xl text-gray-900">
-                  Rejoignez une communauté ambitieuse qui partage vos valeurs
+                  {t.promise?.community?.title || "Rejoignez une communauté ambitieuse qui partage vos valeurs"}
                 </CardTitle>
               </CardHeader>
             </Card>
@@ -360,27 +359,23 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Un aperçu de ce qui vous attend : une expérience simple, claire
-                et puissante.
+                {t.mockup?.title || "Un aperçu de ce qui vous attend : une expérience simple, claire et puissante."}
               </h3>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                Interface intuitive, données en temps réel, et intelligence
-                artificielle pour vous accompagner dans chaque décision
-                financière. Découvrez le futur de la gestion patrimoniale
-                personnelle.
+                {t.mockup?.description || "Interface intuitive, données en temps réel, et intelligence artificielle pour vous accompagner dans chaque décision financière. Découvrez le futur de la gestion patrimoniale personnelle."}
               </p>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">Interface moderne</span>
+                  <span className="text-gray-700">{t.mockup?.modernInterface || "Interface moderne"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">IA intégrée</span>
+                  <span className="text-gray-700">{t.mockup?.integratedAI || "IA intégrée"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">Sécurisé</span>
+                  <span className="text-gray-700">{t.mockup?.secure || "Sécurisé"}</span>
                 </div>
               </div>
             </div>
@@ -414,7 +409,7 @@ export default function HomePage() {
                           <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                             <FileText className="h-4 w-4 text-white" />
                           </div>
-                          <h3 className="font-semibold text-gray-900">Assistant Fiscal IA</h3>
+                          <h3 className="font-semibold text-gray-900">{t.mockup?.fiscalAssistant || "Assistant Fiscal IA"}</h3>
                         </div>
                         <div className="flex gap-2">
                           <div className="h-6 w-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -428,21 +423,21 @@ export default function HomePage() {
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                           <div className="flex items-center gap-2 mb-2">
                             <Calculator className="h-4 w-4 text-blue-600" />
-                            <span className="text-xs font-medium text-blue-900">Revenus</span>
+                            <span className="text-xs font-medium text-blue-900">{t.mockup?.revenues || "Revenus"}</span>
                           </div>
                           <div className="text-lg font-bold text-blue-900">CHF 95,000</div>
                         </div>
                         <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
                           <div className="flex items-center gap-2 mb-2">
                             <BarChart3 className="h-4 w-4 text-purple-600" />
-                            <span className="text-xs font-medium text-purple-900">Impôts</span>
+                            <span className="text-xs font-medium text-purple-900">{t.mockup?.taxes || "Impôts"}</span>
                           </div>
                           <div className="text-lg font-bold text-purple-900">CHF 12,450</div>
                         </div>
                         <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                           <div className="flex items-center gap-2 mb-2">
                             <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            <span className="text-xs font-medium text-green-900">Économies</span>
+                            <span className="text-xs font-medium text-green-900">{t.mockup?.savings || "Économies"}</span>
                           </div>
                           <div className="text-lg font-bold text-green-900">CHF 3,200</div>
                         </div>
@@ -452,15 +447,15 @@ export default function HomePage() {
                       <div className="bg-gray-50 rounded-lg p-4 mb-4">
                         <div className="flex items-center gap-2 mb-3">
                           <Brain className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-medium text-gray-700">Assistant IA</span>
+                          <span className="text-sm font-medium text-gray-700">{t.mockup?.aiAssistant || "Assistant IA"}</span>
                         </div>
                         <div className="space-y-2">
                           <div className="bg-blue-100 text-blue-900 rounded-lg p-2 text-xs max-w-xs">
-                            Basé sur votre profil, vous pourriez économiser CHF 3,200 en optimisant vos déductions fiscales.
+                            {t.mockup?.aiMessage || "Basé sur votre profil, vous pourriez économiser CHF 3,200 en optimisant vos déductions fiscales."}
                           </div>
                           <div className="flex gap-2">
-                            <button className="text-xs bg-white border rounded px-2 py-1 text-gray-600">Voir les détails</button>
-                            <button className="text-xs bg-blue-600 text-white rounded px-2 py-1">Appliquer</button>
+                            <button className="text-xs bg-white border rounded px-2 py-1 text-gray-600">{t.mockup?.seeDetails || "Voir les détails"}</button>
+                            <button className="text-xs bg-blue-600 text-white rounded px-2 py-1">{t.mockup?.apply || "Appliquer"}</button>
                           </div>
                         </div>
                       </div>
@@ -468,7 +463,7 @@ export default function HomePage() {
                       {/* Progress Bars */}
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs text-gray-600">
-                          <span>Profil fiscal complété</span>
+                          <span>{t.mockup?.profileCompleted || "Profil fiscal complété"}</span>
                           <span>75%</span>
                         </div>
                         <div className="h-2 bg-gray-200 rounded-full">
@@ -503,17 +498,15 @@ export default function HomePage() {
         <div className="container mx-auto max-w-4xl text-center">
           <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-purple-200 px-4 py-2">
             <Crown className="h-4 w-4 mr-2" />
-            Accès Anticipé Exclusif
+            {t.socialProof?.badge || "Accès Anticipé Exclusif"}
           </Badge>
 
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Soyez pionnier.
+            {t.socialProof?.title || "Soyez pionnier."}
           </h2>
 
           <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Les places pour la version bêta sont limitées. En vous inscrivant
-            aujourd'hui, vous aurez accès en avant-première à la plateforme et
-            pourrez contribuer à son évolution.
+            {t.socialProof?.description || "Les places pour la version bêta sont limitées. En vous inscrivant aujourd'hui, vous aurez accès en avant-première à la plateforme et pourrez contribuer à son évolution."}
           </p>
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
@@ -522,10 +515,10 @@ export default function HomePage() {
                 <Eye className="h-8 w-8 text-white" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">
-                Accès prioritaire
+                {t.socialProof?.priorityAccess?.title || "Accès prioritaire"}
               </h3>
               <p className="text-gray-600 text-sm">
-                Découvrez les fonctionnalités avant tout le monde
+                {t.socialProof?.priorityAccess?.description || "Découvrez les fonctionnalités avant tout le monde"}
               </p>
             </div>
 
@@ -534,10 +527,10 @@ export default function HomePage() {
                 <Users className="h-8 w-8 text-white" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">
-                Communauté exclusive
+                {t.socialProof?.exclusiveCommunity?.title || "Communauté exclusive"}
               </h3>
               <p className="text-gray-600 text-sm">
-                Rejoignez un groupe de bêta-testeurs privilégiés
+                {t.socialProof?.exclusiveCommunity?.description || "Rejoignez un groupe de bêta-testeurs privilégiés"}
               </p>
             </div>
 
@@ -546,10 +539,10 @@ export default function HomePage() {
                 <Star className="h-8 w-8 text-white" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">
-                Impact direct
+                {t.socialProof?.directImpact?.title || "Impact direct"}
               </h3>
               <p className="text-gray-600 text-sm">
-                Vos retours façonnent l'avenir du produit
+                {t.socialProof?.directImpact?.description || "Vos retours façonnent l'avenir du produit"}
               </p>
             </div>
           </div>
@@ -596,7 +589,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2025 Aurore Finances. Tous droits réservés.</p>
+            <p>{t.footer?.copyright || "© 2025 Aurore Finances. Tous droits réservés."}</p>
           </div>
         </div>
       </footer>

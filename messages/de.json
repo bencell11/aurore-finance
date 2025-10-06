@@ -20,11 +20,71 @@
     "subtitle": "Treten Sie der Warteliste bei und gehören Sie zu den Ersten, die Aurore Finances in der Beta-Version testen.",
     "accessRestricted": "Diese Funktion ist nur in der Vollversion verfügbar. Greifen Sie auf den Admin-Bereich zu, um alle Funktionen freizuschalten.",
     "joinWaitlist": "Der Warteliste beitreten",
+    "registeredButton": "Registriert!",
+    "submitting": "Wird gesendet...",
+    "emailPlaceholder": "ihre@email.com",
     "enterEmail": "E-Mail eingeben",
     "invalidEmail": "Ungültige E-Mail-Adresse",
     "alreadyRegistered": "Diese E-Mail ist bereits auf der Warteliste",
     "subscribeSuccess": "Danke! Sie sind jetzt auf der Warteliste.",
+    "subscribed": "Vielen Dank! Wir haben Ihnen eine Bestätigungs-E-Mail gesendet. Überprüfen Sie Ihren Posteingang.",
+    "connectionError": "Verbindungsfehler. Bitte versuchen Sie es erneut.",
     "peopleWaiting": "{count} Personen auf der Warteliste",
+    "alreadyMore": "Bereits mehr als",
+    "joinMovement": "sind der Bewegung beigetreten",
+    "hero": {
+      "title": "Aurore Finances",
+      "subtitle": "Treten Sie der Warteliste bei und gehören Sie zu den Ersten, die Aurore Finances in der Beta-Version testen."
+    },
+    "promise": {
+      "title": "Die Verwaltung Ihrer Finanzen war noch nie so einfach.",
+      "description": "Wir entwickeln eine App, die Ihnen hilft, Ihre Finanzen klar, personalisiert und intelligent zu verwalten. Ein Dashboard, ein Kompass und konkrete Ratschläge, um Ihre Ziele zu erreichen.",
+      "visualize": {
+        "title": "Visualisieren Sie alle Ihre Konten an einem Ort"
+      },
+      "recommendations": {
+        "title": "Erhalten Sie personalisierte Empfehlungen durch KI"
+      },
+      "community": {
+        "title": "Treten Sie einer ehrgeizigen Community bei, die Ihre Werte teilt"
+      }
+    },
+    "mockup": {
+      "title": "Ein Vorgeschmack auf das, was Sie erwartet: eine einfache, klare und leistungsstarke Erfahrung.",
+      "description": "Intuitive Benutzeroberfläche, Echtzeitdaten und künstliche Intelligenz zur Unterstützung bei jeder finanziellen Entscheidung. Entdecken Sie die Zukunft der persönlichen Vermögensverwaltung.",
+      "modernInterface": "Moderne Oberfläche",
+      "integratedAI": "Integrierte KI",
+      "secure": "Sicher",
+      "fiscalAssistant": "KI-Steuerassistent",
+      "revenues": "Einkommen",
+      "taxes": "Steuern",
+      "savings": "Ersparnisse",
+      "aiAssistant": "KI-Assistent",
+      "aiMessage": "Basierend auf Ihrem Profil könnten Sie CHF 3.200 sparen, indem Sie Ihre Steuerabzüge optimieren.",
+      "seeDetails": "Details anzeigen",
+      "apply": "Anwenden",
+      "profileCompleted": "Steuerprofil abgeschlossen"
+    },
+    "socialProof": {
+      "badge": "Exklusiver Frühzugang",
+      "title": "Seien Sie ein Pionier.",
+      "description": "Die Plätze für die Beta-Version sind begrenzt. Wenn Sie sich heute anmelden, erhalten Sie frühzeitigen Zugang zur Plattform und können zu ihrer Entwicklung beitragen.",
+      "priorityAccess": {
+        "title": "Prioritätszugang",
+        "description": "Entdecken Sie Funktionen vor allen anderen"
+      },
+      "exclusiveCommunity": {
+        "title": "Exklusive Community",
+        "description": "Treten Sie einer Gruppe privilegierter Beta-Tester bei"
+      },
+      "directImpact": {
+        "title": "Direkter Einfluss",
+        "description": "Ihr Feedback gestaltet die Zukunft des Produkts"
+      }
+    },
+    "footer": {
+      "copyright": "© 2025 Aurore Finances. Alle Rechte vorbehalten."
+    },
     "features": {
       "title": "Entdecken Sie die Vollversion",
       "subtitle": "Zugriff auf alle Steuertools, die Sie benötigen",

@@ -20,11 +20,71 @@
     "subtitle": "Join the waitlist and be among the first to test Aurore Finances in beta.",
     "accessRestricted": "This feature is only available in the full version. Access the admin area to unlock all features.",
     "joinWaitlist": "Join the Waitlist",
+    "registeredButton": "Registered!",
+    "submitting": "Submitting...",
+    "emailPlaceholder": "your@email.com",
     "enterEmail": "Enter your email",
     "invalidEmail": "Invalid email address",
     "alreadyRegistered": "This email is already on the waitlist",
     "subscribeSuccess": "Thank you! You are now on the waitlist.",
+    "subscribed": "Thank you! We've sent you a confirmation email. Check your inbox.",
+    "connectionError": "Connection error. Please try again.",
     "peopleWaiting": "{count} people on the waitlist",
+    "alreadyMore": "Already more than",
+    "joinMovement": "have joined the movement",
+    "hero": {
+      "title": "Aurore Finances",
+      "subtitle": "Join the waitlist and be among the first to test Aurore Finances in beta."
+    },
+    "promise": {
+      "title": "Managing your finances has never been easier.",
+      "description": "We're building an app that helps you manage your finances in a clear, personalized, and intelligent way. A dashboard, a compass, and concrete advice to achieve your goals.",
+      "visualize": {
+        "title": "Visualize all your accounts in one place"
+      },
+      "recommendations": {
+        "title": "Receive personalized recommendations through AI"
+      },
+      "community": {
+        "title": "Join an ambitious community that shares your values"
+      }
+    },
+    "mockup": {
+      "title": "A glimpse of what awaits you: a simple, clear, and powerful experience.",
+      "description": "Intuitive interface, real-time data, and artificial intelligence to support you in every financial decision. Discover the future of personal wealth management.",
+      "modernInterface": "Modern interface",
+      "integratedAI": "Integrated AI",
+      "secure": "Secure",
+      "fiscalAssistant": "AI Tax Assistant",
+      "revenues": "Income",
+      "taxes": "Taxes",
+      "savings": "Savings",
+      "aiAssistant": "AI Assistant",
+      "aiMessage": "Based on your profile, you could save CHF 3,200 by optimizing your tax deductions.",
+      "seeDetails": "See details",
+      "apply": "Apply",
+      "profileCompleted": "Tax profile completed"
+    },
+    "socialProof": {
+      "badge": "Exclusive Early Access",
+      "title": "Be a pioneer.",
+      "description": "Beta version spots are limited. By signing up today, you'll get early access to the platform and help shape its evolution.",
+      "priorityAccess": {
+        "title": "Priority access",
+        "description": "Discover features before everyone else"
+      },
+      "exclusiveCommunity": {
+        "title": "Exclusive community",
+        "description": "Join a group of privileged beta testers"
+      },
+      "directImpact": {
+        "title": "Direct impact",
+        "description": "Your feedback shapes the product's future"
+      }
+    },
+    "footer": {
+      "copyright": "© 2025 Aurore Finances. All rights reserved."
+    },
     "features": {
       "title": "Discover the Full Version",
       "subtitle": "Access all the tax tools you need",

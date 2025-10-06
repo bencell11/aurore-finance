@@ -20,11 +20,71 @@
     "subtitle": "Unisciti alla lista d'attesa e sii tra i primi a testare Aurore Finances in versione beta.",
     "accessRestricted": "Questa funzionalità è disponibile solo nella versione completa. Accedi all'area admin per sbloccare tutte le funzionalità.",
     "joinWaitlist": "Unisciti alla lista d'attesa",
+    "registeredButton": "Registrato!",
+    "submitting": "Invio in corso...",
+    "emailPlaceholder": "tua@email.com",
     "enterEmail": "Inserisci la tua email",
     "invalidEmail": "Indirizzo email non valido",
     "alreadyRegistered": "Questa email è già nella lista d'attesa",
     "subscribeSuccess": "Grazie! Ora sei nella lista d'attesa.",
+    "subscribed": "Grazie! Ti abbiamo inviato un'email di conferma. Controlla la tua casella di posta.",
+    "connectionError": "Errore di connessione. Riprova.",
     "peopleWaiting": "{count} persone in lista d'attesa",
+    "alreadyMore": "Già più di",
+    "joinMovement": "si sono uniti al movimento",
+    "hero": {
+      "title": "Aurore Finances",
+      "subtitle": "Unisciti alla lista d'attesa e sii tra i primi a testare Aurore Finances in versione beta."
+    },
+    "promise": {
+      "title": "Gestire le tue finanze non è mai stato così semplice.",
+      "description": "Stiamo costruendo un'app che ti aiuta a gestire le tue finanze in modo chiaro, personalizzato e intelligente. Una dashboard, una bussola e consigli concreti per raggiungere i tuoi obiettivi.",
+      "visualize": {
+        "title": "Visualizza tutti i tuoi conti in un unico posto"
+      },
+      "recommendations": {
+        "title": "Ricevi raccomandazioni personalizzate grazie all'IA"
+      },
+      "community": {
+        "title": "Unisciti a una comunità ambiziosa che condivide i tuoi valori"
+      }
+    },
+    "mockup": {
+      "title": "Un'anteprima di ciò che ti aspetta: un'esperienza semplice, chiara e potente.",
+      "description": "Interfaccia intuitiva, dati in tempo reale e intelligenza artificiale per accompagnarti in ogni decisione finanziaria. Scopri il futuro della gestione patrimoniale personale.",
+      "modernInterface": "Interfaccia moderna",
+      "integratedAI": "IA integrata",
+      "secure": "Sicuro",
+      "fiscalAssistant": "Assistente Fiscale IA",
+      "revenues": "Entrate",
+      "taxes": "Tasse",
+      "savings": "Risparmi",
+      "aiAssistant": "Assistente IA",
+      "aiMessage": "In base al tuo profilo, potresti risparmiare CHF 3.200 ottimizzando le tue deduzioni fiscali.",
+      "seeDetails": "Vedi dettagli",
+      "apply": "Applica",
+      "profileCompleted": "Profilo fiscale completato"
+    },
+    "socialProof": {
+      "badge": "Accesso Anticipato Esclusivo",
+      "title": "Sii un pioniere.",
+      "description": "I posti per la versione beta sono limitati. Iscrivendoti oggi, avrai accesso anticipato alla piattaforma e potrai contribuire alla sua evoluzione.",
+      "priorityAccess": {
+        "title": "Accesso prioritario",
+        "description": "Scopri le funzionalità prima di tutti"
+      },
+      "exclusiveCommunity": {
+        "title": "Comunità esclusiva",
+        "description": "Unisciti a un gruppo di beta tester privilegiati"
+      },
+      "directImpact": {
+        "title": "Impatto diretto",
+        "description": "Il tuo feedback plasma il futuro del prodotto"
+      }
+    },
+    "footer": {
+      "copyright": "© 2025 Aurore Finances. Tutti i diritti riservati."
+    },
     "features": {
       "title": "Scopri la Versione Completa",
       "subtitle": "Accedi a tutti gli strumenti fiscali di cui hai bisogno",
