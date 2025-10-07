@@ -16,7 +16,8 @@ import {
   ChevronDown,
   Calculator,
   FileText,
-  PiggyBank
+  PiggyBank,
+  X
 } from 'lucide-react';
 
 // Structure simplifiée : 4 onglets principaux
@@ -60,6 +61,7 @@ const getNavigationItems = (t: any) => [
 export default function MainNavigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const pathname = usePathname();
 
   const { user, isAuthenticated } = useAuthContext();
@@ -181,23 +183,41 @@ export default function MainNavigation() {
             const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
             const hasSubmenu = item.submenu && item.submenu.length > 0;
 
+            if (hasSubmenu) {
+              return (
+                <button
+                  key={item.nameKey}
+                  onClick={() => setMobileSubmenu(mobileSubmenu === item.nameKey ? null : item.nameKey)}
+                  className={`flex flex-col items-center justify-center space-y-0.5 transition-colors relative ${
+                    isActive ? 'text-blue-600' : 'text-gray-600'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-[10px] font-medium leading-tight">{item.name}</span>
+                  {isActive && (
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-full" />
+                  )}
+                </button>
+              );
+            }
+
             return (
               <Link
                 key={item.nameKey}
-                href={hasSubmenu ? item.submenu![0].href : item.href}
-                className={`flex flex-col items-center justify-center space-y-1 transition-colors relative ${
-                  isActive
-                    ? 'text-blue-600'
-                    : 'text-gray-600'
+                href={item.href}
+                className={`flex flex-col items-center justify-center space-y-0.5 transition-colors relative ${
+                  isActive ? 'text-blue-600' : 'text-gray-600'
                 }`}
               >
-                <Icon className="w-6 h-6" />
-                <span className="text-xs font-medium">{item.name}</span>
-                {item.badge && (
-                  <span className="absolute top-1 right-1/4 px-1.5 py-0.5 text-[10px] font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full">
-                    {item.badge}
-                  </span>
-                )}
+                <div className="relative">
+                  <Icon className="w-5 h-5" />
+                  {item.badge && (
+                    <span className="absolute -top-1 -right-2 px-1 py-0.5 text-[8px] font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full">
+                      {item.badge}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] font-medium leading-tight">{item.name}</span>
                 {isActive && (
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-full" />
                 )}
@@ -206,6 +226,53 @@ export default function MainNavigation() {
           })}
         </div>
       </nav>
+
+      {/* Mobile Submenu Sheet */}
+      {mobileSubmenu && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 bg-black/40 z-40"
+            onClick={() => setMobileSubmenu(null)}
+          />
+
+          {/* Sheet */}
+          <div className="md:hidden fixed bottom-16 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 animate-slide-up">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Outils</h3>
+                <button
+                  onClick={() => setMobileSubmenu(null)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {navigationItems
+                  .find(item => item.nameKey === mobileSubmenu)
+                  ?.submenu?.map((subItem) => {
+                    const SubIcon = subItem.icon;
+                    return (
+                      <Link
+                        key={subItem.href}
+                        href={subItem.href}
+                        onClick={() => setMobileSubmenu(null)}
+                        className="flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                          <SubIcon className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <span className="font-medium text-gray-900">{subItem.name}</span>
+                      </Link>
+                    );
+                  })}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Spacer pour éviter que le contenu soit caché sous la navigation mobile */}
       <div className="md:hidden h-16" />
