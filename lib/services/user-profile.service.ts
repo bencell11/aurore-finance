@@ -51,6 +51,9 @@ export class UserProfileService {
       resultat: 'success'
     });
 
+    // Sauvegarder automatiquement dans localStorage
+    await this.saveToStorage();
+
     return profile;
   }
 
@@ -76,6 +79,9 @@ export class UserProfileService {
       resultat: 'success'
     });
 
+    // Sauvegarder automatiquement dans localStorage
+    await this.saveToStorage();
+
     return updatedProfile;
   }
 
@@ -91,12 +97,15 @@ export class UserProfileService {
 
     await this.logUserAction(userId, {
       type: 'modification_profil',
-      details: { 
+      details: {
         action: 'mise_a_jour_profil_financier',
         patrimoine_net: this.calculateNetWorth(financialProfile)
       },
       resultat: 'success'
     });
+
+    // Sauvegarder automatiquement dans localStorage
+    await this.saveToStorage();
 
     return financialProfile;
   }

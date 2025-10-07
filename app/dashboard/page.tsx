@@ -184,9 +184,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Vérifier si l'utilisateur a un profil complet
-  const hasCompleteProfile = user?.profil && user.profil.revenuBrutAnnuel > 0;
-
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
@@ -214,31 +211,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Bannière profil incomplet */}
-        {!hasCompleteProfile && (
-          <div className="mb-6">
-            <Card className="border-orange-200 bg-orange-50">
-              <CardContent className="pt-6">
-                <div className="flex items-center space-x-4">
-                  <Users className="w-12 h-12 text-orange-600 flex-shrink-0" />
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-orange-900 mb-1">
-                      Complétez votre profil pour une expérience personnalisée
-                    </h3>
-                    <p className="text-orange-700 mb-3">
-                      Ajoutez vos informations financières pour obtenir des analyses détaillées, des recommandations personnalisées et un suivi précis de vos objectifs.
-                    </p>
-                    <Button onClick={() => window.location.href = '/profil'} className="bg-orange-600 hover:bg-orange-700">
-                      <Users className="w-4 h-4 mr-2" />
-                      Configurer mon profil
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
         {/* KPIs principaux */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>

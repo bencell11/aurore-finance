@@ -305,12 +305,31 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
     if (user?.id) {
       const userProfileService = UserProfileService.getInstance();
 
-      // Créer ou mettre à jour le profil utilisateur
-      await userProfileService.updateUserProfile(user.id, {
-        age: onboardingData.age,
-        situationFamiliale: onboardingData.situationFamiliale,
-        canton: onboardingData.canton
-      });
+      // Charger les données existantes
+      await userProfileService.loadFromStorage();
+
+      // Vérifier si le profil existe, sinon le créer
+      let userProfile = await userProfileService.getUserProfile(user.id);
+
+      if (!userProfile) {
+        // Créer un nouveau profil
+        userProfile = await userProfileService.createUserProfile({
+          userId: user.id,
+          email: user.email,
+          nom: user.nom,
+          prenom: user.prenom,
+          age: onboardingData.age,
+          situationFamiliale: onboardingData.situationFamiliale,
+          canton: onboardingData.canton
+        });
+      } else {
+        // Mettre à jour le profil existant
+        await userProfileService.updateUserProfile(user.id, {
+          age: onboardingData.age,
+          situationFamiliale: onboardingData.situationFamiliale,
+          canton: onboardingData.canton
+        });
+      }
 
       // Créer ou mettre à jour le profil financier
       await userProfileService.createOrUpdateFinancialProfile(user.id, {
