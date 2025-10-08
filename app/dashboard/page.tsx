@@ -13,8 +13,15 @@ import {
   Bell,
   Loader2,
   Receipt,
-  Percent
+  Percent,
+  Info
 } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { createClient } from '@/lib/supabase/client';
 import { TaxCalculationService } from '@/lib/services/tax-calculation.service';
 import type { TaxCalculationResult } from '@/lib/utils/swiss-tax-formulas';
@@ -263,52 +270,101 @@ export default function DashboardPage() {
 
           {/* Calcul fiscal */}
           {hasFinancialData && taxCalculation && (
-            <Card className="mb-6 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Receipt className="w-5 h-5 text-blue-600" />
-                  Impôts estimés 2025
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Colonne gauche : Détails des impôts */}
-                  <div className="space-y-3">
-                    <div className="bg-white rounded-lg p-4 shadow-sm">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-600">Impôt fédéral direct (IFD)</span>
-                        <span className="font-semibold text-gray-900">
-                          {formatCurrency(taxCalculation.impots.federal)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-600">Impôt cantonal</span>
-                        <span className="font-semibold text-gray-900">
-                          {formatCurrency(taxCalculation.impots.cantonal)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-600">Impôt communal</span>
-                        <span className="font-semibold text-gray-900">
-                          {formatCurrency(taxCalculation.impots.communal)}
-                        </span>
-                      </div>
-                      {taxCalculation.impots.fortune > 0 && (
+            <TooltipProvider>
+              <Card className="mb-6 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Receipt className="w-5 h-5 text-blue-600" />
+                    Impôts estimés 2025
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Colonne gauche : Détails des impôts */}
+                    <div className="space-y-3">
+                      <div className="bg-white rounded-lg p-4 shadow-sm">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-gray-600">Impôt sur la fortune</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-medium text-gray-600">Impôt fédéral direct (IFD)</span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Formule IFD (Art. 36 LIFD)</p>
+                                <p className="text-xs">Barème progressif fédéral identique pour tous les cantons.</p>
+                                <p className="text-xs mt-1">Tranche: {taxCalculation.details.trancheFederale}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <span className="font-semibold text-gray-900">
-                            {formatCurrency(taxCalculation.impots.fortune)}
+                            {formatCurrency(taxCalculation.impots.federal)}
                           </span>
                         </div>
-                      )}
-                      <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                        <span className="text-base font-bold text-gray-900">Total impôts</span>
-                        <span className="text-xl font-bold text-blue-600">
-                          {formatCurrency(taxCalculation.impots.total)}
-                        </span>
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-medium text-gray-600">Impôt cantonal</span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Formule cantonale</p>
+                                <p className="text-xs">Impôt simple × Coefficient cantonal (100%)</p>
+                                <p className="text-xs mt-1">Barème: {taxCalculation.details.baremeApplique}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <span className="font-semibold text-gray-900">
+                            {formatCurrency(taxCalculation.impots.cantonal)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-medium text-gray-600">Impôt communal</span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Formule communale</p>
+                                <p className="text-xs">Impôt simple × Coefficient communal</p>
+                                <p className="text-xs mt-1">Coefficient: {taxCalculation.details.coefficientCommunal}%</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <span className="font-semibold text-gray-900">
+                            {formatCurrency(taxCalculation.impots.communal)}
+                          </span>
+                        </div>
+                        {taxCalculation.impots.fortune > 0 && (
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm font-medium text-gray-600">Impôt sur la fortune</span>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p className="text-xs font-semibold mb-1">Impôt sur la fortune</p>
+                                  <p className="text-xs">Taux en pour mille (‰) appliqué sur fortune nette</p>
+                                  <p className="text-xs mt-1">Fortune imposable: {formatCurrency(taxCalculation.fortuneImposable)}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                            <span className="font-semibold text-gray-900">
+                              {formatCurrency(taxCalculation.impots.fortune)}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+                          <span className="text-base font-bold text-gray-900">Total impôts</span>
+                          <span className="text-xl font-bold text-blue-600">
+                            {formatCurrency(taxCalculation.impots.total)}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
                   {/* Colonne droite : Taux et informations */}
                   <div className="space-y-3">
@@ -319,22 +375,78 @@ export default function DashboardPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-3 mb-3">
                         <div className="bg-blue-50 rounded p-3">
-                          <p className="text-xs text-gray-600 mb-1">Taux effectif</p>
+                          <div className="flex items-center gap-1 mb-1">
+                            <p className="text-xs text-gray-600">Taux effectif</p>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3 h-3 text-blue-500 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Taux effectif</p>
+                                <p className="text-xs">= (Total impôts / Revenu brut) × 100</p>
+                                <p className="text-xs mt-1">C'est le pourcentage réel d'impôt payé sur votre revenu total.</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <p className="text-2xl font-bold text-blue-600">
                             {taxCalculation.taux.effectif.toFixed(2)}%
                           </p>
                         </div>
                         <div className="bg-purple-50 rounded p-3">
-                          <p className="text-xs text-gray-600 mb-1">Taux marginal</p>
+                          <div className="flex items-center gap-1 mb-1">
+                            <p className="text-xs text-gray-600">Taux marginal</p>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3 h-3 text-purple-500 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Taux marginal</p>
+                                <p className="text-xs">Taux appliqué sur le dernier franc gagné.</p>
+                                <p className="text-xs mt-1">Important pour évaluer l'impact fiscal d'une augmentation de salaire.</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <p className="text-2xl font-bold text-purple-600">
                             {taxCalculation.taux.marginal.toFixed(2)}%
                           </p>
                         </div>
                       </div>
                       <div className="text-xs text-gray-600 space-y-1">
-                        <p>• Revenu brut: {formatCurrency(taxCalculation.revenuBrut)}</p>
-                        <p>• Revenu net: {formatCurrency(taxCalculation.revenuNet)}</p>
-                        <p>• Revenu imposable: {formatCurrency(taxCalculation.revenuImposable)}</p>
+                        <div className="flex items-center gap-1">
+                          <p>• Revenu brut: {formatCurrency(taxCalculation.revenuBrut)}</p>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p className="text-xs">Salaire brut + Autres revenus (avant déductions)</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <p>• Revenu net: {formatCurrency(taxCalculation.revenuNet)}</p>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p className="text-xs">= Revenu brut - Cotisations sociales (AVS/AC/LPP/LAA)</p>
+                              <p className="text-xs mt-1">Cotisations: {formatCurrency(taxCalculation.cotisationsSociales)}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <p>• Revenu imposable: {formatCurrency(taxCalculation.revenuImposable)}</p>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p className="text-xs">= Revenu net - Déductions fiscales</p>
+                              <p className="text-xs mt-1">Déductions totales: {formatCurrency(taxCalculation.totalDeductions)}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
                         <p className="text-blue-600 font-medium mt-2">
                           Canton: {taxCalculation.details.baremeApplique}
                         </p>
@@ -354,18 +466,54 @@ export default function DashboardPage() {
                 <div className="mt-4 bg-white rounded-lg p-4 shadow-sm">
                   <h4 className="text-sm font-semibold text-gray-700 mb-3">📊 Détail des déductions</h4>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Cotisations sociales:</span>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-600">Cotisations sociales:</span>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p className="text-xs font-semibold mb-1">Cotisations obligatoires</p>
+                            <p className="text-xs">AVS/AI/APG (5.3%) + AC (1.1%) + LPP (7-18%) + LAA (~1.5%)</p>
+                            <p className="text-xs mt-1 text-amber-600">⚠️ Non déductibles du revenu imposable en Suisse</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                       <span className="font-medium">{formatCurrency(taxCalculation.cotisationsSociales)}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Total déductions:</span>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-600">Total déductions:</span>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p className="text-xs font-semibold mb-1">Déductions fiscales</p>
+                            <p className="text-xs">Déduction personnelle + 3e pilier + Primes assurance + Frais pro + etc.</p>
+                            <p className="text-xs mt-1 text-green-600">✓ Déductibles du revenu imposable</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                       <span className="font-medium">{formatCurrency(taxCalculation.totalDeductions)}</span>
                     </div>
                     {taxCalculation.fortuneImposable > 0 && (
                       <>
-                        <div className="flex justify-between col-span-2 pt-2 border-t">
-                          <span className="text-gray-600">Fortune imposable:</span>
+                        <div className="flex justify-between items-center col-span-2 pt-2 border-t">
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-600">Fortune imposable:</span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Fortune nette</p>
+                                <p className="text-xs">= Fortune brute - Dettes - Déduction personnelle</p>
+                                <p className="text-xs mt-1">Taxée en pour mille (‰) selon barème cantonal</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <span className="font-medium">{formatCurrency(taxCalculation.fortuneImposable)}</span>
                         </div>
                       </>
@@ -378,6 +526,7 @@ export default function DashboardPage() {
                 </p>
               </CardContent>
             </Card>
+          </TooltipProvider>
           )}
 
           {hasFinancialData && taxCalculating && (
