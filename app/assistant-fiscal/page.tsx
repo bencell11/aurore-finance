@@ -225,35 +225,41 @@ export default function AssistantFiscalPage() {
 
       {/* Onglets principaux */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4" />
-            Vue d'ensemble
-          </TabsTrigger>
-          <TabsTrigger value="chat" className="flex items-center gap-2">
-            <MessageCircle className="h-4 w-4" />
-            Assistant IA
-          </TabsTrigger>
-          <TabsTrigger value="profile" className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            Mon Profil
-          </TabsTrigger>
-          <TabsTrigger value="calculation" className="flex items-center gap-2">
-            <Calculator className="h-4 w-4" />
-            Calcul
-          </TabsTrigger>
-          <TabsTrigger value="documents" className="flex items-center gap-2">
-            <Upload className="h-4 w-4" />
-            Documents
-          </TabsTrigger>
-          <TabsTrigger value="export" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Export
-          </TabsTrigger>
-          <TabsTrigger value="debug" className="flex items-center gap-2 text-xs">
-            🔧 Debug
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-7">
+            <TabsTrigger value="overview" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
+              <CheckCircle2 className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Vue d'ensemble</span>
+              <span className="sm:hidden">Vue</span>
+            </TabsTrigger>
+            <TabsTrigger value="chat" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
+              <MessageCircle className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Assistant IA</span>
+              <span className="sm:hidden">IA</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
+              <User className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Mon Profil</span>
+              <span className="sm:hidden">Profil</span>
+            </TabsTrigger>
+            <TabsTrigger value="calculation" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
+              <Calculator className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+              Calcul
+            </TabsTrigger>
+            <TabsTrigger value="documents" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
+              <Upload className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Documents</span>
+              <span className="sm:hidden">Docs</span>
+            </TabsTrigger>
+            <TabsTrigger value="export" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
+              <Download className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+              Export
+            </TabsTrigger>
+            <TabsTrigger value="debug" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
+              🔧 Debug
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Vue d'ensemble */}
         <TabsContent value="overview" className="space-y-6">

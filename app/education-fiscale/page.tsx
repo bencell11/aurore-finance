@@ -33,10 +33,6 @@ import {
   AlertCircle,
   Scale,
   MapPin,
-  Bot,
-  Send,
-  X,
-  ChevronDown,
   Clock,
   Eye,
   Hash,
@@ -153,151 +149,6 @@ const getTranslatedThematiques = (t: any) => [
     ]
   }
 ];
-
-// Composant pour l'assistant IA
-function AssistantAI({ selectedTheme }: { selectedTheme: any }) {
-  const [messages, setMessages] = useState<Array<{role: string, content: string}>>([
-    {
-      role: 'assistant',
-      content: `👋 Bonjour ! Je suis votre assistant fiscal IA. Je peux vous aider à comprendre les concepts fiscaux suisses et répondre à vos questions. 
-      
-${selectedTheme ? `Je vois que vous consultez le thème "${selectedTheme.titre}". Voulez-vous que je vous l'explique ?` : 'Sélectionnez un thème pour commencer ou posez-moi directement une question !'}`
-    }
-  ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
-
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const userMessage = input;
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: userMessage,
-          context: selectedTheme ? `L'utilisateur consulte actuellement: ${selectedTheme.titre}` : undefined
-        })
-      });
-
-      const data = await response.json();
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: data.response 
-      }]);
-    } catch (error) {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: '❌ Désolé, une erreur s\'est produite. Veuillez réessayer.'
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isMinimized) {
-    return (
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button
-          onClick={() => setIsMinimized(false)}
-          className="rounded-full w-14 h-14 bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg"
-        >
-          <Bot className="h-6 w-6" />
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <Card className="fixed bottom-4 right-4 w-96 h-[500px] z-50 shadow-2xl">
-      <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bot className="h-5 w-5" />
-            <CardTitle className="text-lg">Assistant Fiscal IA</CardTitle>
-          </div>
-          <div className="flex gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-white hover:bg-white/20"
-              onClick={() => setIsMinimized(true)}
-            >
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-white hover:bg-white/20"
-              onClick={() => setIsMinimized(true)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="p-0 h-[calc(100%-4rem)]">
-        <ScrollArea className="h-[calc(100%-4rem)] p-4">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`mb-4 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}
-            >
-              <div
-                className={`inline-block p-3 rounded-lg max-w-[80%] ${
-                  msg.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-800'
-                }`}
-              >
-                <div className="whitespace-pre-wrap text-sm">
-                  {msg.content}
-                </div>
-              </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="text-left mb-4">
-              <div className="inline-block p-3 rounded-lg bg-gray-100">
-                <div className="flex items-center gap-2">
-                  <div className="animate-pulse flex gap-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </ScrollArea>
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t">
-          <div className="flex gap-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Posez votre question..."
-              className="flex-1"
-            />
-            <Button
-              onClick={handleSend}
-              disabled={!input.trim() || isLoading}
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 // Composant pour afficher un article complet
 function ArticleDisplay({ slug }: { slug: string }) {
@@ -448,7 +299,6 @@ function ArticleDisplay({ slug }: { slug: string }) {
 
 // Composant principal
 export default function EducationFiscalePage() {
-  const [selectedTheme, setSelectedTheme] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('themes');
   const [showGuidedCourse, setShowGuidedCourse] = useState(false);
@@ -691,9 +541,6 @@ export default function EducationFiscalePage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Assistant AI flottant */}
-      <AssistantAI selectedTheme={selectedTheme} />
     </div>
   );
 }

@@ -286,9 +286,11 @@ export default function DashboardPage() {
                         <div className="flex justify-between items-center mb-2">
                           <div className="flex items-center gap-1.5">
                             <span className="text-sm font-medium text-gray-600">Impôt fédéral direct (IFD)</span>
-                            <Tooltip>
+                            <Tooltip delayDuration={0}>
                               <TooltipTrigger asChild>
-                                <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                                <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                  <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-xs">
                                 <p className="text-xs font-semibold mb-1">Formule IFD (Art. 36 LIFD)</p>
@@ -304,9 +306,11 @@ export default function DashboardPage() {
                         <div className="flex justify-between items-center mb-2">
                           <div className="flex items-center gap-1.5">
                             <span className="text-sm font-medium text-gray-600">Impôt cantonal</span>
-                            <Tooltip>
+                            <Tooltip delayDuration={0}>
                               <TooltipTrigger asChild>
-                                <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                                <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                  <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-xs">
                                 <p className="text-xs font-semibold mb-1">Formule cantonale</p>
@@ -322,9 +326,11 @@ export default function DashboardPage() {
                         <div className="flex justify-between items-center mb-2">
                           <div className="flex items-center gap-1.5">
                             <span className="text-sm font-medium text-gray-600">Impôt communal</span>
-                            <Tooltip>
+                            <Tooltip delayDuration={0}>
                               <TooltipTrigger asChild>
-                                <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                                <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                  <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-xs">
                                 <p className="text-xs font-semibold mb-1">Formule communale</p>
@@ -341,9 +347,11 @@ export default function DashboardPage() {
                           <div className="flex justify-between items-center mb-2">
                             <div className="flex items-center gap-1.5">
                               <span className="text-sm font-medium text-gray-600">Impôt sur la fortune</span>
-                              <Tooltip>
+                              <Tooltip delayDuration={0}>
                                 <TooltipTrigger asChild>
-                                  <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                                  <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                  <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
+                                </button>
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-xs">
                                   <p className="text-xs font-semibold mb-1">Impôt sur la fortune</p>
@@ -377,9 +385,11 @@ export default function DashboardPage() {
                         <div className="bg-blue-50 rounded p-3">
                           <div className="flex items-center gap-1 mb-1">
                             <p className="text-xs text-gray-600">Taux effectif</p>
-                            <Tooltip>
+                            <Tooltip delayDuration={0}>
                               <TooltipTrigger asChild>
-                                <Info className="w-3 h-3 text-blue-500 cursor-help" />
+                                <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                  <Info className="w-5 h-5 md:w-3 md:h-3 text-blue-500 cursor-pointer" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-xs">
                                 <p className="text-xs font-semibold mb-1">Taux effectif</p>
@@ -395,9 +405,11 @@ export default function DashboardPage() {
                         <div className="bg-purple-50 rounded p-3">
                           <div className="flex items-center gap-1 mb-1">
                             <p className="text-xs text-gray-600">Taux marginal</p>
-                            <Tooltip>
+                            <Tooltip delayDuration={0}>
                               <TooltipTrigger asChild>
-                                <Info className="w-3 h-3 text-purple-500 cursor-help" />
+                                <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                  <Info className="w-5 h-5 md:w-3 md:h-3 text-purple-500 cursor-pointer" />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-xs">
                                 <p className="text-xs font-semibold mb-1">Taux marginal</p>
@@ -416,7 +428,9 @@ export default function DashboardPage() {
                           <p>• Revenu brut: {formatCurrency(taxCalculation.revenuBrut)}</p>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs">
                               <p className="text-xs">Salaire brut + Autres revenus (avant déductions)</p>
@@ -427,7 +441,9 @@ export default function DashboardPage() {
                           <p>• Revenu net: {formatCurrency(taxCalculation.revenuNet)}</p>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs">
                               <p className="text-xs">= Revenu brut - Cotisations sociales (AVS/AC/LPP/LAA)</p>
@@ -439,7 +455,9 @@ export default function DashboardPage() {
                           <p>• Revenu imposable: {formatCurrency(taxCalculation.revenuImposable)}</p>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs">
                               <p className="text-xs">= Revenu net - Déductions fiscales</p>
@@ -471,7 +489,9 @@ export default function DashboardPage() {
                         <span className="text-gray-600">Cotisations sociales:</span>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                            <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                              <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
+                            </button>
                           </TooltipTrigger>
                           <TooltipContent className="max-w-xs">
                             <p className="text-xs font-semibold mb-1">Cotisations obligatoires</p>
@@ -487,7 +507,9 @@ export default function DashboardPage() {
                         <span className="text-gray-600">Total déductions:</span>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                            <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                              <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
+                            </button>
                           </TooltipTrigger>
                           <TooltipContent className="max-w-xs">
                             <p className="text-xs font-semibold mb-1">Déductions fiscales</p>
@@ -503,9 +525,11 @@ export default function DashboardPage() {
                         <div className="flex justify-between items-center col-span-2 pt-2 border-t">
                           <div className="flex items-center gap-1">
                             <span className="text-gray-600">Fortune imposable:</span>
-                            <Tooltip>
+                            <Tooltip delayDuration={0}>
                               <TooltipTrigger asChild>
-                                <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
+                                <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
+                              </button>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-xs">
                                 <p className="text-xs font-semibold mb-1">Fortune nette</p>
