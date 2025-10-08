@@ -34,30 +34,38 @@ export default function DashboardPage() {
     if (!user?.id) return;
 
     try {
+      console.log('📊 Chargement dashboard pour user:', user.id);
+
       // Charger le profil utilisateur depuis Supabase
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
+      console.log('👤 Profil chargé:', profile, profileError);
+
       // Charger le profil financier
-      const { data: financial } = await supabase
+      const { data: financial, error: financialError } = await supabase
         .from('financial_profiles')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
+      console.log('💰 Profil financier chargé:', financial, financialError);
+
       // Charger les objectifs
-      const { data: goals } = await supabase
+      const { data: goals, error: goalsError } = await supabase
         .from('financial_goals')
         .select('*')
         .eq('user_id', user.id)
         .eq('statut', 'actif');
 
+      console.log('🎯 Objectifs chargés:', goals, goalsError);
+
       setProfileData({ profile, financial, goals: goals || [] });
     } catch (error) {
-      console.error('Erreur lors du chargement du dashboard:', error);
+      console.error('❌ Erreur lors du chargement du dashboard:', error);
     } finally {
       setLoading(false);
     }

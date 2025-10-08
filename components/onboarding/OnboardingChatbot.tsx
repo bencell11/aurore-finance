@@ -306,22 +306,28 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
       const supabase = createClient();
 
       try {
+        console.log('💾 Sauvegarde onboarding pour user:', user.id);
+        console.log('📊 Données onboarding:', onboardingData);
+
         // Mettre à jour le profil utilisateur
-        const { error: profileError } = await supabase
+        const { data: profileData, error: profileError } = await supabase
           .from('user_profiles')
           .update({
             age: onboardingData.age,
             situation_familiale: onboardingData.situationFamiliale,
             canton: onboardingData.canton
           })
-          .eq('user_id', user.id);
+          .eq('user_id', user.id)
+          .select();
 
         if (profileError) {
-          console.error('Erreur mise à jour profil:', profileError);
+          console.error('❌ Erreur mise à jour profil:', profileError);
+        } else {
+          console.log('✅ Profil mis à jour:', profileData);
         }
 
         // Créer ou mettre à jour le profil financier
-        const { error: financialError } = await supabase
+        const { data: financialData, error: financialError } = await supabase
           .from('financial_profiles')
           .upsert({
             user_id: user.id,
@@ -335,13 +341,16 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
             horizon_investissement: onboardingData.horizonInvestissement || '5-10 ans',
             niveau_connaissances: onboardingData.connaissancesFinancieres || 'debutant',
             updated_at: new Date().toISOString()
-          });
+          })
+          .select();
 
         if (financialError) {
-          console.error('Erreur mise à jour profil financier:', financialError);
+          console.error('❌ Erreur mise à jour profil financier:', financialError);
+        } else {
+          console.log('✅ Profil financier créé/mis à jour:', financialData);
         }
       } catch (error) {
-        console.error('Erreur sauvegarde données onboarding:', error);
+        console.error('❌ Erreur sauvegarde données onboarding:', error);
       }
     }
 
