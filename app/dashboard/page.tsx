@@ -90,26 +90,42 @@ export default function DashboardPage() {
 
     try {
       setTaxCalculating(true);
-      console.log('💰 Calcul fiscal en cours...');
+      console.log('💰 Dashboard - Calcul fiscal démarré:', {
+        salaireBrut: financial.revenu_brut_annuel,
+        canton: profile.canton,
+        situation: profile.situation_familiale
+      });
 
       const taxResult = TaxCalculationService.calculateTax({
         salaireBrut: financial.revenu_brut_annuel || 0,
         autresRevenus: financial.autres_revenus || 0,
         canton: profile.canton || 'VD',
         situationFamiliale: profile.situation_familiale || 'celibataire',
-        nombreEnfants: 0,
-        fortuneBrute: 0,
+        nombreEnfants: profile.nombre_enfants || 0,
+        fortuneBrute: financial.patrimoine_total || 0,
+        dettes: financial.dettes_totales || 0,
         deductions: {
-          pilier3a: 0,
+          pilier3a: financial.pilier_3a || 0,
           primes: financial.charges_assurances || 0,
-          fraisPro: 0,
+          fraisPro: financial.frais_professionnels || 0,
+          gardeEnfants: financial.frais_garde || 0,
+          formation: financial.frais_formation || 0,
+          dons: financial.dons || 0,
+          interetsHypothecaires: financial.interets_hypoth || 0,
+          pensionAlimentaire: financial.pension_alim || 0,
+          fraisMedicaux: financial.frais_medicaux || 0,
+          autres: 0,
         },
       });
 
-      console.log('✅ Calcul fiscal terminé:', taxResult);
+      console.log('✅ Dashboard - Résultats fiscaux:', {
+        revenuImposable: taxResult.revenuImposable,
+        totalImpots: taxResult.impots.total,
+        tauxEffectif: taxResult.taux.effectif
+      });
       setTaxCalculation(taxResult);
     } catch (error) {
-      console.error('❌ Erreur calcul fiscal:', error);
+      console.error('❌ Dashboard - Erreur calcul fiscal:', error);
     } finally {
       setTaxCalculating(false);
     }
@@ -333,6 +349,30 @@ export default function DashboardPage() {
                     </Button>
                   </div>
                 </div>
+
+                {/* Breakdown des déductions */}
+                <div className="mt-4 bg-white rounded-lg p-4 shadow-sm">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">📊 Détail des déductions</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Cotisations sociales:</span>
+                      <span className="font-medium">{formatCurrency(taxCalculation.cotisationsSociales)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Total déductions:</span>
+                      <span className="font-medium">{formatCurrency(taxCalculation.totalDeductions)}</span>
+                    </div>
+                    {taxCalculation.fortuneImposable > 0 && (
+                      <>
+                        <div className="flex justify-between col-span-2 pt-2 border-t">
+                          <span className="text-gray-600">Fortune imposable:</span>
+                          <span className="font-medium">{formatCurrency(taxCalculation.fortuneImposable)}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
                 <p className="text-xs text-gray-500 mt-3">
                   ℹ️ Estimation basée sur les barèmes fiscaux 2025. Pour un calcul précis, consultez l'assistant fiscal.
                 </p>
