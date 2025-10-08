@@ -2,43 +2,43 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
 /**
- * API Route sécurisée pour récupérer le contexte utilisateur pour l'assistant IA
+ * API Route sÃ©curisÃ©e pour rÃ©cupÃ©rer le contexte utilisateur pour l'assistant IA
  *
  * Cette route:
- * 1. Vérifie l'authentification de l'utilisateur
- * 2. Récupère toutes les données nécessaires (profil, finances, objectifs)
- * 3. Retourne les données déchiffrées pour utilisation par l'IA
- * 4. RLS Supabase garantit que l'utilisateur ne peut voir que ses propres données
+ * 1. VÃ©rifie l'authentification de l'utilisateur
+ * 2. RÃ©cupÃ¨re toutes les donnÃ©es nÃ©cessaires (profil, finances, objectifs)
+ * 3. Retourne les donnÃ©es dÃ©chiffrÃ©es pour utilisation par l'IA
+ * 4. RLS Supabase garantit que l'utilisateur ne peut voir que ses propres donnÃ©es
  */
 export async function GET(request: NextRequest) {
   try {
     const supabase = createClient();
 
-    // Vérifier l'authentification
+    // VÃ©rifier l'authentification
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Non autorisé' },
+        { error: 'Non autorisÃ©' },
         { status: 401 }
       );
     }
 
-    // Récupérer le profil utilisateur
+    // RÃ©cupÃ©rer le profil utilisateur
     const { data: userProfile, error: profileError } = await supabase
       .from('user_profiles')
       .select('*')
       .eq('user_id', user.id)
       .single();
 
-    // Récupérer le profil financier
+    // RÃ©cupÃ©rer le profil financier
     const { data: financialProfile, error: financialError } = await supabase
       .from('financial_profiles')
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
 
-    // Récupérer les objectifs financiers
+    // RÃ©cupÃ©rer les objectifs financiers
     const { data: goals, error: goalsError } = await supabase
       .from('financial_goals')
       .select('*')
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       .eq('statut', 'actif')
       .order('priorite', { ascending: false });
 
-    // Récupérer les actions récentes (pour contexte)
+    // RÃ©cupÃ©rer les actions rÃ©centes (pour contexte)
     const { data: recentActions, error: actionsError } = await supabase
       .from('user_actions')
       .select('type, details, resultat, created_at')
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
         toleranceRisque: financialProfile.tolerance_risque,
         horizonInvestissement: financialProfile.horizon_investissement,
         niveauConnaissances: financialProfile.niveau_connaissances,
-        // Calculs dérivés
+        // Calculs dÃ©rivÃ©s
         revenuTotal: (financialProfile.revenu_brut_annuel || 0) + (financialProfile.autres_revenus || 0),
         chargesTotal: (financialProfile.charges_logement || 0) + (financialProfile.charges_assurances || 0) + (financialProfile.autres_charges || 0),
         capaciteEpargneMensuelle: ((financialProfile.revenu_brut_annuel || 0) + (financialProfile.autres_revenus || 0)) / 12 - ((financialProfile.charges_logement || 0) + (financialProfile.charges_assurances || 0) + (financialProfile.autres_charges || 0))
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('Erreur lors de la récupération du contexte utilisateur:', error);
+    console.error('Erreur lors de la rÃ©cupÃ©ration du contexte utilisateur:', error);
     return NextResponse.json(
       { error: 'Erreur serveur', details: error.message },
       { status: 500 }
