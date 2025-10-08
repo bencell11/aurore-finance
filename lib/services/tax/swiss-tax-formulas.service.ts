@@ -393,24 +393,17 @@ export class SwissTaxFormulasService {
     const civilStatus = profile.personalInfo?.civilStatus || 'single';
     const children = profile.personalInfo?.numberOfChildren || 0;
 
-    // COTISATIONS SOCIALES OBLIGATOIRES (déductibles à 100%)
-    // AVS/AI/APG: 5.3% du salaire brut
-    const avsAiApg = grossSalary * 0.053;
-    socialDeductions += avsAiApg;
-    
-    // Assurance chômage AC: 1.1% jusqu'à 148'200, puis 0.5%
-    const ac = grossSalary <= 148200 ? grossSalary * 0.011 : 148200 * 0.011 + (grossSalary - 148200) * 0.005;
-    socialDeductions += ac;
-    
-    // LPP (2e pilier): environ 7-12% du salaire coordonné (simplifié à 10% du brut)
-    const lpp = profile.deductions?.pensionContributions || (grossSalary * 0.10);
-    socialDeductions += lpp;
-    
-    // AANP (accident non professionnel): environ 1.5%
-    const aanp = grossSalary * 0.015;
-    socialDeductions += aanp;
+    // ⚠️ CORRECTION IMPORTANTE: Les cotisations sociales obligatoires (AVS/AI/AC/LPP/LAA)
+    // NE SONT PAS déductibles du revenu imposable en Suisse!
+    // Source: Art. 9-33 LIFD - Seules certaines déductions sociales sont autorisées
 
-    // Art. 26 LIFD - 3e pilier A
+    // ❌ SUPPRIMÉ (incorrectes selon législation suisse):
+    // - AVS/AI/APG (5.3%) NON déductible
+    // - AC (1.1%) NON déductible
+    // - LPP/2e pilier NON déductible
+    // - AANP/LAA NON déductible
+
+    // Art. 26 LIFD - 3e pilier A (SEULE cotisation retraite déductible)
     const pillar3a = Math.min(profile.deductions?.savingsContributions?.pillar3a || 0, 7056);
     socialDeductions += pillar3a;
 
@@ -679,27 +672,43 @@ export class SwissTaxFormulasService {
     // En Suisse, la plupart des déductions cantonales suivent les règles fédérales
     // Certains cantons ont des déductions spéciales
     const federalDeductions = this.calculateFederalDeductions(profile);
-    
+
     // Ajustements cantonaux spécifiques
-    let additionalDeductions = 0;
-    
+    let additionalPersonalDeductions = 0;
+
+    // DÉDUCTION PERSONNELLE CANTONALE (très importante!)
+    const civilStatus = profile.personalInfo?.civilStatus || 'single';
+    if (canton === 'VD') {
+      // Vaud: déduction personnelle selon situation
+      additionalPersonalDeductions += civilStatus === 'married' ? 5200 : 2600;
+    } else if (canton === 'GE') {
+      // Genève: déduction personnelle
+      additionalPersonalDeductions += civilStatus === 'married' ? 5000 : 2500;
+    } else if (canton === 'ZH') {
+      // Zurich: déduction personnelle
+      additionalPersonalDeductions += civilStatus === 'married' ? 4600 : 2300;
+    } else {
+      // Estimation par défaut pour autres cantons
+      additionalPersonalDeductions += civilStatus === 'married' ? 5000 : 2500;
+    }
+
     // Genève : déduction majorée pour garde d'enfants
     if (canton === 'GE') {
       const children = profile.personalInfo?.numberOfChildren || 0;
-      additionalDeductions += children * 500; // Bonus cantonal GE
+      additionalPersonalDeductions += children * 500; // Bonus cantonal GE
     }
-    
+
     // Vaud : déduction formation continue
     if (canton === 'VD' && profile.deductions?.trainingExpenses) {
-      additionalDeductions += Math.min(profile.deductions.trainingExpenses, 2000);
+      additionalPersonalDeductions += Math.min(profile.deductions.trainingExpenses, 2000);
     }
 
     return {
-      personalDeductions: federalDeductions.personalDeductions + additionalDeductions,
+      personalDeductions: federalDeductions.personalDeductions + additionalPersonalDeductions,
       professionalExpenses: federalDeductions.professionalExpenses,
       socialDeductions: federalDeductions.socialDeductions,
       otherDeductions: federalDeductions.otherDeductions,
-      totalDeductions: federalDeductions.totalDeductions + additionalDeductions
+      totalDeductions: federalDeductions.totalDeductions + additionalPersonalDeductions
     };
   }
 }
