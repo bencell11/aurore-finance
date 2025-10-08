@@ -309,12 +309,33 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
         console.log('💾 Sauvegarde onboarding pour user:', user.id);
         console.log('📊 Données onboarding:', onboardingData);
 
+        // Normaliser les valeurs pour correspondre au schéma Supabase
+        const normalizeSituationFamiliale = (situation: string) => {
+          const mapping: Record<string, string> = {
+            'Célibataire': 'celibataire',
+            'Marié(e)': 'marie',
+            'Pacsé(e)': 'concubinage',
+            'Divorcé(e)': 'divorce',
+            'Veuf(ve)': 'veuf'
+          };
+          return mapping[situation] || situation.toLowerCase();
+        };
+
+        const normalizeToleranceRisque = (tolerance: string) => {
+          const mapping: Record<string, string> = {
+            'faible': 'conservateur',
+            'moderee': 'moderee',
+            'elevee': 'dynamique'
+          };
+          return mapping[tolerance] || 'moderee';
+        };
+
         // Mettre à jour le profil utilisateur
         const { data: profileData, error: profileError } = await supabase
           .from('user_profiles')
           .update({
             age: onboardingData.age,
-            situation_familiale: onboardingData.situationFamiliale,
+            situation_familiale: normalizeSituationFamiliale(onboardingData.situationFamiliale || ''),
             canton: onboardingData.canton
           })
           .eq('user_id', user.id)
@@ -337,9 +358,9 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
             charges_assurances: onboardingData.charges?.assurances || 0,
             autres_charges: onboardingData.charges?.autresCharges || 0,
             objectifs_financiers: onboardingData.objectifsFinanciers || [],
-            tolerance_risque: onboardingData.toleranceRisque || 'moderee',
+            tolerance_risque: normalizeToleranceRisque(onboardingData.toleranceRisque || ''),
             horizon_investissement: onboardingData.horizonInvestissement || '5-10 ans',
-            niveau_connaissances: onboardingData.connaissancesFinancieres || 'debutant',
+            niveau_connaissances: onboardingData.connaissancesFinancieres?.toLowerCase() || 'debutant',
             updated_at: new Date().toISOString()
           })
           .select();
