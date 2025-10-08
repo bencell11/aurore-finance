@@ -11,14 +11,20 @@ import {
   DollarSign,
   Target,
   Bell,
-  Loader2
+  Loader2,
+  Receipt,
+  Percent
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { TaxCalculationService } from '@/lib/services/tax-calculation.service';
+import type { TaxCalculationResult } from '@/lib/utils/swiss-tax-formulas';
 
 export default function DashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<any>(null);
+  const [taxCalculation, setTaxCalculation] = useState<TaxCalculationResult | null>(null);
+  const [taxCalculating, setTaxCalculating] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -64,10 +70,48 @@ export default function DashboardPage() {
       console.log('🎯 Objectifs chargés:', goals, goalsError);
 
       setProfileData({ profile, financial, goals: goals || [] });
+
+      // Calculer les impôts si on a les données nécessaires
+      if (profile && financial) {
+        calculateTaxes(profile, financial);
+      }
     } catch (error) {
       console.error('❌ Erreur lors du chargement du dashboard:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const calculateTaxes = async (profile: any, financial: any) => {
+    if (!profile?.canton || !financial?.revenu_brut_annuel) {
+      console.log('⚠️ Données insuffisantes pour calcul fiscal');
+      return;
+    }
+
+    try {
+      setTaxCalculating(true);
+      console.log('💰 Calcul fiscal en cours...');
+
+      const taxResult = TaxCalculationService.calculateTax({
+        salaireBrut: financial.revenu_brut_annuel || 0,
+        autresRevenus: financial.autres_revenus || 0,
+        canton: profile.canton || 'VD',
+        situationFamiliale: profile.situation_familiale || 'celibataire',
+        nombreEnfants: 0,
+        fortuneBrute: 0,
+        deductions: {
+          pilier3a: 0,
+          primes: financial.charges_assurances || 0,
+          fraisPro: 0,
+        },
+      });
+
+      console.log('✅ Calcul fiscal terminé:', taxResult);
+      setTaxCalculation(taxResult);
+    } catch (error) {
+      console.error('❌ Erreur calcul fiscal:', error);
+    } finally {
+      setTaxCalculating(false);
     }
   };
 
@@ -201,6 +245,112 @@ export default function DashboardPage() {
             </Card>
           </div>
 
+          {/* Calcul fiscal */}
+          {hasFinancialData && taxCalculation && (
+            <Card className="mb-6 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Receipt className="w-5 h-5 text-blue-600" />
+                  Impôts estimés 2025
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Colonne gauche : Détails des impôts */}
+                  <div className="space-y-3">
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-600">Impôt fédéral direct (IFD)</span>
+                        <span className="font-semibold text-gray-900">
+                          {formatCurrency(taxCalculation.impots.federal)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-600">Impôt cantonal</span>
+                        <span className="font-semibold text-gray-900">
+                          {formatCurrency(taxCalculation.impots.cantonal)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-600">Impôt communal</span>
+                        <span className="font-semibold text-gray-900">
+                          {formatCurrency(taxCalculation.impots.communal)}
+                        </span>
+                      </div>
+                      {taxCalculation.impots.fortune > 0 && (
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-600">Impôt sur la fortune</span>
+                          <span className="font-semibold text-gray-900">
+                            {formatCurrency(taxCalculation.impots.fortune)}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+                        <span className="text-base font-bold text-gray-900">Total impôts</span>
+                        <span className="text-xl font-bold text-blue-600">
+                          {formatCurrency(taxCalculation.impots.total)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Colonne droite : Taux et informations */}
+                  <div className="space-y-3">
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Percent className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm font-semibold text-gray-700">Taux d'imposition</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div className="bg-blue-50 rounded p-3">
+                          <p className="text-xs text-gray-600 mb-1">Taux effectif</p>
+                          <p className="text-2xl font-bold text-blue-600">
+                            {taxCalculation.taux.effectif.toFixed(2)}%
+                          </p>
+                        </div>
+                        <div className="bg-purple-50 rounded p-3">
+                          <p className="text-xs text-gray-600 mb-1">Taux marginal</p>
+                          <p className="text-2xl font-bold text-purple-600">
+                            {taxCalculation.taux.marginal.toFixed(2)}%
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-600 space-y-1">
+                        <p>• Revenu brut: {formatCurrency(taxCalculation.revenuBrut)}</p>
+                        <p>• Revenu net: {formatCurrency(taxCalculation.revenuNet)}</p>
+                        <p>• Revenu imposable: {formatCurrency(taxCalculation.revenuImposable)}</p>
+                        <p className="text-blue-600 font-medium mt-2">
+                          Canton: {taxCalculation.details.baremeApplique}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => window.location.href = '/assistant-fiscal'}
+                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      size="sm"
+                    >
+                      Optimiser mes impôts
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-3">
+                  ℹ️ Estimation basée sur les barèmes fiscaux 2025. Pour un calcul précis, consultez l'assistant fiscal.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {hasFinancialData && taxCalculating && (
+            <Card className="mb-6 border-blue-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-center gap-3 text-blue-600">
+                  <Loader2 className="animate-spin w-5 h-5" />
+                  <span>Calcul de vos impôts en cours...</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Section informative */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
@@ -212,6 +362,7 @@ export default function DashboardPage() {
                   <li>✅ Système d'authentification sécurisé (Supabase)</li>
                   <li>✅ Chiffrement des données sensibles</li>
                   <li>✅ Conformité RGPD/LPD Suisse</li>
+                  <li>✅ Calcul fiscal avec formules officielles</li>
                   <li>🔄 Analyse détaillée de ton patrimoine</li>
                   <li>🔄 Recommandations personnalisées</li>
                   <li>🔄 Suivi des objectifs financiers</li>
