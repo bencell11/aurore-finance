@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthContext } from '@/lib/contexts/AuthContext';
+import { useSupabaseAuth } from '@/lib/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +22,7 @@ import {
 function AuthForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, register } = useAuthContext();
+  const { login, register } = useSupabaseAuth();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

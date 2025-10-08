@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 
 // Routes protégées (nécessitent une authentification utilisateur)
 const PROTECTED_ROUTES = [
@@ -28,23 +29,30 @@ const PUBLIC_ROUTES = [
   '/assistant-fiscal',
 ];
 
-function checkUserAuth(request: NextRequest): boolean {
+async function checkUserAuth(request: NextRequest): Promise<boolean> {
   try {
-    // Vérifier la présence du token utilisateur dans les cookies
-    const userToken = request.cookies.get('aurore_auth_token')?.value;
+    const response = NextResponse.next({
+      request,
+    });
 
-    if (!userToken || userToken === '') {
-      return false;
-    }
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+            cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+          },
+        },
+      }
+    );
 
-    // Vérifier la validité du token (simple vérification)
-    try {
-      const payload = JSON.parse(atob(userToken));
-      const isExpired = Date.now() - payload.timestamp > 7 * 24 * 60 * 60 * 1000;
-      return !isExpired;
-    } catch {
-      return false;
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    return !!user;
   } catch (error) {
     return false;
   }
@@ -103,7 +111,7 @@ export async function middleware(request: NextRequest) {
   // Vérifier les routes protégées utilisateur
   const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
   if (isProtectedRoute) {
-    const hasUserAuth = checkUserAuth(request);
+    const hasUserAuth = await checkUserAuth(request);
 
     if (!hasUserAuth) {
       const url = request.nextUrl.clone();
