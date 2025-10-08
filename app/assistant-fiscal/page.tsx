@@ -223,77 +223,6 @@ export default function AssistantFiscalPage() {
         </Alert>
       )}
 
-      {/* Vue d'ensemble */}
-      {activeTab === 'overview' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Progression */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Progression</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{completionPercentage}%</div>
-              <Progress value={completionPercentage} className="mt-2" />
-              <p className="text-xs text-muted-foreground mt-2">
-                {isProfileComplete ? 'Profil complet' : 'En cours de complétion'}
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Impôt estimé */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Impôt estimé</CardTitle>
-              <Calculator className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {calculation ? `${calculation.totalTax.toLocaleString('fr-CH')} CHF` : '--'}
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                {calculation ? `Taux effectif: ${calculation.effectiveRate.toFixed(1)}%` : 'Calcul requis'}
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Économies potentielles */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Économies possibles</CardTitle>
-              <Banknote className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {optimizations.length > 0 ? 
-                  `${optimizations.reduce((sum, opt) => sum + opt.savingAmount, 0).toLocaleString('fr-CH')} CHF` : 
-                  '--'
-                }
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                {optimizations.length} optimisation{optimizations.length > 1 ? 's' : ''} identifiée{optimizations.length > 1 ? 's' : ''}
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Documents */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Documents</CardTitle>
-              <FileText className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {profile?.completionStatus?.sections?.documents ? '✓' : '0'}
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                {profile?.completionStatus?.sections?.documents ? 'Téléchargés' : 'À télécharger'}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
       {/* Onglets principaux */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-7">
@@ -325,6 +254,248 @@ export default function AssistantFiscalPage() {
             🔧 Debug
           </TabsTrigger>
         </TabsList>
+
+        {/* Vue d'ensemble */}
+        <TabsContent value="overview" className="space-y-6">
+          {/* Section progression */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                  État de votre déclaration
+                </CardTitle>
+                <CardDescription>
+                  Suivez l'avancement de votre dossier fiscal
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Progression globale</span>
+                    <span className="font-semibold">{completionPercentage}%</span>
+                  </div>
+                  <Progress value={completionPercentage} className="h-2" />
+                </div>
+
+                <div className="space-y-3 pt-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`h-2 w-2 rounded-full ${profile?.completionStatus?.sections?.personalInfo ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <span className="text-sm">Informations personnelles</span>
+                    {profile?.completionStatus?.sections?.personalInfo && <CheckCircle2 className="h-4 w-4 text-green-600 ml-auto" />}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className={`h-2 w-2 rounded-full ${profile?.completionStatus?.sections?.income ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <span className="text-sm">Revenus et activité professionnelle</span>
+                    {profile?.completionStatus?.sections?.income && <CheckCircle2 className="h-4 w-4 text-green-600 ml-auto" />}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className={`h-2 w-2 rounded-full ${profile?.completionStatus?.sections?.deductions ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <span className="text-sm">Déductions et frais</span>
+                    {profile?.completionStatus?.sections?.deductions && <CheckCircle2 className="h-4 w-4 text-green-600 ml-auto" />}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className={`h-2 w-2 rounded-full ${profile?.completionStatus?.sections?.assets ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <span className="text-sm">Fortune et patrimoine</span>
+                    {profile?.completionStatus?.sections?.assets && <CheckCircle2 className="h-4 w-4 text-green-600 ml-auto" />}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className={`h-2 w-2 rounded-full ${profile?.completionStatus?.sections?.documents ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <span className="text-sm">Documents justificatifs</span>
+                    {profile?.completionStatus?.sections?.documents && <CheckCircle2 className="h-4 w-4 text-green-600 ml-auto" />}
+                  </div>
+                </div>
+
+                {!isProfileComplete && (
+                  <Alert className="mt-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      Complétez votre profil pour accéder au calcul automatique et aux optimisations personnalisées.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-5 w-5 text-purple-600" />
+                  Résumé fiscal
+                </CardTitle>
+                <CardDescription>
+                  Aperçu de votre situation fiscale
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {calculation ? (
+                  <>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                        <span className="text-sm font-medium">Impôt total estimé</span>
+                        <span className="text-lg font-bold text-blue-600">
+                          {calculation.totalTax.toLocaleString('fr-CH')} CHF
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-muted-foreground mb-1">Taux effectif</p>
+                          <p className="text-lg font-semibold">{calculation.effectiveRate.toFixed(1)}%</p>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <p className="text-xs text-muted-foreground mb-1">Taux marginal</p>
+                          <p className="text-lg font-semibold">{calculation.marginalRate.toFixed(1)}%</p>
+                        </div>
+                      </div>
+
+                      {optimizations.length > 0 && (
+                        <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                          <p className="text-sm font-medium text-green-900 mb-1">Économies identifiées</p>
+                          <p className="text-2xl font-bold text-green-600">
+                            {optimizations.reduce((sum, opt) => sum + opt.savingAmount, 0).toLocaleString('fr-CH')} CHF
+                          </p>
+                          <p className="text-xs text-green-700 mt-1">
+                            {optimizations.length} opportunité{optimizations.length > 1 ? 's' : ''} d'optimisation
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-8">
+                    <Calculator className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Aucun calcul disponible
+                    </p>
+                    <Button
+                      onClick={calculateTax}
+                      disabled={!isProfileComplete || loading}
+                      variant="outline"
+                    >
+                      {isProfileComplete ? 'Calculer mes impôts' : 'Complétez votre profil d\'abord'}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Actions rapides */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Actions rapides</CardTitle>
+              <CardDescription>
+                Gagnez du temps avec ces raccourcis
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Button
+                  variant="outline"
+                  className="h-auto flex-col items-start p-4 gap-2"
+                  onClick={() => setActiveTab('chat')}
+                >
+                  <MessageCircle className="h-5 w-5 text-blue-600" />
+                  <div className="text-left">
+                    <p className="font-semibold text-sm">Poser une question</p>
+                    <p className="text-xs text-muted-foreground">Assistant IA fiscal</p>
+                  </div>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-auto flex-col items-start p-4 gap-2"
+                  onClick={() => setActiveTab('profile')}
+                >
+                  <User className="h-5 w-5 text-purple-600" />
+                  <div className="text-left">
+                    <p className="font-semibold text-sm">Compléter mon profil</p>
+                    <p className="text-xs text-muted-foreground">Informations fiscales</p>
+                  </div>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-auto flex-col items-start p-4 gap-2"
+                  onClick={() => setActiveTab('documents')}
+                >
+                  <Upload className="h-5 w-5 text-green-600" />
+                  <div className="text-left">
+                    <p className="font-semibold text-sm">Télécharger documents</p>
+                    <p className="text-xs text-muted-foreground">Justificatifs</p>
+                  </div>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-auto flex-col items-start p-4 gap-2"
+                  onClick={() => setActiveTab('export')}
+                  disabled={!calculation}
+                >
+                  <Download className="h-5 w-5 text-orange-600" />
+                  <div className="text-left">
+                    <p className="font-semibold text-sm">Exporter déclaration</p>
+                    <p className="text-xs text-muted-foreground">PDF, HTML, TAX</p>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Optimisations prioritaires */}
+          {optimizations.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-green-600" />
+                  Opportunités d'optimisation
+                </CardTitle>
+                <CardDescription>
+                  Réduisez votre charge fiscale légalement
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {optimizations.slice(0, 3).map((opt, index) => (
+                    <div key={index} className="flex items-start gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                        opt.priority === 'high' ? 'bg-red-100 text-red-600' :
+                        opt.priority === 'medium' ? 'bg-orange-100 text-orange-600' :
+                        'bg-blue-100 text-blue-600'
+                      }`}>
+                        <Banknote className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="font-semibold text-sm">{opt.title}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{opt.description}</p>
+                            {opt.deadline && (
+                              <p className="text-xs text-orange-600 mt-1">📅 {opt.deadline}</p>
+                            )}
+                          </div>
+                          <Badge variant={opt.priority === 'high' ? 'destructive' : 'secondary'}>
+                            {opt.savingAmount.toLocaleString('fr-CH')} CHF
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {optimizations.length > 3 && (
+                    <Button
+                      variant="link"
+                      className="w-full"
+                      onClick={() => setActiveTab('calculation')}
+                    >
+                      Voir toutes les optimisations ({optimizations.length})
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
 
         {/* Chat avec l'assistant IA */}
         <TabsContent value="chat" className="space-y-4">
