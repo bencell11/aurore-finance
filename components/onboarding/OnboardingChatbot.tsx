@@ -356,7 +356,7 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
             autres_revenus: onboardingData.revenus?.autresRevenus || 0,
             charges_logement: onboardingData.charges?.loyer || 0,
             charges_assurances: onboardingData.charges?.assurances || 0,
-            autres_charges: onboardingData.charges?.autresCharges || 0,
+            // autres_charges: onboardingData.charges?.autresCharges || 0, // Colonne n'existe pas dans Supabase
             objectifs_financiers: onboardingData.objectifsFinanciers || [],
             tolerance_risque: normalizeToleranceRisque(onboardingData.toleranceRisque || ''),
             horizon_investissement: onboardingData.horizonInvestissement || '5-10 ans',
