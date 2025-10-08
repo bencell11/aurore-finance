@@ -4,7 +4,7 @@ import "./globals.css";
 import ConditionalNavigation from "@/components/navigation/ConditionalNavigation";
 import ConditionalChatBubble from "@/components/ai-coach/ConditionalChatBubble";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { AuthProvider } from "@/lib/contexts/AuthContext";
+import { SupabaseAuthProvider } from "@/lib/contexts/SupabaseAuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +31,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
+        <SupabaseAuthProvider>
           <ConditionalNavigation />
           {children}
           <ConditionalChatBubble />
           <SpeedInsights />
-        </AuthProvider>
+        </SupabaseAuthProvider>
       </body>
     </html>
   );
