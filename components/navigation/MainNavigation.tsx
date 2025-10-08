@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuthContext } from '@/lib/contexts/AuthContext';
+import { useSupabaseAuth } from '@/lib/contexts/SupabaseAuthContext';
 import UserMenu from '@/components/auth/UserMenu';
 import { Button } from '@/components/ui/button';
 import { SimpleLanguageSelector, useTranslation } from '@/components/SimpleLanguageSelector';
@@ -64,7 +64,7 @@ export default function MainNavigation() {
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const pathname = usePathname();
 
-  const { user, isAuthenticated } = useAuthContext();
+  const { user, isAuthenticated } = useSupabaseAuth();
   const t = useTranslation();
 
   // Ne pas afficher la navigation sur la page de connexion

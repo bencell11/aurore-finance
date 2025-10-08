@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalNavigation from "@/components/navigation/ConditionalNavigation";
-import ConditionalChatBubble from "@/components/ai-coach/ConditionalChatBubble";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SupabaseAuthProvider } from "@/lib/contexts/SupabaseAuthContext";
 
@@ -34,7 +33,6 @@ export default function RootLayout({
         <SupabaseAuthProvider>
           <ConditionalNavigation />
           {children}
-          <ConditionalChatBubble />
           <SpeedInsights />
         </SupabaseAuthProvider>
       </body>

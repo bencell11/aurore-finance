@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthContext } from '@/lib/contexts/AuthContext';
+import { useSupabaseAuth } from '@/lib/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,7 +24,7 @@ import {
 
 export default function UserMenu() {
   const router = useRouter();
-  const { user, logout } = useAuthContext();
+  const { user, logout } = useSupabaseAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   if (!user) {

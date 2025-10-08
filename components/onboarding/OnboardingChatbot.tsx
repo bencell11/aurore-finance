@@ -16,8 +16,8 @@ import {
   DollarSign,
   Calendar
 } from 'lucide-react';
-import { useAuthContext } from '@/lib/contexts/AuthContext';
-import { UserProfileService } from '@/lib/services/user-profile.service';
+import { useSupabaseAuth } from '@/lib/contexts/SupabaseAuthContext';
+import { createClient } from '@/lib/supabase/client';
 
 interface Message {
   id: string;
@@ -155,7 +155,7 @@ const ONBOARDING_QUESTIONS = [
 ];
 
 export default function OnboardingChatbot({ onComplete }: { onComplete: (data: OnboardingData, scoring: string) => void }) {
-  const { user } = useAuthContext();
+  const { user } = useSupabaseAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentInput, setCurrentInput] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
@@ -301,48 +301,48 @@ Voici un récapitulatif de vos informations. Vous pouvez les modifier ci-dessous
 
     addAssistantMessage('🎉 Merci ! Je génère maintenant votre document d\'optimisation personnalisé...');
 
-    // Sauvegarder le profil complet
+    // Sauvegarder le profil complet dans Supabase
     if (user?.id) {
-      const userProfileService = UserProfileService.getInstance();
+      const supabase = createClient();
 
-      // Charger les données existantes
-      await userProfileService.loadFromStorage();
+      try {
+        // Mettre à jour le profil utilisateur
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .update({
+            age: onboardingData.age,
+            situation_familiale: onboardingData.situationFamiliale,
+            canton: onboardingData.canton
+          })
+          .eq('user_id', user.id);
 
-      // Vérifier si le profil existe, sinon le créer
-      let userProfile = await userProfileService.getUserProfile(user.id);
+        if (profileError) {
+          console.error('Erreur mise à jour profil:', profileError);
+        }
 
-      if (!userProfile) {
-        // Créer un nouveau profil
-        userProfile = await userProfileService.createUserProfile({
-          userId: user.id,
-          email: user.email,
-          nom: user.nom,
-          prenom: user.prenom,
-          age: onboardingData.age,
-          situationFamiliale: onboardingData.situationFamiliale,
-          canton: onboardingData.canton
-        });
-      } else {
-        // Mettre à jour le profil existant
-        await userProfileService.updateUserProfile(user.id, {
-          age: onboardingData.age,
-          situationFamiliale: onboardingData.situationFamiliale,
-          canton: onboardingData.canton
-        });
+        // Créer ou mettre à jour le profil financier
+        const { error: financialError } = await supabase
+          .from('financial_profiles')
+          .upsert({
+            user_id: user.id,
+            revenu_brut_annuel: onboardingData.revenus?.salaireBrut || 0,
+            autres_revenus: onboardingData.revenus?.autresRevenus || 0,
+            charges_logement: onboardingData.charges?.loyer || 0,
+            charges_assurances: onboardingData.charges?.assurances || 0,
+            autres_charges: onboardingData.charges?.autresCharges || 0,
+            objectifs_financiers: onboardingData.objectifsFinanciers || [],
+            tolerance_risque: onboardingData.toleranceRisque || 'moderee',
+            horizon_investissement: onboardingData.horizonInvestissement || '5-10 ans',
+            niveau_connaissances: onboardingData.connaissancesFinancieres || 'debutant',
+            updated_at: new Date().toISOString()
+          });
+
+        if (financialError) {
+          console.error('Erreur mise à jour profil financier:', financialError);
+        }
+      } catch (error) {
+        console.error('Erreur sauvegarde données onboarding:', error);
       }
-
-      // Créer ou mettre à jour le profil financier
-      await userProfileService.createOrUpdateFinancialProfile(user.id, {
-        revenuBrutAnnuel: onboardingData.revenus?.salaireBrut || 0,
-        autresRevenus: onboardingData.revenus?.autresRevenus || 0,
-        chargesLogement: onboardingData.charges?.loyer || 0,
-        chargesAssurances: onboardingData.charges?.assurances || 0,
-        autresCharges: onboardingData.charges?.autresCharges || 0,
-        objectifsFinanciers: onboardingData.objectifsFinanciers || [],
-        toleranceRisque: onboardingData.toleranceRisque || 'moderee',
-        horizonInvestissement: onboardingData.horizonInvestissement || '5-10 ans',
-        niveauConnaissances: onboardingData.connaissancesFinancieres || 'debutant'
-      });
     }
 
     setTimeout(() => {

@@ -1,8 +1,9 @@
 import OpenAI from 'openai';
 import { UserContext, UserContextService } from '@/lib/services/user-context.service';
 import { UserProfile, Canton } from '@/types/user';
-import { UserProfileService } from '@/lib/services/user-profile.service';
-import { GoalsService } from '@/lib/services/goals.service';
+// TODO: Migrate to Supabase - these services were deleted
+// import { UserProfileService } from '@/lib/services/user-profile.service';
+// import { GoalsService } from '@/lib/services/goals.service';
 import { cantonalTaxData, federalTaxRates } from '@/lib/data/swiss-tax-data';
 
 export interface ChatMessage {
@@ -42,8 +43,9 @@ export interface ConversationContext {
 export class AICoachService {
   private openai: OpenAI;
   private userContextService: UserContextService;
-  private userProfileService: UserProfileService;
-  private goalsService: GoalsService;
+  // TODO: Migrate to Supabase
+  // private userProfileService: UserProfileService;
+  // private goalsService: GoalsService;
   private conversationMemory: Map<string, ConversationContext> = new Map();
 
   constructor() {
@@ -51,8 +53,9 @@ export class AICoachService {
       apiKey: process.env.OPENAI_API_KEY,
     });
     this.userContextService = new UserContextService();
-    this.userProfileService = UserProfileService.getInstance();
-    this.goalsService = GoalsService.getInstance();
+    // TODO: Migrate to Supabase
+    // this.userProfileService = UserProfileService.getInstance();
+    // this.goalsService = GoalsService.getInstance();
   }
 
   async generateResponse(

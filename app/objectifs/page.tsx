@@ -27,7 +27,8 @@ import {
   DollarSign
 } from 'lucide-react';
 import { FinancialGoal } from '@/types/user';
-import { GoalsService } from '@/lib/services/goals.service';
+// TODO: Migrate to Supabase - goals.service deleted
+// import { GoalsService } from '@/lib/services/goals.service';
 import { GoalsRecommendationsService } from '@/lib/services/goals-recommendations.service';
 import GoalCreationWizard from '@/components/goals/GoalCreationWizard';
 import GoalDetailView from '@/components/goals/GoalDetailView';
@@ -39,7 +40,8 @@ export default function ObjectifsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<FinancialGoal | null>(null);
-  const goalsService = GoalsService.getInstance();
+  // TODO: Migrate to Supabase
+  // const goalsService = GoalsService.getInstance();
   const recommendationsService = GoalsRecommendationsService.getInstance();
 
   const { user } = useAuth();

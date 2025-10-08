@@ -24,7 +24,8 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { UserProfile, Canton } from '@/types/user';
-import { authService } from '@/lib/services/auth.service';
+// TODO: Migrate to Supabase - authService deleted
+// import { authService } from '@/lib/services/auth.service';
 
 export default function ProfilPage() {
   const { user, refreshUser } = useAuth();
@@ -111,14 +112,9 @@ export default function ProfilPage() {
     setSuccess('');
     
     try {
-      const saved = await authService.updateUserProfile(user.id, profile);
-      
-      if (saved) {
-        refreshUser();
-        setSuccess('Profil mis à jour avec succès!');
-      } else {
-        setError('Erreur lors de la sauvegarde du profil');
-      }
+      // TODO: Migrate to Supabase
+      // const saved = await authService.updateUserProfile(user.id, profile);
+      setError('Cette fonctionnalité sera bientôt disponible avec Supabase');
     } catch (err) {
       setError('Une erreur inattendue est survenue');
     } finally {

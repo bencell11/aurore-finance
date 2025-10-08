@@ -491,21 +491,22 @@ export default function EducationFiscalePage() {
       {/* Contenu principal */}
       <div className="container mx-auto max-w-7xl px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="themes" className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              Thématiques
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8 gap-2">
+            <TabsTrigger value="themes" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <BookOpen className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden sm:inline">Thématiques</span>
+              <span className="sm:hidden">Thèmes</span>
             </TabsTrigger>
-            <TabsTrigger value="parcours" className="flex items-center gap-2">
-              <Target className="h-4 w-4" />
-              Parcours guidés
+            <TabsTrigger value="parcours" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Target className="h-3 w-3 md:h-4 md:w-4" />
+              Parcours
             </TabsTrigger>
-            <TabsTrigger value="outils" className="flex items-center gap-2">
-              <Calculator className="h-4 w-4" />
-              Outils pratiques
+            <TabsTrigger value="outils" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Calculator className="h-3 w-3 md:h-4 md:w-4" />
+              Outils
             </TabsTrigger>
-            <TabsTrigger value="faq" className="flex items-center gap-2">
-              <HelpCircle className="h-4 w-4" />
+            <TabsTrigger value="faq" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <HelpCircle className="h-3 w-3 md:h-4 md:w-4" />
               FAQ
             </TabsTrigger>
           </TabsList>

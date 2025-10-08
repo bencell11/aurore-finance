@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthContext } from '@/lib/contexts/AuthContext';
+import { useSupabaseAuth } from '@/lib/contexts/SupabaseAuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import OnboardingChatbot from '@/components/onboarding/OnboardingChatbot';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { PDFOptimizationService, OptimizationReport } from '@/lib/services/pdf-o
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { user } = useAuthContext();
+  const { user } = useSupabaseAuth();
   const [isComplete, setIsComplete] = useState(false);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [report, setReport] = useState<OptimizationReport | null>(null);
