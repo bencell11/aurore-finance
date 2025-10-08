@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Storage - Aurore Finance</title>
+    <style>
+        body {
+            font-family: system-ui;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #dc2626;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover { background: #b91c1c; }
+        .success { 
+            background: #10b981; 
+            padding: 12px;
+            border-radius: 6px;
+            color: white;
+            margin-top: 20px;
+            display: none;
+        }
+        .info {
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        pre {
+            background: #1f2937;
+            color: #10b981;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🧹 Nettoyage du stockage</h1>
+        
+        <div class="info">
+            <strong>⚠️ Migration vers Supabase</strong><br>
+            L'ancien système utilisait localStorage (non sécurisé).<br>
+            Le nouveau système utilise Supabase (sécurisé + RGPD).<br><br>
+            Tu dois recréer ton compte avec le nouveau système.
+        </div>
+
+        <h3>État actuel du localStorage :</h3>
+        <pre id="before"></pre>
+
+        <button onclick="clearAll()">🗑️ Nettoyer tout le localStorage</button>
+
+        <div class="success" id="success">
+            ✅ localStorage nettoyé !<br>
+            Redirection vers /auth dans 2 secondes...
+        </div>
+
+        <h3>Après nettoyage :</h3>
+        <pre id="after"></pre>
+    </div>
+
+    <script>
+        function showStorage() {
+            const items = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                items[key] = localStorage.getItem(key);
+            }
+            return JSON.stringify(items, null, 2) || '(vide)';
+        }
+
+        document.getElementById('before').textContent = showStorage();
+
+        function clearAll() {
+            // Nettoyer localStorage
+            localStorage.clear();
+            
+            // Nettoyer sessionStorage aussi
+            sessionStorage.clear();
+            
+            // Supprimer les cookies
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+
+            // Afficher l'état
+            document.getElementById('after').textContent = showStorage();
+            document.getElementById('success').style.display = 'block';
+
+            // Rediriger
+            setTimeout(() => {
+                window.location.href = '/auth';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
