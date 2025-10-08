@@ -348,13 +348,37 @@ export default function RechercheImmobilierePage() {
                       {/* Budget maximal */}
                       <div className="bg-white rounded-lg p-6 shadow-md">
                         <div className="text-center">
-                          <p className="text-sm text-gray-600 mb-2">Budget maximal</p>
+                          <div className="flex items-center justify-center gap-2">
+                            <p className="text-sm text-gray-600 mb-2">Budget maximal</p>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3.5 h-3.5 text-gray-400 cursor-help mb-2" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Calcul du budget maximal:</p>
+                                <p className="text-xs">• Basé sur le taux d'endettement max de 33%</p>
+                                <p className="text-xs">• Charges théoriques à 5% d'intérêt</p>
+                                <p className="text-xs">• Amortissement 2ème rang sur 15 ans</p>
+                                <p className="text-xs">• Entretien 1% + charges 0.2%</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <p className="text-4xl font-bold text-green-600">
                             {formatCurrency(affordabilityResult.budgetMaximal)}
                           </p>
-                          <p className="text-xs text-gray-500 mt-2">
-                            Fonds propres minimum requis: {formatCurrency(affordabilityResult.fondsPropresMini)}
-                          </p>
+                          <div className="flex items-center justify-center gap-2 mt-2">
+                            <p className="text-xs text-gray-500">
+                              Fonds propres minimum requis: {formatCurrency(affordabilityResult.fondsPropresMini)}
+                            </p>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="text-xs">20% du prix du bien (norme FINMA)</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                         </div>
                       </div>
 
@@ -369,10 +393,34 @@ export default function RechercheImmobilierePage() {
                                 <CardContent className="pt-6">
                                   <p className="text-lg font-bold text-gray-900">{formatCurrency(bien.prix)}</p>
                                   <div className="text-xs text-gray-600 mt-2 space-y-1">
-                                    <p>Hypothèque: {formatCurrency(bien.hypotheque)}</p>
-                                    <p className="font-semibold text-blue-600 mt-2">
-                                      Charges: {formatCurrency(rent.chargesMensuelles)}/mois
-                                    </p>
+                                    <div className="flex items-center gap-1">
+                                      <p>Hypothèque: {formatCurrency(bien.hypotheque)}</p>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p className="text-xs">Max 80% du prix (65% + 15%)</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </div>
+                                    <div className="flex items-center gap-1 mt-2">
+                                      <p className="font-semibold text-blue-600">
+                                        Charges: {formatCurrency(rent.chargesMensuelles)}/mois
+                                      </p>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Info className="w-3 h-3 text-blue-400 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-xs">
+                                          <p className="text-xs font-semibold mb-1">Charges mensuelles:</p>
+                                          <p className="text-xs">• Intérêts 5% du prêt</p>
+                                          <p className="text-xs">• Amortissement 2ème rang/15 ans</p>
+                                          <p className="text-xs">• Entretien 1% du prix</p>
+                                          <p className="text-xs">• Charges 0.2% du prix</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </div>
                                   </div>
                                 </CardContent>
                               </Card>
@@ -539,14 +587,48 @@ export default function RechercheImmobilierePage() {
                       <CardContent className="space-y-6">
                         {/* Détails fonds propres */}
                         <div className="bg-white rounded-lg p-6">
-                          <h4 className="font-semibold text-gray-900 mb-4">Fonds propres</h4>
+                          <div className="flex items-center gap-2 mb-4">
+                            <h4 className="font-semibold text-gray-900">Fonds propres</h4>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-4 h-4 text-gray-400 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Règles FINMA:</p>
+                                <p className="text-xs">• Minimum 20% du prix en fonds propres</p>
+                                <p className="text-xs">• Dont au moins 10% en cash obligatoire</p>
+                                <p className="text-xs">• Le reste peut être LPP, 3a, donations</p>
+                                <p className="text-xs">• LPP utilisable uniquement avant 50 ans</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <p className="text-gray-600">Minimum requis (20%)</p>
+                              <div className="flex items-center gap-1">
+                                <p className="text-gray-600">Minimum requis (20%)</p>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">20% × {formatCurrency(feasibilityInput.prixBien)}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <p className="text-lg font-bold">{formatCurrency(feasibilityResult.fondsPropresMini)}</p>
                             </div>
                             <div>
-                              <p className="text-gray-600">Vos fonds propres</p>
+                              <div className="flex items-center gap-1">
+                                <p className="text-gray-600">Vos fonds propres</p>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">Cash + LPP + 3a + donations</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <p className={`text-lg font-bold ${
                                 feasibilityResult.fondsPropresTotaux >= feasibilityResult.fondsPropresMini
                                   ? 'text-green-600'
@@ -556,7 +638,18 @@ export default function RechercheImmobilierePage() {
                               </p>
                             </div>
                             <div>
-                              <p className="text-gray-600">Cash minimum (10%)</p>
+                              <div className="flex items-center gap-1">
+                                <p className="text-gray-600">Cash minimum (10%)</p>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">10% × {formatCurrency(feasibilityInput.prixBien)}</p>
+                                    <p className="text-xs mt-1">Cash obligatoire (FINMA)</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <p className="text-lg font-bold">{formatCurrency(feasibilityInput.prixBien * 0.10)}</p>
                             </div>
                             <div>
@@ -582,47 +675,156 @@ export default function RechercheImmobilierePage() {
 
                         {/* Hypothèque et charges */}
                         <div className="bg-white rounded-lg p-6">
-                          <h4 className="font-semibold text-gray-900 mb-4">Hypothèque et charges mensuelles</h4>
+                          <div className="flex items-center gap-2 mb-4">
+                            <h4 className="font-semibold text-gray-900">Hypothèque et charges mensuelles</h4>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-4 h-4 text-gray-400 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Structure de l'hypothèque:</p>
+                                <p className="text-xs">• 1er rang (65%): pas d'amortissement</p>
+                                <p className="text-xs">• 2ème rang (15%): amortissement obligatoire sur 15 ans</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-600">Hypothèque totale</span>
+                              <div className="flex items-center gap-1">
+                                <span className="text-gray-600">Hypothèque totale</span>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">Max 80% du prix du bien</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <span className="font-semibold">{formatCurrency(feasibilityResult.montantHypotheque)}</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                              <span className="text-gray-500">• 1er rang (65%)</span>
+                              <div className="flex items-center gap-1">
+                                <span className="text-gray-500">• 1er rang (65%)</span>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">65% × {formatCurrency(feasibilityInput.prixBien)}</p>
+                                    <p className="text-xs mt-1">Pas d'amortissement requis</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <span>{formatCurrency(feasibilityResult.hypotheque1erRang)}</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                              <span className="text-gray-500">• 2ème rang (15%)</span>
+                              <div className="flex items-center gap-1">
+                                <span className="text-gray-500">• 2ème rang (15%)</span>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">15% × {formatCurrency(feasibilityInput.prixBien)}</p>
+                                    <p className="text-xs mt-1">Amortissement obligatoire sur 15 ans</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <span>{formatCurrency(feasibilityResult.hypotheque2emeRang)}</span>
                             </div>
 
                             <div className="border-t pt-3 mt-3">
                               <div className="flex justify-between items-center mb-2">
-                                <span className="text-gray-600">Charges annuelles</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-gray-600">Charges annuelles</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-xs">Total des charges annuelles fixes</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <span className="font-semibold">{formatCurrency(feasibilityResult.chargesAnnuelles)}</span>
                               </div>
                               <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500">• Intérêts (5%)</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-gray-500">• Intérêts (5%)</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-xs">5% × {formatCurrency(feasibilityResult.montantHypotheque)}</p>
+                                      <p className="text-xs mt-1">Taux théorique FINMA (pas le taux réel)</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <span>{formatCurrency(feasibilityResult.interetsHypotheque)}</span>
                               </div>
                               <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500">• Amortissement 2ème rang</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-gray-500">• Amortissement 2ème rang</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-xs">{formatCurrency(feasibilityResult.hypotheque2emeRang)} ÷ 15 ans</p>
+                                      <p className="text-xs mt-1">Remboursement obligatoire du 2ème rang</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <span>{formatCurrency(feasibilityResult.amortissement2emeRang)}</span>
                               </div>
                               <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500">• Entretien (1%)</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-gray-500">• Entretien (1%)</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-xs">1% × {formatCurrency(feasibilityInput.prixBien)}</p>
+                                      <p className="text-xs mt-1">Estimation pour réparations/entretien</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <span>{formatCurrency(feasibilityResult.entretenReparations)}</span>
                               </div>
                               <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500">• Charges (0.2%)</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-gray-500">• Charges (0.2%)</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-xs">0.2% × {formatCurrency(feasibilityInput.prixBien)}</p>
+                                      <p className="text-xs mt-1">Charges accessoires (électricité, eau, etc.)</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <span>{formatCurrency(feasibilityResult.chargesAccessoires)}</span>
                               </div>
                             </div>
 
                             <div className="border-t pt-3 mt-3 bg-blue-50 p-3 rounded">
                               <div className="flex justify-between items-center">
-                                <span className="font-semibold text-gray-900">Charges mensuelles théoriques</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="font-semibold text-gray-900">Charges mensuelles théoriques</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3.5 h-3.5 text-blue-500 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-xs">
+                                      <p className="text-xs font-semibold mb-1">"Loyer théorique" mensuel:</p>
+                                      <p className="text-xs">Ce montant représente vos charges mensuelles totales pour ce bien immobilier (intérêts + amortissement + entretien + charges)</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <span className="text-xl font-bold text-blue-600">
                                   {formatCurrency(feasibilityResult.chargesAnnuelles / 12)}
                                 </span>
@@ -633,14 +835,36 @@ export default function RechercheImmobilierePage() {
 
                         {/* Capacité financière */}
                         <div className="bg-white rounded-lg p-6">
-                          <h4 className="font-semibold text-gray-900 mb-4">Capacité financière</h4>
+                          <div className="flex items-center gap-2 mb-4">
+                            <h4 className="font-semibold text-gray-900">Capacité financière</h4>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-4 h-4 text-gray-400 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Règle du taux d'endettement:</p>
+                                <p className="text-xs">Vos charges annuelles totales ne doivent pas dépasser 33% de votre revenu brut annuel (norme FINMA)</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <div className="space-y-3">
                             <div className="flex justify-between items-center">
                               <span className="text-gray-600">Revenu total du ménage</span>
                               <span className="font-semibold">{formatCurrency(feasibilityResult.revenuMenageTotal)}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-600">Taux d'endettement</span>
+                              <div className="flex items-center gap-1">
+                                <span className="text-gray-600">Taux d'endettement</span>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">Charges annuelles ÷ Revenu brut × 100</p>
+                                    <p className="text-xs mt-1">{formatCurrency(feasibilityResult.chargesAnnuelles)} ÷ {formatCurrency(feasibilityResult.revenuMenageTotal)} = {(feasibilityResult.tauxEndettement * 100).toFixed(1)}%</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <span className={`font-bold text-lg ${
                                 feasibilityResult.tauxEndettement <= 0.33 ? 'text-green-600' : 'text-red-600'
                               }`}>
@@ -670,10 +894,23 @@ export default function RechercheImmobilierePage() {
                     {savingsPlan && (
                       <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
                         <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-purple-700">
-                            <PiggyBank className="w-6 h-6" />
-                            Plan d'épargne personnalisé
-                          </CardTitle>
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2 text-purple-700">
+                              <PiggyBank className="w-6 h-6" />
+                              Plan d'épargne personnalisé
+                            </CardTitle>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="w-4 h-4 text-purple-500 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-xs font-semibold mb-1">Calcul du plan d'épargne:</p>
+                                <p className="text-xs">• Épargne suggérée: 10% du revenu mensuel</p>
+                                <p className="text-xs">• Scénarios avec et sans investissement</p>
+                                <p className="text-xs">• Rendement 5% = portefeuille équilibré</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                           <CardDescription>
                             Combien de temps pour économiser les {formatCurrency(savingsPlan.montantManquant)} manquants ?
                           </CardDescription>
@@ -686,13 +923,34 @@ export default function RechercheImmobilierePage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="bg-gray-50 rounded p-4">
-                                <p className="text-xs text-gray-600 mb-1">Sans investissement</p>
+                                <div className="flex items-center gap-1 mb-1">
+                                  <p className="text-xs text-gray-600">Sans investissement</p>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-xs">Épargne sur compte sans intérêts (0%)</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <p className="text-2xl font-bold text-gray-900">
                                   {Math.floor(savingsPlan.moisNecessaires.sansInvestissement / 12)} ans {savingsPlan.moisNecessaires.sansInvestissement % 12} mois
                                 </p>
                               </div>
                               <div className="bg-green-50 rounded p-4">
-                                <p className="text-xs text-gray-600 mb-1">Avec investissement 5%</p>
+                                <div className="flex items-center gap-1 mb-1">
+                                  <p className="text-xs text-gray-600">Avec investissement 5%</p>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="w-3 h-3 text-green-500 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-xs">Rendement annuel de 5% (intérêts composés)</p>
+                                      <p className="text-xs mt-1">Exemple: fonds d'investissement équilibré</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
                                 <p className="text-2xl font-bold text-green-600">
                                   {Math.floor(savingsPlan.moisNecessaires.avecInvestissement5 / 12)} ans {savingsPlan.moisNecessaires.avecInvestissement5 % 12} mois
                                 </p>

@@ -17,7 +17,8 @@ import {
   Calculator,
   FileText,
   PiggyBank,
-  X
+  X,
+  Home
 } from 'lucide-react';
 
 // Structure simplifiée : 4 onglets principaux
@@ -37,6 +38,7 @@ const getNavigationItems = (t: any) => [
     public: true,
     submenu: [
       { name: 'Simulateurs', href: '/simulateurs', icon: Calculator },
+      { name: 'Recherche Immobilière', href: '/recherche-immobiliere', icon: Home },
       { name: 'Objectifs', href: '/objectifs', icon: PiggyBank },
       { name: 'Outils pratiques', href: '/education-fiscale#outils', icon: FileText }
     ]
@@ -62,10 +64,26 @@ export default function MainNavigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
+  const [closeTimeout, setCloseTimeout] = useState<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
 
   const { user, isAuthenticated } = useSupabaseAuth();
   const t = useTranslation();
+
+  const handleMouseEnter = (itemKey: string) => {
+    if (closeTimeout) {
+      clearTimeout(closeTimeout);
+      setCloseTimeout(null);
+    }
+    setOpenSubmenu(itemKey);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setOpenSubmenu(null);
+    }, 150); // Délai de 150ms avant de fermer
+    setCloseTimeout(timeout);
+  };
 
   // Ne pas afficher la navigation sur la page de connexion
   if (pathname === '/auth') {
@@ -99,11 +117,14 @@ export default function MainNavigation() {
                 const hasSubmenu = item.submenu && item.submenu.length > 0;
 
                 return (
-                  <div key={item.nameKey} className="relative">
+                  <div
+                    key={item.nameKey}
+                    className="relative"
+                    onMouseEnter={() => hasSubmenu && handleMouseEnter(item.nameKey)}
+                    onMouseLeave={() => hasSubmenu && handleMouseLeave()}
+                  >
                     {hasSubmenu ? (
                       <button
-                        onMouseEnter={() => setOpenSubmenu(item.nameKey)}
-                        onMouseLeave={() => setOpenSubmenu(null)}
                         className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                           isActive
                             ? 'text-blue-600 bg-blue-50'
@@ -135,11 +156,7 @@ export default function MainNavigation() {
 
                     {/* Submenu Dropdown */}
                     {hasSubmenu && openSubmenu === item.nameKey && (
-                      <div
-                        onMouseEnter={() => setOpenSubmenu(item.nameKey)}
-                        onMouseLeave={() => setOpenSubmenu(null)}
-                        className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border py-2"
-                      >
+                      <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border py-2">
                         {item.submenu!.map((subItem) => {
                           const SubIcon = subItem.icon;
                           return (
