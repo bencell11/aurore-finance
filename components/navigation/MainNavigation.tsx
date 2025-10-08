@@ -18,7 +18,8 @@ import {
   FileText,
   PiggyBank,
   X,
-  Home
+  Home,
+  Search
 } from 'lucide-react';
 
 // Structure simplifiée : 4 onglets principaux
@@ -39,6 +40,7 @@ const getNavigationItems = (t: any) => [
     submenu: [
       { name: 'Simulateurs', href: '/simulateurs', icon: Calculator },
       { name: 'Recherche Immobilière', href: '/recherche-immobiliere', icon: Home },
+      { name: 'Recherche LPP', href: '/recherche-lpp', icon: Search },
       { name: 'Objectifs', href: '/objectifs', icon: PiggyBank },
       { name: 'Outils pratiques', href: '/education-fiscale#outils', icon: FileText }
     ]
