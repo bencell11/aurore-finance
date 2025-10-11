@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import DigitalSignature from '@/components/documents/DigitalSignature';
 import {
   FileText,
   Send,
@@ -15,7 +16,8 @@ import {
   AlertCircle,
   Download,
   Sparkles,
-  MessageSquare
+  MessageSquare,
+  Edit2
 } from 'lucide-react';
 
 export default function DocumentsPage() {
@@ -34,6 +36,10 @@ export default function DocumentsPage() {
 
   // Données manuelles à saisir
   const [manualData, setManualData] = useState<Record<string, any>>({});
+
+  // Signature numérique
+  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
+  const [editingFields, setEditingFields] = useState<Record<string, boolean>>({});
 
   /**
    * Étape 1: Analyser la demande utilisateur
@@ -84,6 +90,11 @@ export default function DocumentsPage() {
    * Étape 3: Générer et télécharger le document
    */
   const handleGenerate = async () => {
+    if (!signatureDataUrl) {
+      setError('Veuillez signer le document avant de le générer');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -94,6 +105,7 @@ export default function DocumentsPage() {
         body: JSON.stringify({
           templateId: template.id,
           manualData,
+          signatureDataUrl,
           format: 'HTML'
         })
       });
@@ -308,6 +320,12 @@ export default function DocumentsPage() {
                   ))}
             </CardContent>
           </Card>
+
+          {/* Signature numérique */}
+          <DigitalSignature
+            onSignatureComplete={(dataUrl) => setSignatureDataUrl(dataUrl)}
+            onSignatureClear={() => setSignatureDataUrl(null)}
+          />
 
           {/* Boutons d'action */}
           <div className="flex gap-3">

@@ -11,7 +11,8 @@ export class DocumentAssemblerService {
    */
   static assembleDocument(
     template: DocumentTemplate,
-    data: Record<string, any>
+    data: Record<string, any>,
+    signatureDataUrl?: string
   ): string {
     const htmlBlocks: string[] = [];
 
@@ -27,7 +28,7 @@ export class DocumentAssemblerService {
         }
       }
 
-      const blockHTML = this.generateBlockHTML(block, data);
+      const blockHTML = this.generateBlockHTML(block, data, signatureDataUrl);
       htmlBlocks.push(blockHTML);
     }
 
@@ -161,7 +162,7 @@ export class DocumentAssemblerService {
   /**
    * Génère le HTML pour un bloc de contenu
    */
-  private static generateBlockHTML(block: ContentBlock, data: Record<string, any>): string {
+  private static generateBlockHTML(block: ContentBlock, data: Record<string, any>, signatureDataUrl?: string): string {
     // Remplacer les variables
     let content = this.replaceVariables(block.content, data);
 
@@ -190,6 +191,13 @@ export class DocumentAssemblerService {
 
       case 'signature':
         className = 'signature-block';
+        // Si une signature numérique est fournie, l'afficher
+        if (signatureDataUrl) {
+          return `<div class="${className}">
+            ${content.replace('_________________________', '')}
+            <img src="${signatureDataUrl}" alt="Signature" style="max-width: 200px; height: auto; margin-top: 10px;" />
+          </div>`;
+        }
         break;
 
       case 'footer':

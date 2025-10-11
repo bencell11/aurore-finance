@@ -12,7 +12,7 @@ import { DocumentRoutingService } from '@/lib/services/documents/document-routin
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { templateId, manualData, format = 'HTML' } = body;
+    const { templateId, manualData, signatureDataUrl, format = 'HTML' } = body;
 
     if (!templateId) {
       return NextResponse.json(
@@ -28,6 +28,11 @@ export async function POST(request: NextRequest) {
 
     // Utiliser uniquement les données manuelles fournies par l'utilisateur
     const allData = { ...manualData };
+
+    // Ajouter la signature si fournie
+    if (signatureDataUrl) {
+      allData['signature_digitale'] = signatureDataUrl;
+    }
 
     // Ajouter des champs calculés spéciaux
     if (template.id === 'assurance-maladie' && allData['nom_assurance']) {
@@ -52,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Assembler le document
-    const html = DocumentAssemblerService.assembleDocument(template, allData);
+    const html = DocumentAssemblerService.assembleDocument(template, allData, signatureDataUrl);
 
     console.log('[API assemble] Document assembled successfully');
 
