@@ -1,11 +1,12 @@
 /**
  * API: Analyse de requête utilisateur avec OpenAI
- * Détermine quel template utiliser selon la demande
+ * Détermine quel template utiliser ou génère un nouveau template dynamiquement
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { DocumentRoutingService } from '@/lib/services/documents/document-routing.service';
 import { TemplateLoaderService } from '@/lib/services/documents/template-loader.service';
+import { DynamicTemplateGeneratorService } from '@/lib/services/documents/dynamic-template-generator.service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,6 +31,7 @@ export async function POST(request: NextRequest) {
     let template;
     try {
       template = await TemplateLoaderService.loadTemplate(routing.suggestedTemplate);
+      console.log('[API analyze-request] Using existing template:', template.id);
     } catch (error) {
       console.warn('[API analyze-request] Exact template not found, trying fuzzy match...');
 
@@ -47,15 +49,23 @@ export async function POST(request: NextRequest) {
         console.log('[API analyze-request] Found similar template:', matchedTemplate.id);
         template = matchedTemplate;
       } else {
-        // Si vraiment aucun template ne correspond, retourner l'analyse quand même
-        console.warn('[API analyze-request] No matching template found');
-        return NextResponse.json({
-          success: true,
-          routing,
-          template: null,
-          availableTemplates: allTemplates.map(t => ({ id: t.id, title: t.title })),
-          message: 'Aucun template exact trouvé. Reformulez votre demande ou choisissez parmi les templates disponibles.'
-        });
+        // Génération dynamique du template avec l'IA
+        console.log('[API analyze-request] No existing template found, generating dynamically...');
+
+        try {
+          template = await DynamicTemplateGeneratorService.generateTemplate(
+            userInput,
+            routing.documentType,
+            routing.category
+          );
+          console.log('[API analyze-request] Successfully generated dynamic template:', template.id);
+        } catch (generateError) {
+          console.error('[API analyze-request] Error generating dynamic template:', generateError);
+
+          // Fallback ultime: template générique simple
+          console.log('[API analyze-request] Using fallback generic template');
+          template = DynamicTemplateGeneratorService.generateFallbackTemplate(userInput);
+        }
       }
     }
 
@@ -64,7 +74,10 @@ export async function POST(request: NextRequest) {
       success: true,
       routing,
       template,
-      message: 'Analyse effectuée avec succès'
+      dynamicallyGenerated: template.metadata?.dynamicallyGenerated || false,
+      message: template.metadata?.dynamicallyGenerated
+        ? 'Template généré dynamiquement avec succès'
+        : 'Template existant trouvé'
     });
 
   } catch (error: any) {

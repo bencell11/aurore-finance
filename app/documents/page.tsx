@@ -248,6 +248,12 @@ export default function DocumentsPage() {
             </CardHeader>
             <CardContent className="pt-4">
               <p className="text-sm text-gray-600">{template.description}</p>
+              {template.metadata?.dynamicallyGenerated && (
+                <div className="mt-3 flex items-center gap-2 text-sm bg-blue-50 text-blue-700 px-3 py-2 rounded">
+                  <Sparkles className="h-4 w-4" />
+                  Template généré dynamiquement par l'IA pour votre demande spécifique
+                </div>
+              )}
               {analysis && (
                 <div className="mt-2 text-xs text-gray-500">
                   Confiance IA: {Math.round(analysis.confidence * 100)}% • {analysis.reasoning}
