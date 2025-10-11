@@ -43,7 +43,7 @@ export class DocumentAssemblerService {
    */
   private static generateHTMLHeader(template: DocumentTemplate): string {
     return `<!DOCTYPE html>
-<html lang="${template.metadata.language}">
+<html lang="${template.metadata?.language || 'fr'}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -154,7 +154,7 @@ export class DocumentAssemblerService {
     </div>
 
     <div class="watermark">
-        📄 Document généré automatiquement • Vérifiez les informations avant envoi • ${template.metadata.swissLawReference || ''}
+        📄 Document généré automatiquement • Vérifiez les informations avant envoi • ${template.metadata?.swissLawReference || ''}
     </div>
 `;
   }
@@ -233,7 +233,7 @@ export class DocumentAssemblerService {
     <div class="footer">
         <p><strong>Aurore Finance</strong> - Assistant de gestion financière suisse</p>
         <p>Document généré le ${new Date().toLocaleString('fr-CH')}</p>
-        <p>Template: ${template.id} v${template.metadata.version} • ${template.metadata.legalCompliance ? '✓ Conformité juridique validée' : 'ℹ️ Document informatif'}</p>
+        <p>Template: ${template.id} v${template.metadata?.version || '1.0.0'} • ${template.metadata?.legalCompliance ? '✓ Conformité juridique validée' : 'ℹ️ Document informatif'}</p>
     </div>
 </body>
 </html>`;

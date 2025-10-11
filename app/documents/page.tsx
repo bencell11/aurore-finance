@@ -75,8 +75,13 @@ export default function DocumentsPage() {
       setTemplate(data.template);
 
       if (data.template) {
+        // Pré-remplir les champs avec les données extraites du message
+        if (data.extractedData && Object.keys(data.extractedData).length > 0) {
+          console.log('Pré-remplissage avec:', data.extractedData);
+          setManualData(data.extractedData);
+        }
+
         // Passer directement à l'étape de révision avec le template
-        // On va demander TOUTES les infos à l'utilisateur directement
         setStep('review');
         setGatheredData({});
       } else {
@@ -109,6 +114,7 @@ export default function DocumentsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           templateId: template.id,
+          template: template, // Inclure le template complet pour les templates dynamiques
           manualData,
           signatureDataUrl,
           format: 'HTML'
@@ -302,6 +308,11 @@ export default function DocumentsPage() {
               <CardTitle className="text-lg">Informations requises</CardTitle>
               <CardDescription>
                 Veuillez remplir tous les champs suivants pour générer votre document
+                {Object.keys(manualData).length > 0 && (
+                  <span className="ml-2 text-green-600">
+                    • {Object.keys(manualData).length} champ(s) pré-rempli(s) automatiquement
+                  </span>
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

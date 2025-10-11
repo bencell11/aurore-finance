@@ -12,19 +12,26 @@ import { DocumentRoutingService } from '@/lib/services/documents/document-routin
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { templateId, manualData, signatureDataUrl, format = 'HTML' } = body;
+    const { templateId, template: providedTemplate, manualData, signatureDataUrl, format = 'HTML' } = body;
 
-    if (!templateId) {
+    if (!templateId && !providedTemplate) {
       return NextResponse.json(
-        { error: 'templateId is required' },
+        { error: 'templateId or template is required' },
         { status: 400 }
       );
     }
 
-    console.log('[API assemble] Assembling document for template:', templateId);
+    console.log('[API assemble] Assembling document for template:', templateId || providedTemplate?.id);
 
-    // Charger le template
-    const template = await TemplateLoaderService.loadTemplate(templateId);
+    // Charger le template (soit depuis le fichier, soit utiliser celui fourni pour les templates dynamiques)
+    let template;
+    if (providedTemplate) {
+      template = providedTemplate;
+      console.log('[API assemble] Using provided template (dynamic)');
+    } else {
+      template = await TemplateLoaderService.loadTemplate(templateId);
+      console.log('[API assemble] Loaded template from file');
+    }
 
     // Utiliser uniquement les données manuelles fournies par l'utilisateur
     const allData = { ...manualData };

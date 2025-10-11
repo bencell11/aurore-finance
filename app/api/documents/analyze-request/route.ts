@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DocumentRoutingService } from '@/lib/services/documents/document-routing.service';
 import { TemplateLoaderService } from '@/lib/services/documents/template-loader.service';
 import { DynamicTemplateGeneratorService } from '@/lib/services/documents/dynamic-template-generator.service';
+import { DataExtractionService } from '@/lib/services/documents/data-extraction.service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -69,11 +70,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Retourner l'analyse et le template
+    // NOUVEAU: Extraire automatiquement les données du message utilisateur
+    console.log('[API analyze-request] Extracting data from user input...');
+    const extractedData = await DataExtractionService.extractDataCombined(
+      userInput,
+      template.requiredFields
+    );
+    console.log('[API analyze-request] Extracted data:', extractedData);
+
+    // Retourner l'analyse, le template ET les données extraites
     return NextResponse.json({
       success: true,
       routing,
       template,
+      extractedData, // NOUVEAU: Données pré-remplies
       dynamicallyGenerated: template.metadata?.dynamicallyGenerated || false,
       message: template.metadata?.dynamicallyGenerated
         ? 'Template généré dynamiquement avec succès'
