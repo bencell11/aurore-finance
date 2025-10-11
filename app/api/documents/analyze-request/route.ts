@@ -31,15 +31,32 @@ export async function POST(request: NextRequest) {
     try {
       template = await TemplateLoaderService.loadTemplate(routing.suggestedTemplate);
     } catch (error) {
-      console.warn('[API analyze-request] Template not found, using fallback');
+      console.warn('[API analyze-request] Exact template not found, trying fuzzy match...');
 
-      // Si le template n'existe pas, retourner quand même l'analyse
-      return NextResponse.json({
-        success: true,
-        routing,
-        template: null,
-        message: 'Template suggéré non trouvé, mais analyse effectuée'
+      // Essayer de trouver un template similaire
+      const allTemplates = await TemplateLoaderService.listAllTemplates();
+
+      // Recherche fuzzy : chercher par mots-clés
+      const searchTerms = routing.suggestedTemplate.toLowerCase().split('-');
+      const matchedTemplate = allTemplates.find(t => {
+        const templateName = t.id.toLowerCase();
+        return searchTerms.every(term => templateName.includes(term));
       });
+
+      if (matchedTemplate) {
+        console.log('[API analyze-request] Found similar template:', matchedTemplate.id);
+        template = matchedTemplate;
+      } else {
+        // Si vraiment aucun template ne correspond, retourner l'analyse quand même
+        console.warn('[API analyze-request] No matching template found');
+        return NextResponse.json({
+          success: true,
+          routing,
+          template: null,
+          availableTemplates: allTemplates.map(t => ({ id: t.id, title: t.title })),
+          message: 'Aucun template exact trouvé. Reformulez votre demande ou choisissez parmi les templates disponibles.'
+        });
+      }
     }
 
     // Retourner l'analyse et le template

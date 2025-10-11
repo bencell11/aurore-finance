@@ -47,9 +47,12 @@ Catégories:
 - employment: Emploi
 
 Templates disponibles:
-- resiliation-assurance-maladie-ch: Résiliation LAMal (assurance maladie de base)
-- resiliation-assurance-rc-ch: Résiliation assurance responsabilité civile
-- resiliation-bail-location-ch: Résiliation de bail de location
+- assurance-maladie: Résiliation LAMal (assurance maladie de base)
+- assurance-rc: Résiliation assurance responsabilité civile
+- bail-location: Résiliation de bail de location
+
+IMPORTANT: Utilise UNIQUEMENT les noms de templates listés ci-dessus (sans préfixe ni suffixe).
+Si la demande correspond à "résiliation assurance maladie", retourne "assurance-maladie" comme suggestedTemplate.
 
 Tu dois retourner UNIQUEMENT un JSON valide (pas de markdown, pas de texte supplémentaire) avec:
 {
@@ -113,7 +116,7 @@ Analyse cette demande et retourne le JSON de routing.`;
         return {
           documentType: 'lettre_resiliation',
           category: 'insurance',
-          suggestedTemplate: 'resiliation-assurance-maladie-ch',
+          suggestedTemplate: 'assurance-maladie',
           requiredFields: ['nom', 'prenom', 'numero_police', 'date_resiliation'],
           tone: 'formal',
           language: 'fr',
@@ -126,7 +129,7 @@ Analyse cette demande et retourne le JSON de routing.`;
         return {
           documentType: 'lettre_resiliation',
           category: 'housing',
-          suggestedTemplate: 'resiliation-bail-location-ch',
+          suggestedTemplate: 'bail-location',
           requiredFields: ['nom', 'prenom', 'adresse_logement', 'date_resiliation'],
           tone: 'formal',
           language: 'fr',
