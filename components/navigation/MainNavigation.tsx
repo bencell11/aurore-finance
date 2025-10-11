@@ -41,6 +41,7 @@ const getNavigationItems = (t: any) => [
       { name: 'Simulateurs', href: '/simulateurs', icon: Calculator },
       { name: 'Recherche Immobilière', href: '/recherche-immobiliere', icon: Home },
       { name: 'Recherche LPP', href: '/recherche-lpp', icon: Search },
+      { name: 'Générateur Documents IA', href: '/documents', icon: FileText },
       { name: 'Objectifs', href: '/objectifs', icon: PiggyBank },
       { name: 'Outils pratiques', href: '/education-fiscale#outils', icon: FileText }
     ]
