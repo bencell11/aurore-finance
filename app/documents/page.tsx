@@ -100,6 +100,9 @@ export default function DocumentsPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        if (errorData.missing && errorData.missing.length > 0) {
+          throw new Error(`Champs manquants: ${errorData.missing.join(', ')}`);
+        }
         throw new Error(errorData.error || 'Erreur lors de la génération');
       }
 
