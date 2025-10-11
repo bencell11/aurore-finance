@@ -1,5 +1,5 @@
 {
-  "id": "resiliation-assurance-maladie-ch",
+  "id": "assurance-maladie",
   "type": "lettre_resiliation",
   "category": "insurance",
   "title": "Résiliation d'assurance maladie de base (LAMal)",
@@ -106,7 +106,7 @@
       "type": "date",
       "required": true,
       "source": "manual_input",
-      "defaultValue": "31.12.2025",
+      "defaultValue": "2025-12-31",
       "helpText": "Généralement 31 décembre (envoi avant le 30 novembre)"
     }
   ],
