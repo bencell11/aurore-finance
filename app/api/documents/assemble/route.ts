@@ -4,7 +4,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { TemplateLoaderService } from '@/lib/services/documents/template-loader.service';
 import { DocumentAssemblerService } from '@/lib/services/documents/document-assembler.service';
 import { DataGatheringService } from '@/lib/services/documents/data-gathering.service';
@@ -12,21 +11,6 @@ import { DocumentRoutingService } from '@/lib/services/documents/document-routin
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-
-    // Vérifier l'authentification
-    const {
-      data: { user },
-      error: authError
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Authentification requise' },
-        { status: 401 }
-      );
-    }
-
     const body = await request.json();
     const { templateId, manualData, format = 'HTML' } = body;
 
@@ -37,26 +21,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('[API assemble] Assembling document for user:', user.id, 'template:', templateId);
+    console.log('[API assemble] Assembling document for template:', templateId);
 
     // Charger le template
     const template = await TemplateLoaderService.loadTemplate(templateId);
 
-    // Récupérer les données utilisateur depuis Supabase
-    const gatheredData = await DataGatheringService.gatherUserData(
-      user.id,
-      template.requiredFields,
-      template.optionalFields
-    );
-
-    // Fusionner avec les données manuelles fournies
-    const allData = {
-      ...gatheredData.availableFields,
-      ...manualData
-    };
+    // Utiliser uniquement les données manuelles fournies par l'utilisateur
+    const allData = { ...manualData };
 
     // Ajouter des champs calculés spéciaux
-    if (template.id === 'resiliation-assurance-maladie-ch' && allData['nom_assurance']) {
+    if (template.id === 'assurance-maladie' && allData['nom_assurance']) {
       allData['adresse_assurance'] = DocumentRoutingService.getInsuranceAddress(allData['nom_assurance']);
     }
 

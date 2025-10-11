@@ -64,8 +64,10 @@ export default function DocumentsPage() {
       setTemplate(data.template);
 
       if (data.template) {
-        // Passer à l'étape de révision
-        await gatherData(data.template.id);
+        // Passer directement à l'étape de révision avec le template
+        // On va demander TOUTES les infos à l'utilisateur directement
+        setStep('review');
+        setGatheredData({});
       } else {
         setError('Template non trouvé. Veuillez reformuler votre demande.');
       }
@@ -77,35 +79,6 @@ export default function DocumentsPage() {
     }
   };
 
-  /**
-   * Étape 2: Récupérer les données depuis Supabase
-   */
-  const gatherData = async (templateId: string) => {
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/documents/gather-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ templateId })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de la récupération des données');
-      }
-
-      setGatheredData(data.data);
-      setMissingFields(data.missing || []);
-      setStep('review');
-
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   /**
    * Étape 3: Générer et télécharger le document
@@ -287,19 +260,16 @@ export default function DocumentsPage() {
             </Card>
           )}
 
-          {/* Champs manquants à remplir */}
-          {template.requiredFields.filter((f: any) => f.source === 'manual_input').length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Informations complémentaires</CardTitle>
-                <CardDescription>
-                  Veuillez compléter les champs suivants pour générer votre document
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {template.requiredFields
-                  .filter((f: any) => f.source === 'manual_input')
-                  .map((field: any) => (
+          {/* Tous les champs requis */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Informations requises</CardTitle>
+              <CardDescription>
+                Veuillez remplir tous les champs suivants pour générer votre document
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {template.requiredFields.map((field: any) => (
                     <div key={field.key} className="space-y-2">
                       <Label htmlFor={field.key}>
                         {field.label}
@@ -333,9 +303,8 @@ export default function DocumentsPage() {
                       )}
                     </div>
                   ))}
-              </CardContent>
-            </Card>
-          )}
+            </CardContent>
+          </Card>
 
           {/* Boutons d'action */}
           <div className="flex gap-3">
