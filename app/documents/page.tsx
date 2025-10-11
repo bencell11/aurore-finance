@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import DigitalSignature from '@/components/documents/DigitalSignature';
+import DocumentPreview from '@/components/documents/DocumentPreview';
 import {
   FileText,
   Send,
@@ -17,11 +18,12 @@ import {
   Download,
   Sparkles,
   MessageSquare,
-  Edit2
+  Edit2,
+  Eye
 } from 'lucide-react';
 
 export default function DocumentsPage() {
-  const [step, setStep] = useState<'input' | 'review' | 'generate'>('input');
+  const [step, setStep] = useState<'input' | 'review' | 'preview' | 'generate'>('input');
   const [userInput, setUserInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +42,9 @@ export default function DocumentsPage() {
   // Signature numérique
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [editingFields, setEditingFields] = useState<Record<string, boolean>>({});
+
+  // Prévisualisation
+  const [previewHtml, setPreviewHtml] = useState<string>('');
 
   /**
    * Étape 1: Analyser la demande utilisateur
@@ -87,11 +92,11 @@ export default function DocumentsPage() {
 
 
   /**
-   * Étape 3: Générer et télécharger le document
+   * Étape 3: Générer la prévisualisation
    */
-  const handleGenerate = async () => {
+  const handleGeneratePreview = async () => {
     if (!signatureDataUrl) {
-      setError('Veuillez signer le document avant de le générer');
+      setError('Veuillez signer le document avant de continuer');
       return;
     }
 
@@ -118,24 +123,34 @@ export default function DocumentsPage() {
         throw new Error(errorData.error || 'Erreur lors de la génération');
       }
 
-      // Télécharger le fichier HTML
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${template.id}-${new Date().toISOString().split('T')[0]}.html`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-      setStep('generate');
+      // Récupérer le HTML pour la prévisualisation
+      const html = await response.text();
+      setPreviewHtml(html);
+      setStep('preview');
 
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  /**
+   * Étape 4: Confirmer et télécharger le document
+   */
+  const handleConfirmDownload = () => {
+    // Créer un blob à partir du HTML
+    const blob = new Blob([previewHtml], { type: 'text/html' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${template.id}-${new Date().toISOString().split('T')[0]}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    setStep('generate');
   };
 
   return (
@@ -343,7 +358,7 @@ export default function DocumentsPage() {
               Recommencer
             </Button>
             <Button
-              onClick={handleGenerate}
+              onClick={handleGeneratePreview}
               disabled={loading}
               className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600"
             >
@@ -354,8 +369,8 @@ export default function DocumentsPage() {
                 </>
               ) : (
                 <>
-                  <Download className="mr-2 h-4 w-4" />
-                  Générer le document
+                  <Eye className="mr-2 h-4 w-4" />
+                  Prévisualiser le document
                 </>
               )}
             </Button>
@@ -363,7 +378,23 @@ export default function DocumentsPage() {
         </div>
       )}
 
-      {/* Étape 3: Document généré */}
+      {/* Étape 3: Prévisualisation */}
+      {step === 'preview' && previewHtml && (
+        <DocumentPreview
+          htmlContent={previewHtml}
+          templateTitle={template?.title || 'Document'}
+          onConfirm={handleConfirmDownload}
+          onEdit={() => setStep('review')}
+          onCancel={() => {
+            setStep('input');
+            setPreviewHtml('');
+            setManualData({});
+            setSignatureDataUrl(null);
+          }}
+        />
+      )}
+
+      {/* Étape 4: Document généré */}
       {step === 'generate' && (
         <Card>
           <CardHeader className="bg-gradient-to-r from-green-50 to-blue-50">
