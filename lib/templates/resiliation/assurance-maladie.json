@@ -1,0 +1,211 @@
+{
+  "id": "resiliation-assurance-maladie-ch",
+  "type": "lettre_resiliation",
+  "category": "insurance",
+  "title": "Résiliation d'assurance maladie de base (LAMal)",
+  "description": "Lettre de résiliation pour l'assurance maladie de base selon la loi suisse sur l'assurance-maladie (LAMal). Délai: 30 novembre pour fin d'année.",
+
+  "requiredFields": [
+    {
+      "key": "prenom",
+      "label": "Prénom",
+      "type": "text",
+      "required": true,
+      "source": "user_profile",
+      "supabaseTable": "profiles",
+      "supabaseColumn": "first_name",
+      "validation": "^[A-Za-zÀ-ÿ\\s-]+$"
+    },
+    {
+      "key": "nom",
+      "label": "Nom",
+      "type": "text",
+      "required": true,
+      "source": "user_profile",
+      "supabaseTable": "profiles",
+      "supabaseColumn": "last_name",
+      "validation": "^[A-Za-zÀ-ÿ\\s-]+$"
+    },
+    {
+      "key": "adresse",
+      "label": "Adresse complète",
+      "type": "address",
+      "required": true,
+      "source": "user_profile",
+      "supabaseTable": "profiles",
+      "supabaseColumn": "address",
+      "helpText": "Rue et numéro"
+    },
+    {
+      "key": "npa",
+      "label": "Code postal",
+      "type": "postal_code",
+      "required": true,
+      "source": "user_profile",
+      "supabaseTable": "profiles",
+      "supabaseColumn": "postal_code",
+      "validation": "^[0-9]{4}$"
+    },
+    {
+      "key": "ville",
+      "label": "Ville",
+      "type": "text",
+      "required": true,
+      "source": "user_profile",
+      "supabaseTable": "profiles",
+      "supabaseColumn": "city"
+    },
+    {
+      "key": "date_naissance",
+      "label": "Date de naissance",
+      "type": "date",
+      "required": true,
+      "source": "user_profile",
+      "supabaseTable": "profiles",
+      "supabaseColumn": "date_of_birth",
+      "helpText": "Format: JJ.MM.AAAA"
+    },
+    {
+      "key": "numero_police",
+      "label": "Numéro de police d'assurance",
+      "type": "text",
+      "required": true,
+      "source": "manual_input",
+      "placeholder": "Ex: 123456789",
+      "helpText": "Vous le trouverez sur votre carte d'assurance"
+    },
+    {
+      "key": "nom_assurance",
+      "label": "Nom de votre assurance actuelle",
+      "type": "select",
+      "required": true,
+      "source": "manual_input",
+      "options": [
+        "Assura",
+        "CSS",
+        "Groupe Mutuel",
+        "Helsana",
+        "Sanitas",
+        "Swica",
+        "Visana",
+        "ÖKK",
+        "Autre"
+      ]
+    },
+    {
+      "key": "adresse_assurance",
+      "label": "Adresse de l'assurance",
+      "type": "address",
+      "required": false,
+      "source": "calculated",
+      "helpText": "Sera automatiquement remplie selon l'assurance choisie"
+    },
+    {
+      "key": "date_resiliation",
+      "label": "Date de résiliation souhaitée",
+      "type": "date",
+      "required": true,
+      "source": "manual_input",
+      "defaultValue": "31.12.2025",
+      "helpText": "Généralement 31 décembre (envoi avant le 30 novembre)"
+    }
+  ],
+
+  "optionalFields": [
+    {
+      "key": "raison_resiliation",
+      "label": "Raison de la résiliation",
+      "type": "text",
+      "required": false,
+      "source": "manual_input",
+      "helpText": "Optionnel - peut renforcer votre demande"
+    }
+  ],
+
+  "contentBlocks": [
+    {
+      "type": "address",
+      "content": "{{prenom}} {{nom}}\n{{adresse}}\n{{npa}} {{ville}}",
+      "style": {
+        "align": "left"
+      }
+    },
+    {
+      "type": "address",
+      "content": "{{nom_assurance}}\n{{adresse_assurance}}",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{ville}}, le {{date_envoi}}",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "type": "header",
+      "content": "Résiliation de mon contrat d'assurance maladie de base",
+      "style": {
+        "bold": true,
+        "align": "left"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Madame, Monsieur,"
+    },
+    {
+      "type": "paragraph",
+      "content": "Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie de base LAMal portant le numéro de police {{numero_police}}, avec effet au {{date_resiliation}}."
+    },
+    {
+      "type": "paragraph",
+      "content": "Données du contrat :\n- Assuré(e) : {{prenom}} {{nom}}\n- Date de naissance : {{date_naissance}}\n- Numéro de police : {{numero_police}}\n- Date de résiliation souhaitée : {{date_resiliation}}",
+      "style": {
+        "fontSize": "0.95em"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "{{raison_resiliation}}",
+      "conditional": {
+        "field": "raison_resiliation",
+        "operator": "exists"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": "Conformément à l'article 7 de la loi fédérale sur l'assurance-maladie (LAMal), je vous demande de bien vouloir me confirmer par écrit la prise en compte de cette résiliation ainsi que la date effective de fin de couverture."
+    },
+    {
+      "type": "paragraph",
+      "content": "Je vous prie de m'adresser une attestation d'assurance pour l'année écoulée, nécessaire pour ma déclaration d'impôts."
+    },
+    {
+      "type": "paragraph",
+      "content": "Je reste à votre disposition pour toute information complémentaire et vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées."
+    },
+    {
+      "type": "signature",
+      "content": "{{prenom}} {{nom}}\n\n_________________________\nSignature"
+    }
+  ],
+
+  "metadata": {
+    "language": "fr",
+    "legalCompliance": true,
+    "swissLawReference": "LAMal Art. 7",
+    "version": "1.0.0",
+    "createdAt": "2025-01-08T00:00:00Z",
+    "updatedAt": "2025-01-08T00:00:00Z",
+    "author": "Aurore Finance Legal Team"
+  },
+
+  "toneOptions": {
+    "formal": true,
+    "firm": true,
+    "urgent": false
+  }
+}
