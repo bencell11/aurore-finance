@@ -124,7 +124,7 @@ export default function DocumentsPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container mx-auto p-6 pb-24 md:pb-6 max-w-4xl">
       {/* En-tête */}
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white mb-8">
         <div className="flex items-center gap-3 mb-2">
