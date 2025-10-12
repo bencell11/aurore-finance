@@ -79,28 +79,8 @@ export async function POST(request: NextRequest) {
     );
     console.log('[API analyze-request] Extracted data:', extractedData);
 
-    // NOUVEAU: Générer automatiquement le contenu du document si nécessaire
-    const hasContentField = template.requiredFields.some(
-      field => field.key === 'contenu_principal' || field.key.includes('contenu')
-    );
-
-    if (hasContentField) {
-      console.log('[API analyze-request] Generating document content...');
-      try {
-        const generatedContent = await ContentGeneratorService.generateDocumentContent(
-          userInput,
-          routing.documentType,
-          extractedData
-        );
-
-        // Ajouter le contenu généré aux données extraites
-        extractedData['contenu_principal'] = generatedContent;
-        console.log('[API analyze-request] Content generated successfully');
-      } catch (contentError) {
-        console.error('[API analyze-request] Error generating content:', contentError);
-        // Continuer sans le contenu généré
-      }
-    }
+    // Note: Le contenu du document est maintenant écrit directement dans les contentBlocks
+    // par le DynamicTemplateGeneratorService, donc pas besoin de ContentGeneratorService ici
 
     // Retourner l'analyse, le template ET les données extraites (avec contenu généré)
     return NextResponse.json({

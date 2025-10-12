@@ -59,13 +59,14 @@ Variables disponibles dans le contenu:
 Et toutes les variables des champs que tu définis
 
 RÈGLES CRITIQUES:
-- NE CRÉE PAS de champ "contenu_principal" ou "contenu_courrier"
+- NE CRÉE JAMAIS de champ "contenu_principal", "contenu_courrier", "objet", ou autres champs génériques de contenu
 - ÉCRIS le texte complet directement dans les contentBlocks (paragraphes)
+- L'objet et le contenu doivent être écrits EN DUR dans les contentBlocks, pas demandés à l'utilisateur
 - Utilise le format suisse (vouvoiement, formules de politesse)
 - Sois professionnel et respectueux des normes juridiques
 - Inclus les références légales suisses pertinentes
 - Le document doit être complet et prêt à l'envoi
-- Les paragraphes doivent contenir le texte complet, pas {{contenu_principal}}
+- Les paragraphes doivent contenir le texte complet réel, PAS de variables {{contenu_principal}} ou {{objet}}
 
 Retourne UNIQUEMENT un JSON valide (sans markdown) avec cette structure:
 {
@@ -122,12 +123,16 @@ RÈGLES CRITIQUES:
    - Crée "delai_livraison"
    - Etc.
 
-3. Écris le contenu COMPLET du document dans les contentBlocks avec les variables appropriées
-4. Exemple de paragraphe: "Le prestataire s'engage à créer {{description_services}} pour un montant de {{montant_creation}} CHF, avec une maintenance mensuelle de {{tarif_maintenance_mensuel}} CHF."
+3. IMPORTANT: Écris le texte COMPLET du document dans les contentBlocks
+4. L'OBJET du document doit être écrit en dur dans un contentBlock de type "header"
+   Exemple: {"type": "header", "content": "Objet: Contrat de création de site web", "style": {"bold": true}}
 
-5. NE PAS utiliser de champ générique "contenu_principal"
-6. Adapte TOUS les champs selon le contexte spécifique de la demande
-7. Sois créatif et pertinent dans le choix des noms de variables
+5. Le CONTENU principal doit être écrit en dur dans des contentBlocks de type "paragraph"
+   Exemple: {"type": "paragraph", "content": "Par la présente, nous confirmons notre accord pour la création de {{description_services}} pour un montant de {{montant_creation}} CHF."}
+
+6. NE JAMAIS créer de champ "objet" ou "contenu_principal" dans requiredFields
+7. Adapte TOUS les champs selon le contexte spécifique de la demande
+8. Sois créatif et pertinent dans le choix des noms de variables
 
 Exemples de bons champs selon le contexte:
 - Contrat web: montant_creation, tarif_maintenance_mensuel, description_services, delai_livraison, modalites_paiement
@@ -178,9 +183,11 @@ Exemples de bons champs selon le contexte:
 
   /**
    * Génère un template simple pour les cas non reconnus
+   * DEPRECATED: Ne devrait jamais être utilisé car l'IA génère toujours un template complet
    */
   static generateFallbackTemplate(userInput: string): DocumentTemplate {
-    const templateId = `courrier-${Date.now()}`;
+    console.warn('[DynamicTemplate] Using fallback template - AI generation should have succeeded');
+    const templateId = `document-${Date.now()}`;
 
     return {
       id: templateId,
