@@ -114,31 +114,40 @@ Catégorie: ${category}
 
 Génère un template de document professionnel complet pour cette demande SPÉCIFIQUE.
 
-RÈGLES CRITIQUES:
-1. Analyse la demande et crée des champs SPÉCIFIQUES adaptés au contexte
-2. Par exemple, pour un contrat web à 400$ + 50$/mois:
-   - Crée "montant_creation" au lieu de juste "montant"
-   - Crée "tarif_maintenance_mensuel"
-   - Crée "description_services"
-   - Crée "delai_livraison"
-   - Etc.
+RÈGLES ABSOLUMENT CRITIQUES - À RESPECTER IMPÉRATIVEMENT:
 
-3. IMPORTANT: Écris le texte COMPLET du document dans les contentBlocks
-4. L'OBJET du document doit être écrit en dur dans un contentBlock de type "header"
-   Exemple: {"type": "header", "content": "Objet: Contrat de création de site web", "style": {"bold": true}}
+1. TU DOIS ÉCRIRE TOI-MÊME LE CONTENU COMPLET DU DOCUMENT
+   - L'OBJET doit être rédigé par toi, adapté à la demande
+   - Le CONTENU (paragraphes) doit être rédigé par toi, professionnel et complet
+   - Inspire-toi du style formel suisse comme dans l'exemple de résiliation d'assurance maladie
 
-5. Le CONTENU principal doit être écrit en dur dans des contentBlocks de type "paragraph"
-   Exemple: {"type": "paragraph", "content": "Par la présente, nous confirmons notre accord pour la création de {{description_services}} pour un montant de {{montant_creation}} CHF."}
+2. EXEMPLE PARFAIT DE CE QUI EST ATTENDU (résiliation assurance maladie):
+   contentBlocks: [
+     {"type": "header", "content": "Objet: Résiliation de contrat d'assurance maladie", "style": {"bold": true}},
+     {"type": "paragraph", "content": "Madame, Monsieur,"},
+     {"type": "paragraph", "content": "Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie de base numéro {{numero_police}} auprès de {{nom_assurance}}, avec effet au {{date_resiliation}}, conformément aux dispositions de la LAMal (Art. 7)."},
+     {"type": "paragraph", "content": "Je vous remercie de bien vouloir m'adresser une confirmation écrite de cette résiliation..."}
+   ]
 
-6. NE JAMAIS créer de champ "objet" ou "contenu_principal" dans requiredFields
-7. Adapte TOUS les champs selon le contexte spécifique de la demande
-8. Sois créatif et pertinent dans le choix des noms de variables
+3. POUR LA DEMANDE ACTUELLE, RÉDIGE UN CONTENU SIMILAIRE:
+   - Écris l'objet spécifique (pas "Objet: {{objet}}" mais "Objet: [titre adapté]")
+   - Écris des paragraphes complets et professionnels
+   - Utilise le vouvoiement et les formules suisses
+   - Intègre les variables {{}} UNIQUEMENT pour les données spécifiques (montants, noms, dates)
+   - NE METS JAMAIS {{objet}} ou {{contenu_principal}}
 
-Exemples de bons champs selon le contexte:
-- Contrat web: montant_creation, tarif_maintenance_mensuel, description_services, delai_livraison, modalites_paiement
-- Location: montant_loyer, charges_mensuelles, duree_bail, date_debut_location
-- Vente: prix_vente, conditions_paiement, garanties, delai_livraison
-- Prestation: tarif_horaire, nombre_heures, total_prestation`;
+4. Crée des champs SPÉCIFIQUES pour les données variables:
+   Exemples:
+   - Contrat web: montant_creation, tarif_maintenance_mensuel, description_services, delai_livraison
+   - Location: montant_loyer, charges_mensuelles, duree_bail, date_debut_location
+   - Vente: prix_vente, conditions_paiement, garanties
+
+5. INTERDIT ABSOLU:
+   ❌ NE JAMAIS créer de champ "objet" dans requiredFields
+   ❌ NE JAMAIS créer de champ "contenu_principal" dans requiredFields
+   ❌ NE JAMAIS utiliser {{objet}} ou {{contenu_principal}} dans les contentBlocks
+
+GÉNÈRE MAINTENANT UN DOCUMENT PROFESSIONNEL COMPLET COMME CELUI DE L'ASSURANCE MALADIE !`;
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
