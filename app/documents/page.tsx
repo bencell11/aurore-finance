@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import DigitalSignature from '@/components/documents/DigitalSignature';
 import DocumentPreview from '@/components/documents/DocumentPreview';
+import TemplatePreview from '@/components/documents/TemplatePreview';
 import {
   FileText,
   Send,
@@ -23,7 +24,7 @@ import {
 } from 'lucide-react';
 
 export default function DocumentsPage() {
-  const [step, setStep] = useState<'input' | 'review' | 'preview' | 'generate'>('input');
+  const [step, setStep] = useState<'input' | 'template-preview' | 'review' | 'preview' | 'generate'>('input');
   const [userInput, setUserInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,8 +82,8 @@ export default function DocumentsPage() {
           setManualData(data.extractedData);
         }
 
-        // Passer directement à l'étape de révision avec le template
-        setStep('review');
+        // Passer à l'étape de prévisualisation du template
+        setStep('template-preview');
         setGatheredData({});
       } else {
         setError('Template non trouvé. Veuillez reformuler votre demande.');
@@ -251,6 +252,19 @@ export default function DocumentsPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Nouvelle étape 1.5: Prévisualisation du template */}
+      {step === 'template-preview' && template && (
+        <TemplatePreview
+          template={template}
+          onConfirm={() => setStep('review')}
+          onRegenerate={() => {
+            setStep('input');
+            setTemplate(null);
+            setAnalysis(null);
+          }}
+        />
       )}
 
       {/* Étape 2: Révision et complétion des données */}
