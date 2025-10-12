@@ -8,6 +8,7 @@ import { DocumentRoutingService } from '@/lib/services/documents/document-routin
 import { TemplateLoaderService } from '@/lib/services/documents/template-loader.service';
 import { DynamicTemplateGeneratorService } from '@/lib/services/documents/dynamic-template-generator.service';
 import { DataExtractionService } from '@/lib/services/documents/data-extraction.service';
+import { ContentGeneratorService } from '@/lib/services/documents/content-generator.service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -78,12 +79,35 @@ export async function POST(request: NextRequest) {
     );
     console.log('[API analyze-request] Extracted data:', extractedData);
 
-    // Retourner l'analyse, le template ET les données extraites
+    // NOUVEAU: Générer automatiquement le contenu du document si nécessaire
+    const hasContentField = template.requiredFields.some(
+      field => field.key === 'contenu_principal' || field.key.includes('contenu')
+    );
+
+    if (hasContentField) {
+      console.log('[API analyze-request] Generating document content...');
+      try {
+        const generatedContent = await ContentGeneratorService.generateDocumentContent(
+          userInput,
+          routing.documentType,
+          extractedData
+        );
+
+        // Ajouter le contenu généré aux données extraites
+        extractedData['contenu_principal'] = generatedContent;
+        console.log('[API analyze-request] Content generated successfully');
+      } catch (contentError) {
+        console.error('[API analyze-request] Error generating content:', contentError);
+        // Continuer sans le contenu généré
+      }
+    }
+
+    // Retourner l'analyse, le template ET les données extraites (avec contenu généré)
     return NextResponse.json({
       success: true,
       routing,
       template,
-      extractedData, // NOUVEAU: Données pré-remplies
+      extractedData, // NOUVEAU: Données pré-remplies + contenu généré
       dynamicallyGenerated: template.metadata?.dynamicallyGenerated || false,
       message: template.metadata?.dynamicallyGenerated
         ? 'Template généré dynamiquement avec succès'

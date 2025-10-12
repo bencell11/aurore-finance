@@ -50,7 +50,7 @@ Types de champs disponibles:
 Types de blocs de contenu:
 - address: Bloc d'adresse (expéditeur/destinataire)
 - header: Titre/En-tête
-- paragraph: Paragraphe de texte
+- paragraph: Paragraphe de texte complet (pas de placeholder)
 - signature: Bloc de signature
 - list: Liste à puces
 
@@ -58,11 +58,14 @@ Variables disponibles dans le contenu:
 {{prenom}}, {{nom}}, {{adresse}}, {{npa}}, {{ville}}, {{email}}, {{telephone}}, {{date_envoi}}
 Et toutes les variables des champs que tu définis
 
-IMPORTANT:
+RÈGLES CRITIQUES:
+- NE CRÉE PAS de champ "contenu_principal" ou "contenu_courrier"
+- ÉCRIS le texte complet directement dans les contentBlocks (paragraphes)
 - Utilise le format suisse (vouvoiement, formules de politesse)
 - Sois professionnel et respectueux des normes juridiques
 - Inclus les références légales suisses pertinentes
 - Le document doit être complet et prêt à l'envoi
+- Les paragraphes doivent contenir le texte complet, pas {{contenu_principal}}
 
 Retourne UNIQUEMENT un JSON valide (sans markdown) avec cette structure:
 {
@@ -108,7 +111,13 @@ Retourne UNIQUEMENT un JSON valide (sans markdown) avec cette structure:
 Type de document: ${documentType}
 Catégorie: ${category}
 
-Génère un template de document professionnel complet pour cette demande.`;
+Génère un template de document professionnel complet pour cette demande.
+
+IMPORTANT: Écris le contenu COMPLET du document dans les contentBlocks.
+Par exemple, pour une résiliation d'assurance, écris des paragraphes comme:
+"Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie numéro {{numero_police}} auprès de {{nom_assurance}}, avec effet au {{date_resiliation}}."
+
+NE PAS mettre {{contenu_principal}} - écris le texte réel !`;
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
