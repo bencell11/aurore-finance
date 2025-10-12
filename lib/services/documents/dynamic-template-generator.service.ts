@@ -107,17 +107,33 @@ Retourne UNIQUEMENT un JSON valide (sans markdown) avec cette structure:
   }
 }`;
 
-      const userPrompt = `Demande: "${userInput}"
+      const userPrompt = `Demande de l'utilisateur: "${userInput}"
 Type de document: ${documentType}
 Catégorie: ${category}
 
-Génère un template de document professionnel complet pour cette demande.
+Génère un template de document professionnel complet pour cette demande SPÉCIFIQUE.
 
-IMPORTANT: Écris le contenu COMPLET du document dans les contentBlocks.
-Par exemple, pour une résiliation d'assurance, écris des paragraphes comme:
-"Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie numéro {{numero_police}} auprès de {{nom_assurance}}, avec effet au {{date_resiliation}}."
+RÈGLES CRITIQUES:
+1. Analyse la demande et crée des champs SPÉCIFIQUES adaptés au contexte
+2. Par exemple, pour un contrat web à 400$ + 50$/mois:
+   - Crée "montant_creation" au lieu de juste "montant"
+   - Crée "tarif_maintenance_mensuel"
+   - Crée "description_services"
+   - Crée "delai_livraison"
+   - Etc.
 
-NE PAS mettre {{contenu_principal}} - écris le texte réel !`;
+3. Écris le contenu COMPLET du document dans les contentBlocks avec les variables appropriées
+4. Exemple de paragraphe: "Le prestataire s'engage à créer {{description_services}} pour un montant de {{montant_creation}} CHF, avec une maintenance mensuelle de {{tarif_maintenance_mensuel}} CHF."
+
+5. NE PAS utiliser de champ générique "contenu_principal"
+6. Adapte TOUS les champs selon le contexte spécifique de la demande
+7. Sois créatif et pertinent dans le choix des noms de variables
+
+Exemples de bons champs selon le contexte:
+- Contrat web: montant_creation, tarif_maintenance_mensuel, description_services, delai_livraison, modalites_paiement
+- Location: montant_loyer, charges_mensuelles, duree_bail, date_debut_location
+- Vente: prix_vente, conditions_paiement, garanties, delai_livraison
+- Prestation: tarif_horaire, nombre_heures, total_prestation`;
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',

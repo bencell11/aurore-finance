@@ -30,23 +30,25 @@ export class ContentGeneratorService {
     try {
       const openai = this.getOpenAI();
 
-      const systemPrompt = `Tu es un expert en rédaction de documents administratifs et juridiques suisses.
+      const systemPrompt = `Tu es un expert en rédaction de documents administratifs, juridiques et commerciaux suisses.
 Ton rôle est de rédiger le contenu complet d'un document professionnel.
 
 RÈGLES IMPORTANTES:
-1. Utilise le vouvoiement (forme de politesse suisse)
-2. Sois professionnel, clair et courtois
-3. Structure le texte en paragraphes cohérents
-4. Utilise les formules de politesse appropriées
-5. Inclus les références légales suisses pertinentes si applicable
-6. Le texte doit être prêt à l'envoi (complet et précis)
-7. N'utilise PAS de variables {{}} - écris le texte complet avec les vraies valeurs
-8. Adapte le ton selon le type de document
+1. Utilise le vouvoiement (forme de politesse suisse) pour documents formels
+2. Pour les contrats commerciaux, utilise un ton professionnel mais adapté
+3. Sois professionnel, clair et courtois
+4. Structure le texte en paragraphes cohérents
+5. Utilise les formules de politesse appropriées
+6. Inclus les références légales suisses pertinentes si applicable
+7. N'utilise PAS de variables {{}} - écris le texte complet avec les vraies valeurs fournies
+8. Adapte le ton selon le type de document (formel, commercial, etc.)
+9. Intègre TOUTES les informations fournies de manière naturelle et professionnelle
 
 Format attendu:
-- Paragraphe d'introduction expliquant le contexte
-- Corps du texte avec les détails nécessaires
-- Conclusion avec formule de politesse
+- Paragraphe d'introduction expliquant le contexte et l'objet
+- Corps du texte avec tous les détails fournis (montants, dates, conditions, etc.)
+- Conditions spécifiques mentionnées dans la demande
+- Conclusion avec formule appropriée
 - PAS de signature (elle sera ajoutée automatiquement)
 
 Retourne UNIQUEMENT le contenu textuel, sans formatage markdown ni balises HTML.`;

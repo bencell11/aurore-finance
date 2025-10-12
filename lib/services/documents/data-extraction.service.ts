@@ -45,14 +45,17 @@ RÈGLES IMPORTANTES:
 1. Extrais UNIQUEMENT les informations explicitement mentionnées dans le texte
 2. Ne DEVINE PAS ou n'INVENTE PAS de données manquantes
 3. Pour les dates, utilise le format ISO (YYYY-MM-DD)
-4. Pour les montants, extrais uniquement le chiffre (sans devise)
+4. Pour les montants, extrais uniquement le chiffre (sans devise ni symbole $, CHF, €)
 5. Si une information n'est pas présente, ne la retourne PAS dans le JSON
 6. Sois précis et fidèle au texte original
+7. Adapte l'extraction selon les noms de champs spécifiques fournis
 
 Exemples:
 - "Je m'appelle Jean Dupont" → {"prenom": "Jean", "nom": "Dupont"}
 - "Je veux résilier mon assurance Helsana numéro 123456" → {"nom_assurance": "Helsana", "numero_police": "123456"}
 - "Mon adresse est Rue du test 5, 1000 Lausanne" → {"adresse": "Rue du test 5", "npa": "1000", "ville": "Lausanne"}
+- "Contrat pour 400$ + 50$/mois de maintenance" → {"montant_creation": "400", "tarif_maintenance_mensuel": "50"}
+- "Site web e-commerce" → {"description_services": "Site web e-commerce"}
 
 Retourne UNIQUEMENT un JSON valide (sans markdown) avec les données extraites.`;
 
