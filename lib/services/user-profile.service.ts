@@ -39,10 +39,18 @@ export class UserProfileService {
         .single();
 
       if (error) {
+        // Table n'existe pas ou n'est pas configurée
+        if (error.code === '42P01' || error.code === 'PGRST301' || error.message?.includes('relation') || error.message?.includes('does not exist')) {
+          console.warn('[UserProfile] ⚠️ Supabase not configured. Tables not created. See docs/SUPABASE_SETUP.md');
+          console.warn('[UserProfile] Auto-fill will be available after Supabase setup.');
+          return null;
+        }
+
         if (error.code === 'PGRST116') {
           // Profil n'existe pas encore, créer un nouveau
           return await this.createProfile(userId);
         }
+
         console.error('[UserProfile] Error fetching profile:', error);
         return null;
       }
