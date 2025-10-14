@@ -1,15 +1,16 @@
 /**
- * API: Recherche immobilière avec IA
- * Génère des propriétés réalistes basées sur le marché suisse
+ * API: Recherche immobilière hybride (IA + données réelles)
+ * Combine les données scrapées et générées par IA
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { DataEnrichmentService } from '@/lib/services/real-estate/data-enrichment.service';
 import { AIPropertyGeneratorService } from '@/lib/services/real-estate/ai-property-generator.service';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { query, userIncome } = body;
+    const { query, userIncome, useRealData = true, useCache = true } = body;
 
     if (!query || typeof query !== 'string') {
       return NextResponse.json(
@@ -20,23 +21,45 @@ export async function POST(request: NextRequest) {
 
     console.log('[API real-estate/search] Query:', query);
     console.log('[API real-estate/search] User income:', userIncome);
+    console.log('[API real-estate/search] Use real data:', useRealData);
 
-    // Étape 1: Parser la requête pour extraire les critères
-    const criteria = await AIPropertyGeneratorService.parseSearchQuery(query);
+    // Étape 1: Vérifier le cache si activé
+    if (useCache) {
+      const criteria = await AIPropertyGeneratorService.parseSearchQuery(query);
+      const cacheKey = DataEnrichmentService.generateCacheKey(query, criteria, userIncome);
+      const cachedResult = await DataEnrichmentService.getCachedResults(cacheKey);
 
-    // Étape 2: Générer les propriétés avec l'IA
-    const properties = await AIPropertyGeneratorService.generateProperties(
+      if (cachedResult) {
+        console.log('[API real-estate/search] Returning cached results');
+        return NextResponse.json({
+          success: true,
+          query,
+          cached: true,
+          ...cachedResult
+        });
+      }
+    }
+
+    // Étape 2: Recherche hybride (données réelles + IA)
+    const result = await DataEnrichmentService.hybridSearch(
       query,
-      criteria,
-      userIncome
+      undefined, // criteria will be parsed inside
+      userIncome,
+      useRealData
     );
+
+    // Étape 3: Mettre en cache les résultats
+    if (useCache) {
+      const criteria = await AIPropertyGeneratorService.parseSearchQuery(query);
+      const cacheKey = DataEnrichmentService.generateCacheKey(query, criteria, userIncome);
+      await DataEnrichmentService.cacheSearchResults(cacheKey, result, 30);
+    }
 
     return NextResponse.json({
       success: true,
       query,
-      criteria,
-      properties,
-      count: properties.length
+      cached: false,
+      ...result
     });
 
   } catch (error: any) {

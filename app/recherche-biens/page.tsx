@@ -19,7 +19,9 @@ import {
   CheckCircle2,
   XCircle,
   Calculator,
-  Sparkles
+  Sparkles,
+  Database,
+  Zap
 } from 'lucide-react';
 import type { Property } from '@/lib/types/real-estate';
 
@@ -31,6 +33,8 @@ export default function RealEstateSearchPage() {
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [affordability, setAffordability] = useState<any>(null);
+  const [searchStrategy, setSearchStrategy] = useState<'real-only' | 'ai-only' | 'hybrid' | null>(null);
+  const [sources, setSources] = useState<{ real: number; ai: number; total: number } | null>(null);
 
   /**
    * Recherche de propriétés
@@ -61,6 +65,8 @@ export default function RealEstateSearchPage() {
 
       const searchData = await searchResponse.json();
       setProperties(searchData.properties || []);
+      setSearchStrategy(searchData.searchStrategy || null);
+      setSources(searchData.sources || null);
 
       // Calculer l'affordabilité si revenu fourni
       if (monthlyIncome > 0) {
@@ -251,13 +257,39 @@ export default function RealEstateSearchPage() {
       {/* Résultats */}
       {properties.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-3">
             <h2 className="text-2xl font-bold">
               {properties.length} {properties.length === 1 ? 'résultat trouvé' : 'résultats trouvés'}
             </h2>
-            <Badge variant="secondary" className="bg-purple-100 text-purple-700">
-              Généré par IA
-            </Badge>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Badge de stratégie de recherche */}
+              {searchStrategy === 'real-only' && (
+                <Badge variant="secondary" className="bg-green-100 text-green-700">
+                  <Database className="h-3 w-3 mr-1" />
+                  Données réelles
+                </Badge>
+              )}
+              {searchStrategy === 'ai-only' && (
+                <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Généré par IA
+                </Badge>
+              )}
+              {searchStrategy === 'hybrid' && (
+                <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                  <Zap className="h-3 w-3 mr-1" />
+                  Hybride (réel + IA)
+                </Badge>
+              )}
+
+              {/* Détail des sources si hybride */}
+              {sources && searchStrategy === 'hybrid' && (
+                <span className="text-xs text-gray-500">
+                  ({sources.real} réelles, {sources.ai} générées)
+                </span>
+              )}
+            </div>
           </div>
 
           {properties.map((property) => (
@@ -274,7 +306,34 @@ export default function RealEstateSearchPage() {
                     {/* Titre et prix */}
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-xl font-bold mb-1">{property.title}</h3>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-xl font-bold">{property.title}</h3>
+                          {/* Badge source */}
+                          {property.source === 'immoscout24' && (
+                            <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                              <Database className="h-2.5 w-2.5 mr-1" />
+                              ImmoScout24
+                            </Badge>
+                          )}
+                          {property.source === 'homegate' && (
+                            <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                              <Database className="h-2.5 w-2.5 mr-1" />
+                              Homegate
+                            </Badge>
+                          )}
+                          {property.source === 'comparis' && (
+                            <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                              <Database className="h-2.5 w-2.5 mr-1" />
+                              Comparis
+                            </Badge>
+                          )}
+                          {property.source === 'ai-generated' && (
+                            <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs">
+                              <Sparkles className="h-2.5 w-2.5 mr-1" />
+                              IA
+                            </Badge>
+                          )}
+                        </div>
                         <div className="flex items-center gap-2 text-gray-600">
                           <MapPin className="h-4 w-4" />
                           <span>{property.address.city}, {property.address.canton}</span>
