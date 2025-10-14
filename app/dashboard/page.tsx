@@ -23,6 +23,18 @@ import { MobileFriendlyTooltip } from '@/components/ui/mobile-friendly-tooltip';
 import { createClient } from '@/lib/supabase/client';
 import { TaxCalculationService } from '@/lib/services/tax-calculation.service';
 import type { TaxCalculationResult } from '@/lib/utils/swiss-tax-formulas';
+import { UserProfileSupabaseService } from '@/lib/services/user-profile-supabase.service';
+import {
+  User,
+  MapPin,
+  Briefcase,
+  Home as HomeIcon,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 
 export default function DashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -30,6 +42,9 @@ export default function DashboardPage() {
   const [profileData, setProfileData] = useState<any>(null);
   const [taxCalculation, setTaxCalculation] = useState<TaxCalculationResult | null>(null);
   const [taxCalculating, setTaxCalculating] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [showSensitive, setShowSensitive] = useState(false);
+  const [profileExpanded, setProfileExpanded] = useState(true);
   const supabase = createClient();
 
   useEffect(() => {
@@ -75,6 +90,11 @@ export default function DashboardPage() {
       console.log('🎯 Objectifs chargés:', goals, goalsError);
 
       setProfileData({ profile, financial, goals: goals || [] });
+
+      // Charger le profil Supabase enrichi
+      const enrichedProfile = await UserProfileSupabaseService.getProfile();
+      setUserProfile(enrichedProfile);
+      console.log('📋 Profil enrichi chargé:', enrichedProfile);
 
       // Calculer les impôts si on a les données nécessaires
       if (profile && financial) {
@@ -143,6 +163,27 @@ export default function DashboardPage() {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(amount);
+  };
+
+  const calculateProfileCompletion = () => {
+    if (!userProfile) return 0;
+    const fields = [
+      userProfile.nom,
+      userProfile.prenom,
+      userProfile.date_naissance,
+      userProfile.revenu_annuel,
+      userProfile.revenu_mensuel,
+      userProfile.situation_familiale,
+      userProfile.adresse,
+      userProfile.npa,
+      userProfile.ville,
+      userProfile.canton,
+      userProfile.statut_professionnel,
+      userProfile.profession,
+      userProfile.statut_logement,
+    ];
+    const filledCount = fields.filter((f) => f !== null && f !== undefined && f !== '').length;
+    return Math.round((filledCount / fields.length) * 100);
   };
 
   if (loading || authLoading) {
@@ -265,6 +306,188 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Section Profil Utilisateur */}
+          {userProfile && (
+            <Card className="mb-6 border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50">
+              <CardHeader className="cursor-pointer" onClick={() => setProfileExpanded(!profileExpanded)}>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-3">
+                    <User className="w-6 h-6 text-blue-600" />
+                    Profil Utilisateur
+                    <span className="text-sm font-normal text-gray-600">
+                      ({calculateProfileCompletion()}% complété)
+                    </span>
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowSensitive(!showSensitive);
+                      }}
+                      className="px-3 py-1.5 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm"
+                    >
+                      {showSensitive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showSensitive ? 'Masquer' : 'Afficher'}
+                    </button>
+                    {profileExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </div>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3 mt-3">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-3 rounded-full transition-all duration-500"
+                    style={{ width: `${calculateProfileCompletion()}%` }}
+                  ></div>
+                </div>
+              </CardHeader>
+
+              {profileExpanded && (
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Informations personnelles */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <User className="w-5 h-5 text-blue-600" />
+                        <h4 className="font-semibold text-gray-900">Informations personnelles</h4>
+                      </div>
+                      <div className="space-y-2">
+                        <ProfileField
+                          label="Nom complet"
+                          value={`${userProfile.prenom || ''} ${userProfile.nom || ''}`}
+                          filled={!!(userProfile.prenom && userProfile.nom)}
+                        />
+                        <ProfileField
+                          label="Email"
+                          value={userProfile.email}
+                          filled={!!userProfile.email}
+                        />
+                        <ProfileField
+                          label="Date de naissance"
+                          value={
+                            userProfile.date_naissance
+                              ? new Date(userProfile.date_naissance).toLocaleDateString('fr-CH')
+                              : null
+                          }
+                          filled={!!userProfile.date_naissance}
+                        />
+                        <ProfileField
+                          label="Situation familiale"
+                          value={userProfile.situation_familiale}
+                          filled={!!userProfile.situation_familiale}
+                        />
+                        <ProfileField
+                          label="Enfants"
+                          value={userProfile.nombre_enfants?.toString()}
+                          filled={userProfile.nombre_enfants !== null}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Localisation & Professionnel */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <MapPin className="w-5 h-5 text-green-600" />
+                        <h4 className="font-semibold text-gray-900">Localisation</h4>
+                      </div>
+                      <div className="space-y-2 mb-4">
+                        <ProfileField label="Adresse" value={userProfile.adresse} filled={!!userProfile.adresse} />
+                        <ProfileField
+                          label="Ville"
+                          value={userProfile.npa && userProfile.ville ? `${userProfile.npa} ${userProfile.ville}` : null}
+                          filled={!!(userProfile.npa && userProfile.ville)}
+                        />
+                        <ProfileField label="Canton" value={userProfile.canton} filled={!!userProfile.canton} />
+                      </div>
+                      <div className="flex items-center gap-2 mb-2 mt-4 pt-3 border-t border-gray-200">
+                        <Briefcase className="w-5 h-5 text-purple-600" />
+                        <h4 className="font-semibold text-gray-900 text-sm">Professionnel</h4>
+                      </div>
+                      <div className="space-y-2">
+                        <ProfileField
+                          label="Statut"
+                          value={userProfile.statut_professionnel}
+                          filled={!!userProfile.statut_professionnel}
+                        />
+                        <ProfileField
+                          label="Profession"
+                          value={userProfile.profession}
+                          filled={!!userProfile.profession}
+                        />
+                        <ProfileField label="Employeur" value={userProfile.employeur} filled={!!userProfile.employeur} />
+                      </div>
+                    </div>
+
+                    {/* Finances & Logement */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <DollarSign className="w-5 h-5 text-green-600" />
+                        <h4 className="font-semibold text-gray-900">Finances</h4>
+                      </div>
+                      <div className="space-y-2 mb-4">
+                        <ProfileField
+                          label="Revenu annuel"
+                          value={
+                            userProfile.revenu_annuel
+                              ? formatCurrency(userProfile.revenu_annuel)
+                              : null
+                          }
+                          filled={!!userProfile.revenu_annuel}
+                          sensitive
+                          showSensitive={showSensitive}
+                        />
+                        <ProfileField
+                          label="Revenu mensuel"
+                          value={
+                            userProfile.revenu_mensuel
+                              ? formatCurrency(userProfile.revenu_mensuel)
+                              : null
+                          }
+                          filled={!!userProfile.revenu_mensuel}
+                          sensitive
+                          showSensitive={showSensitive}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 mb-2 mt-4 pt-3 border-t border-gray-200">
+                        <HomeIcon className="w-5 h-5 text-orange-600" />
+                        <h4 className="font-semibold text-gray-900 text-sm">Logement</h4>
+                      </div>
+                      <div className="space-y-2">
+                        <ProfileField
+                          label="Statut"
+                          value={userProfile.statut_logement}
+                          filled={!!userProfile.statut_logement}
+                        />
+                        <ProfileField
+                          label="Loyer mensuel"
+                          value={
+                            userProfile.loyer_mensuel
+                              ? formatCurrency(userProfile.loyer_mensuel)
+                              : null
+                          }
+                          filled={!!userProfile.loyer_mensuel}
+                          sensitive
+                          showSensitive={showSensitive}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex justify-between items-center">
+                    <p className="text-sm text-gray-600">
+                      💡 Ces informations sont extraites de Supabase et auto-remplissent les formulaires
+                    </p>
+                    <Button
+                      onClick={() => window.location.href = '/dashboard-data'}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Voir tout le détail
+                    </Button>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          )}
 
           {/* Calcul fiscal */}
           {hasFinancialData && taxCalculation && (
@@ -633,5 +856,34 @@ export default function DashboardPage() {
         </div>
       </div>
     </ProtectedRoute>
+  );
+}
+
+// Composant helper pour afficher un champ du profil
+function ProfileField({
+  label,
+  value,
+  filled,
+  sensitive = false,
+  showSensitive = true,
+}: {
+  label: string;
+  value: string | null | undefined;
+  filled: boolean;
+  sensitive?: boolean;
+  showSensitive?: boolean;
+}) {
+  const displayValue = sensitive && !showSensitive ? '••••••••' : value || 'Non renseigné';
+  const textColor = filled ? 'text-gray-900 font-medium' : 'text-gray-400 italic';
+  const bgColor = filled ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200';
+
+  return (
+    <div className={`flex items-center justify-between py-2 px-3 rounded-lg border ${bgColor}`}>
+      <span className="text-xs text-gray-600 font-medium">{label}</span>
+      <div className="flex items-center gap-1.5">
+        {filled && <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />}
+        <span className={`text-xs ${textColor}`}>{displayValue}</span>
+      </div>
+    </div>
   );
 }
