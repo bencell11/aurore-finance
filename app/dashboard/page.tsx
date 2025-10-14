@@ -34,6 +34,9 @@ import {
   EyeOff,
   ChevronDown,
   ChevronUp,
+  Edit2,
+  Save,
+  X,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -45,6 +48,9 @@ export default function DashboardPage() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [showSensitive, setShowSensitive] = useState(false);
   const [profileExpanded, setProfileExpanded] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+  const [editedProfile, setEditedProfile] = useState<any>({});
+  const [saving, setSaving] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -186,6 +192,40 @@ export default function DashboardPage() {
     return Math.round((filledCount / fields.length) * 100);
   };
 
+  const handleEditProfile = () => {
+    setEditedProfile({ ...userProfile });
+    setEditMode(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    setEditedProfile({});
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setSaving(true);
+      const updated = await UserProfileSupabaseService.updateProfile(editedProfile);
+      if (updated) {
+        setUserProfile(updated);
+        setEditMode(false);
+        setEditedProfile({});
+        console.log('✅ Profil sauvegardé avec succès');
+      }
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde profil:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleFieldChange = (field: string, value: any) => {
+    setEditedProfile((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -320,16 +360,55 @@ export default function DashboardPage() {
                     </span>
                   </CardTitle>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowSensitive(!showSensitive);
-                      }}
-                      className="px-3 py-1.5 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm"
-                    >
-                      {showSensitive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      {showSensitive ? 'Masquer' : 'Afficher'}
-                    </button>
+                    {!editMode ? (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowSensitive(!showSensitive);
+                          }}
+                          className="px-3 py-1.5 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm"
+                        >
+                          {showSensitive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showSensitive ? 'Masquer' : 'Afficher'}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProfile();
+                          }}
+                          className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                          Modifier
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelEdit();
+                          }}
+                          className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2 text-sm"
+                          disabled={saving}
+                        >
+                          <X className="w-4 h-4" />
+                          Annuler
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSaveProfile();
+                          }}
+                          className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm"
+                          disabled={saving}
+                        >
+                          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                          {saving ? 'Sauvegarde...' : 'Sauvegarder'}
+                        </button>
+                      </>
+                    )}
                     {profileExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                   </div>
                 </div>
@@ -352,33 +431,62 @@ export default function DashboardPage() {
                       </div>
                       <div className="space-y-2">
                         <ProfileField
-                          label="Nom complet"
-                          value={`${userProfile.prenom || ''} ${userProfile.nom || ''}`}
-                          filled={!!(userProfile.prenom && userProfile.nom)}
+                          label="Prénom"
+                          value={editMode ? editedProfile.prenom : userProfile.prenom}
+                          filled={!!userProfile.prenom}
+                          editMode={editMode}
+                          fieldName="prenom"
+                          onFieldChange={handleFieldChange}
+                        />
+                        <ProfileField
+                          label="Nom"
+                          value={editMode ? editedProfile.nom : userProfile.nom}
+                          filled={!!userProfile.nom}
+                          editMode={editMode}
+                          fieldName="nom"
+                          onFieldChange={handleFieldChange}
                         />
                         <ProfileField
                           label="Email"
-                          value={userProfile.email}
+                          value={editMode ? editedProfile.email : userProfile.email}
                           filled={!!userProfile.email}
+                          editMode={editMode}
+                          fieldName="email"
+                          onFieldChange={handleFieldChange}
+                          type="email"
                         />
                         <ProfileField
                           label="Date de naissance"
                           value={
-                            userProfile.date_naissance
+                            editMode
+                              ? editedProfile.date_naissance
+                              : userProfile.date_naissance
                               ? new Date(userProfile.date_naissance).toLocaleDateString('fr-CH')
                               : null
                           }
                           filled={!!userProfile.date_naissance}
+                          editMode={editMode}
+                          fieldName="date_naissance"
+                          onFieldChange={handleFieldChange}
+                          type="date"
                         />
                         <ProfileField
                           label="Situation familiale"
-                          value={userProfile.situation_familiale}
+                          value={editMode ? editedProfile.situation_familiale : userProfile.situation_familiale}
                           filled={!!userProfile.situation_familiale}
+                          editMode={editMode}
+                          fieldName="situation_familiale"
+                          onFieldChange={handleFieldChange}
+                          type="select-situation"
                         />
                         <ProfileField
                           label="Enfants"
-                          value={userProfile.nombre_enfants?.toString()}
+                          value={editMode ? editedProfile.nombre_enfants?.toString() : userProfile.nombre_enfants?.toString()}
                           filled={userProfile.nombre_enfants !== null}
+                          editMode={editMode}
+                          fieldName="nombre_enfants"
+                          onFieldChange={handleFieldChange}
+                          type="number"
                         />
                       </div>
                     </div>
@@ -472,16 +580,21 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex justify-between items-center">
+                  <div className="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <p className="text-sm text-gray-600">
                       💡 Ces informations sont extraites de Supabase et auto-remplissent les formulaires
                     </p>
                     <Button
-                      onClick={() => window.location.href = '/dashboard-data'}
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.location.href = '/dashboard-data';
+                        }
+                      }}
                       variant="outline"
                       size="sm"
+                      className="whitespace-nowrap"
                     >
-                      Voir tout le détail
+                      Voir tout le détail →
                     </Button>
                   </div>
                 </CardContent>
@@ -859,23 +972,85 @@ export default function DashboardPage() {
   );
 }
 
-// Composant helper pour afficher un champ du profil
+// Composant helper pour afficher/éditer un champ du profil
 function ProfileField({
   label,
   value,
   filled,
   sensitive = false,
   showSensitive = true,
+  editMode = false,
+  fieldName,
+  onFieldChange,
+  type = 'text',
 }: {
   label: string;
   value: string | null | undefined;
   filled: boolean;
   sensitive?: boolean;
   showSensitive?: boolean;
+  editMode?: boolean;
+  fieldName?: string;
+  onFieldChange?: (field: string, value: any) => void;
+  type?: string;
 }) {
   const displayValue = sensitive && !showSensitive ? '••••••••' : value || 'Non renseigné';
   const textColor = filled ? 'text-gray-900 font-medium' : 'text-gray-400 italic';
   const bgColor = filled ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200';
+
+  if (editMode && fieldName && onFieldChange) {
+    return (
+      <div className="flex flex-col gap-1">
+        <label className="text-xs text-gray-600 font-medium">{label}</label>
+        {type === 'select-situation' ? (
+          <select
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, e.target.value)}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Sélectionner...</option>
+            <option value="celibataire">Célibataire</option>
+            <option value="marie">Marié(e)</option>
+            <option value="divorce">Divorcé(e)</option>
+            <option value="veuf">Veuf(ve)</option>
+            <option value="concubinage">Concubinage</option>
+          </select>
+        ) : type === 'select-statut-pro' ? (
+          <select
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, e.target.value)}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Sélectionner...</option>
+            <option value="salarie">Salarié</option>
+            <option value="independant">Indépendant</option>
+            <option value="retraite">Retraité</option>
+            <option value="etudiant">Étudiant</option>
+            <option value="sans_emploi">Sans emploi</option>
+          </select>
+        ) : type === 'select-statut-logement' ? (
+          <select
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, e.target.value)}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Sélectionner...</option>
+            <option value="locataire">Locataire</option>
+            <option value="proprietaire">Propriétaire</option>
+            <option value="heberge">Hébergé</option>
+          </select>
+        ) : (
+          <input
+            type={type}
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, type === 'number' ? parseFloat(e.target.value) : e.target.value)}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={label}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={`flex items-center justify-between py-2 px-3 rounded-lg border ${bgColor}`}>
