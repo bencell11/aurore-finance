@@ -36,10 +36,16 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
       const data = await UserProfileService.getProfile();
       setProfile(data);
 
-      console.log('[UserProfileContext] Profile loaded:', data);
+      if (data) {
+        console.log('[UserProfileContext] ✓ Profile loaded successfully');
+      } else {
+        console.log('[UserProfileContext] ℹ️ No profile found (Supabase may not be configured)');
+      }
     } catch (err: any) {
-      console.error('[UserProfileContext] Error loading profile:', err);
-      setError(err.message);
+      // Don't break the app if Supabase isn't configured
+      console.warn('[UserProfileContext] ⚠️ Could not load profile:', err.message);
+      setProfile(null);
+      setError(null); // Don't propagate error - app should work without Supabase
     } finally {
       setLoading(false);
     }
@@ -57,28 +63,33 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
 
       if (updated) {
         setProfile(updated);
-        console.log('[UserProfileContext] Profile updated:', updated);
+        console.log('[UserProfileContext] ✓ Profile updated successfully');
         return true;
       }
 
+      console.log('[UserProfileContext] ℹ️ Profile update skipped (Supabase not configured)');
       return false;
     } catch (err: any) {
-      console.error('[UserProfileContext] Error updating profile:', err);
-      setError(err.message);
-      return false;
+      console.warn('[UserProfileContext] ⚠️ Could not update profile:', err.message);
+      return false; // Don't break the app
     }
   }, []);
 
   // Sauvegarder un champ
   const saveField = useCallback(async (field: keyof UserProfile, value: any): Promise<boolean> => {
-    const success = await UserProfileService.saveField(field, value);
+    try {
+      const success = await UserProfileService.saveField(field, value);
 
-    if (success) {
-      // Recharger le profil pour avoir les données à jour
-      await loadProfile();
+      if (success) {
+        // Recharger le profil pour avoir les données à jour
+        await loadProfile();
+      }
+
+      return success;
+    } catch (err: any) {
+      console.warn('[UserProfileContext] ⚠️ Could not save field:', err.message);
+      return false; // Don't break the app
     }
-
-    return success;
   }, [loadProfile]);
 
   // Obtenir un champ
@@ -108,19 +119,24 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
     formData: Record<string, any>,
     fieldMapping: Record<string, keyof UserProfile>
   ): Promise<boolean> => {
-    const updates: Partial<UserProfile> = {};
+    try {
+      const updates: Partial<UserProfile> = {};
 
-    for (const [formField, profileField] of Object.entries(fieldMapping)) {
-      if (formData[formField] !== undefined && formData[formField] !== null && formData[formField] !== '') {
-        (updates as any)[profileField] = formData[formField];
+      for (const [formField, profileField] of Object.entries(fieldMapping)) {
+        if (formData[formField] !== undefined && formData[formField] !== null && formData[formField] !== '') {
+          (updates as any)[profileField] = formData[formField];
+        }
       }
-    }
 
-    if (Object.keys(updates).length === 0) {
-      return true;
-    }
+      if (Object.keys(updates).length === 0) {
+        return true;
+      }
 
-    return await updateProfile(updates);
+      return await updateProfile(updates);
+    } catch (err: any) {
+      console.warn('[UserProfileContext] ⚠️ Could not sync form to profile:', err.message);
+      return false; // Don't break the app
+    }
   }, [updateProfile]);
 
   const value: UserProfileContextType = {
