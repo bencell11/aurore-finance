@@ -36,7 +36,7 @@ export default function DashboardDataPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth/login');
+      router.push('/auth'); // Corrigé: utilise /auth au lieu de /auth/login
     }
   }, [authLoading, user, router]);
 
