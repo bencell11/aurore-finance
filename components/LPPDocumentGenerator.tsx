@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, CheckCircle2, Info } from 'lucide-react';
+import { Download, CheckCircle2, Info, Check } from 'lucide-react';
 
 interface LPPFormData {
   prenom: string;
@@ -24,11 +24,12 @@ interface LPPFormData {
 
 interface LPPDocumentGeneratorProps {
   formData: LPPFormData;
+  signatureData?: string;
   onBack: () => void;
   onDownload: () => void;
 }
 
-export default function LPPDocumentGenerator({ formData, onBack, onDownload }: LPPDocumentGeneratorProps) {
+export default function LPPDocumentGenerator({ formData, signatureData, onBack, onDownload }: LPPDocumentGeneratorProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -219,10 +220,27 @@ export default function LPPDocumentGenerator({ formData, onBack, onDownload }: L
               </div>
               <div>
                 <p className="font-semibold mb-2">Signature :</p>
-                <div className="border-b-2 border-gray-400 h-16 flex items-end pb-2">
-                  <p className="text-xs text-gray-500">(Signature digitale validée)</p>
-                </div>
-                <p className="text-xs text-gray-600 mt-2">{formData.prenom} {formData.nom}</p>
+                {signatureData ? (
+                  <div className="space-y-2">
+                    <div className="border-2 border-blue-200 rounded p-2 bg-blue-50 h-20 flex items-center justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={signatureData}
+                        alt="Signature digitale"
+                        className="max-h-16 max-w-full"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1 text-green-600">
+                      <Check className="w-3 h-3" />
+                      <p className="text-xs font-semibold">Signature digitale certifiée</p>
+                    </div>
+                    <p className="text-xs text-gray-600">{formData.prenom} {formData.nom}</p>
+                  </div>
+                ) : (
+                  <div className="border-b-2 border-gray-400 h-16 flex items-end pb-2">
+                    <p className="text-xs text-gray-500">(Signature digitale validée)</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

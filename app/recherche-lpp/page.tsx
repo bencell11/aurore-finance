@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { UserProfileSupabaseService } from '@/lib/services/user-profile-supabase.service';
 import LPPDocumentGenerator from '@/components/LPPDocumentGenerator';
+import DigitalSignature, { SignatureMetadata } from '@/components/DigitalSignature';
 
 interface LPPSearchForm {
   // Informations personnelles
@@ -92,6 +93,7 @@ export default function RechercheLPPPage() {
 
   const [step, setStep] = useState<'form' | 'review' | 'signature' | 'documents'>('form');
   const [signatureData, setSignatureData] = useState<string>('');
+  const [signatureMetadata, setSignatureMetadata] = useState<SignatureMetadata | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [autofilledFields, setAutofilledFields] = useState<Set<string>>(new Set());
@@ -188,11 +190,9 @@ export default function RechercheLPPPage() {
     }, 1500);
   };
 
-  const signDocument = () => {
-    // Simulation de signature digitale
-    const timestamp = new Date().toISOString();
-    const signature = `SIGNATURE_${formData.nom.toUpperCase()}_${timestamp}`;
+  const handleSignatureComplete = (signature: string, metadata: SignatureMetadata) => {
     setSignatureData(signature);
+    setSignatureMetadata(metadata);
     setStep('signature');
   };
 
@@ -732,19 +732,30 @@ export default function RechercheLPPPage() {
                       Modifier
                     </Button>
                     <Button
-                      onClick={signDocument}
+                      onClick={() => setStep('signature')}
                       className="flex-1 bg-green-600 hover:bg-green-700"
                     >
                       <Shield className="w-5 h-5 mr-2" />
-                      Signer digitalement
+                      Continuer vers la signature
                     </Button>
                   </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* ÉTAPE 3: Signature */}
-            {step === 'signature' && (
+            {/* ÉTAPE 3: Signature digitale */}
+            {step === 'signature' && !signatureData && (
+              <DigitalSignature
+                onSignatureComplete={handleSignatureComplete}
+                onBack={() => setStep('review')}
+                signerName={`${formData.prenom} ${formData.nom}`}
+                signerEmail={formData.email}
+                documentTitle="Procuration pour recherche d'avoirs LPP"
+              />
+            )}
+
+            {/* ÉTAPE 3b: Confirmation signature */}
+            {step === 'signature' && signatureData && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-green-700">
@@ -756,19 +767,49 @@ export default function RechercheLPPPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+                  {/* Aperçu de la signature */}
+                  <div className="bg-white border-2 border-green-300 rounded-lg p-6">
                     <div className="flex items-start gap-4">
                       <CheckCircle2 className="w-8 h-8 text-green-600 flex-shrink-0" />
-                      <div className="space-y-2">
-                        <h3 className="font-semibold text-green-900">Signature digitale validée</h3>
-                        <p className="text-sm text-green-700">
-                          Votre procuration a été signée avec succès le {new Date().toLocaleDateString('fr-CH')} à {new Date().toLocaleTimeString('fr-CH')}.
-                        </p>
-                        <div className="bg-white rounded p-3 mt-3">
-                          <p className="text-xs text-gray-600 font-mono break-all">
-                            ID de signature : {signatureData}
+                      <div className="flex-1 space-y-4">
+                        <div>
+                          <h3 className="font-semibold text-green-900 mb-2">Signature digitale validée</h3>
+                          <p className="text-sm text-green-700">
+                            Votre procuration a été signée avec succès le{' '}
+                            {signatureMetadata ? new Date(signatureMetadata.signedAt).toLocaleDateString('fr-CH') : new Date().toLocaleDateString('fr-CH')}{' '}
+                            à {signatureMetadata ? new Date(signatureMetadata.signedAt).toLocaleTimeString('fr-CH') : new Date().toLocaleTimeString('fr-CH')}.
                           </p>
                         </div>
+
+                        {/* Aperçu signature */}
+                        <div className="border-2 border-gray-200 rounded-lg p-4 bg-white">
+                          <p className="text-xs text-gray-600 mb-2 font-semibold">Votre signature :</p>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={signatureData}
+                            alt="Signature digitale"
+                            className="max-h-24 mx-auto"
+                          />
+                        </div>
+
+                        {/* Métadonnées de signature */}
+                        {signatureMetadata && (
+                          <div className="bg-gray-50 rounded p-3 space-y-1">
+                            <p className="text-xs font-semibold text-gray-700 mb-2">Certificat de signature:</p>
+                            <p className="text-xs text-gray-600">
+                              <span className="font-semibold">Signataire:</span> {signatureMetadata.signerName}
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              <span className="font-semibold">Email:</span> {signatureMetadata.signerEmail}
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              <span className="font-semibold">Date/Heure:</span> {new Date(signatureMetadata.signedAt).toLocaleString('fr-CH')}
+                            </p>
+                            <p className="text-xs text-gray-600 font-mono break-all">
+                              <span className="font-semibold">Hash:</span> {signatureMetadata.signatureHash}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -838,6 +879,7 @@ export default function RechercheLPPPage() {
                   anciennesAdresses: formData.anciennesAdresses,
                   anciensEmployeurs: formData.anciensEmployeurs,
                 }}
+                signatureData={signatureData}
                 onBack={() => setStep('signature')}
                 onDownload={downloadDocuments}
               />
