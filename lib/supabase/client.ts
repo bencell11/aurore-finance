@@ -17,7 +17,8 @@ export interface UserProfile {
   nom?: string;
   prenom?: string;
   date_naissance?: string;
-  numero_carte_identite?: string;
+  carte_identite_recto_url?: string;
+  carte_identite_verso_url?: string;
   genre?: 'homme' | 'femme' | 'autre';
   nationalite?: string;
 

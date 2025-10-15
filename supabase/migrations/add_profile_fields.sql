@@ -4,7 +4,8 @@
 
 -- Informations personnelles
 ALTER TABLE user_profiles
-ADD COLUMN IF NOT EXISTS numero_carte_identite TEXT,
+ADD COLUMN IF NOT EXISTS carte_identite_recto_url TEXT,
+ADD COLUMN IF NOT EXISTS carte_identite_verso_url TEXT,
 ADD COLUMN IF NOT EXISTS genre TEXT CHECK (genre IN ('homme', 'femme', 'autre')),
 ADD COLUMN IF NOT EXISTS nationalite TEXT;
 
@@ -20,7 +21,8 @@ ADD COLUMN IF NOT EXISTS caisse_pension TEXT,
 ADD COLUMN IF NOT EXISTS activite_lucrative_suisse BOOLEAN DEFAULT NULL;
 
 -- Commentaires pour documentation
-COMMENT ON COLUMN user_profiles.numero_carte_identite IS 'Numéro de la carte d''identité ou passeport';
+COMMENT ON COLUMN user_profiles.carte_identite_recto_url IS 'URL de l''image recto de la carte d''identité';
+COMMENT ON COLUMN user_profiles.carte_identite_verso_url IS 'URL de l''image verso de la carte d''identité';
 COMMENT ON COLUMN user_profiles.genre IS 'Genre: homme, femme, autre';
 COMMENT ON COLUMN user_profiles.nationalite IS 'Nationalité (ex: Suisse, Française, etc.)';
 COMMENT ON COLUMN user_profiles.telephone IS 'Numéro de téléphone (format: +41 XX XXX XX XX)';

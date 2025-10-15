@@ -17,21 +17,18 @@ import {
 import {
   Search,
   FileText,
-  Send,
-  Download,
   CheckCircle2,
   Info,
-  Building2,
   User,
   Calendar,
   MapPin,
   Phone,
-  Mail,
   Shield,
   Loader2,
   Sparkles
 } from 'lucide-react';
 import { UserProfileSupabaseService } from '@/lib/services/user-profile-supabase.service';
+import LPPDocumentGenerator from '@/components/LPPDocumentGenerator';
 
 interface LPPSearchForm {
   // Informations personnelles
@@ -39,6 +36,10 @@ interface LPPSearchForm {
   nom: string;
   dateNaissance: string;
   numeroAVS: string;
+  genre: string;
+  nationalite: string;
+  carteIdentiteRectoUrl: string;
+  carteIdentiteVersoUrl: string;
 
   // Adresse actuelle
   rue: string;
@@ -48,6 +49,10 @@ interface LPPSearchForm {
   // Contact
   email: string;
   telephone: string;
+  langue: string;
+
+  // Professionnel
+  caissePension: string;
 
   // Anciennes adresses (optionnel)
   anciennesAdresses: string;
@@ -67,11 +72,17 @@ export default function RechercheLPPPage() {
     nom: '',
     dateNaissance: '',
     numeroAVS: '',
+    genre: '',
+    nationalite: '',
+    carteIdentiteRectoUrl: '',
+    carteIdentiteVersoUrl: '',
     rue: '',
     npa: '',
     ville: '',
     email: '',
     telephone: '',
+    langue: '',
+    caissePension: '',
     anciennesAdresses: '',
     anciensEmployeurs: '',
     consentementRecherche: false,
@@ -79,7 +90,7 @@ export default function RechercheLPPPage() {
     consentementSignature: false,
   });
 
-  const [step, setStep] = useState<'form' | 'review' | 'signature' | 'sent'>('form');
+  const [step, setStep] = useState<'form' | 'review' | 'signature' | 'documents'>('form');
   const [signatureData, setSignatureData] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -100,11 +111,18 @@ export default function RechercheLPPPage() {
         prenom: 'prenom' as const,
         nom: 'nom' as const,
         dateNaissance: 'date_naissance' as const,
+        numeroAVS: 'numero_avs' as const,
+        genre: 'genre' as const,
+        nationalite: 'nationalite' as const,
+        carteIdentiteRectoUrl: 'carte_identite_recto_url' as const,
+        carteIdentiteVersoUrl: 'carte_identite_verso_url' as const,
         rue: 'adresse' as const,
         npa: 'npa' as const,
         ville: 'ville' as const,
         email: 'email' as const,
-        // Note: telephone n'est pas dans UserProfile, on ne peut pas l'auto-remplir
+        telephone: 'telephone' as const,
+        langue: 'langue' as const,
+        caissePension: 'caisse_pension' as const,
       };
 
       const autofilledData = await UserProfileSupabaseService.autofillForm(fieldMapping);
@@ -146,11 +164,14 @@ export default function RechercheLPPPage() {
       formData.nom &&
       formData.dateNaissance &&
       formData.numeroAVS &&
+      formData.genre &&
+      formData.nationalite &&
       formData.rue &&
       formData.npa &&
       formData.ville &&
       formData.email &&
       formData.telephone &&
+      formData.langue &&
       formData.consentementRecherche &&
       formData.consentementDonnees &&
       formData.consentementSignature
@@ -175,35 +196,19 @@ export default function RechercheLPPPage() {
     setStep('signature');
   };
 
-  const sendToAdministration = () => {
+  const generateDocuments = () => {
     setIsGenerating(true);
 
-    // Simulation d'envoi par email
+    // Simulation de génération de documents
     setTimeout(() => {
       setIsGenerating(false);
-      setStep('sent');
-    }, 2000);
+      setStep('documents');
+    }, 1500);
   };
 
-  const resetForm = () => {
-    setFormData({
-      prenom: '',
-      nom: '',
-      dateNaissance: '',
-      numeroAVS: '',
-      rue: '',
-      npa: '',
-      ville: '',
-      email: '',
-      telephone: '',
-      anciennesAdresses: '',
-      anciensEmployeurs: '',
-      consentementRecherche: false,
-      consentementDonnees: false,
-      consentementSignature: false,
-    });
-    setStep('form');
-    setSignatureData('');
+  const downloadDocuments = () => {
+    // TODO: Implémenter la génération PDF réelle avec jsPDF ou similaire
+    alert('Téléchargement des documents... (À implémenter)');
   };
 
   return (
@@ -275,11 +280,11 @@ export default function RechercheLPPPage() {
                 <span className="hidden md:inline">Signature</span>
               </div>
               <div className="w-12 h-0.5 bg-gray-300" />
-              <div className={`flex items-center gap-2 ${step === 'sent' ? 'text-green-600 font-semibold' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === 'sent' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+              <div className={`flex items-center gap-2 ${step === 'documents' ? 'text-green-600 font-semibold' : 'text-gray-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === 'documents' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
                   ✓
                 </div>
-                <span className="hidden md:inline">Envoyé</span>
+                <span className="hidden md:inline">Documents</span>
               </div>
             </div>
 
@@ -381,12 +386,79 @@ export default function RechercheLPPPage() {
                             </TooltipContent>
                           </Tooltip>
                         </Label>
-                        <Input
+                        <AutofillInput
                           id="numeroAVS"
                           value={formData.numeroAVS}
                           onChange={(e) => updateField('numeroAVS', e.target.value)}
                           placeholder="756.1234.5678.90"
+                          autofilled={autofilledFields.has('numeroAVS')}
                         />
+                      </div>
+                      <div>
+                        <Label htmlFor="genre">Genre *</Label>
+                        <select
+                          id="genre"
+                          value={formData.genre}
+                          onChange={(e) => updateField('genre', e.target.value)}
+                          className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${autofilledFields.has('genre') ? 'border-green-300 bg-green-50' : ''}`}
+                        >
+                          <option value="">Sélectionnez...</option>
+                          <option value="homme">Homme</option>
+                          <option value="femme">Femme</option>
+                          <option value="autre">Autre</option>
+                        </select>
+                      </div>
+                      <div>
+                        <Label htmlFor="nationalite">Nationalité *</Label>
+                        <AutofillInput
+                          id="nationalite"
+                          value={formData.nationalite}
+                          onChange={(e) => updateField('nationalite', e.target.value)}
+                          placeholder="Suisse"
+                          autofilled={autofilledFields.has('nationalite')}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="caissePension">Caisse de pension actuelle</Label>
+                        <AutofillInput
+                          id="caissePension"
+                          value={formData.caissePension}
+                          onChange={(e) => updateField('caissePension', e.target.value)}
+                          placeholder="Ex: Fondation LPP de mon employeur"
+                          autofilled={autofilledFields.has('caissePension')}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Carte d'identité */}
+                    <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-sm flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-gray-600" />
+                        Pièce d'identité
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="carteIdentiteRecto">Carte d'identité (recto)</Label>
+                          <AutofillInput
+                            id="carteIdentiteRecto"
+                            value={formData.carteIdentiteRectoUrl}
+                            onChange={(e) => updateField('carteIdentiteRectoUrl', e.target.value)}
+                            placeholder="URL de l'image recto"
+                            autofilled={autofilledFields.has('carteIdentiteRectoUrl')}
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Téléchargement d'images à venir</p>
+                        </div>
+                        <div>
+                          <Label htmlFor="carteIdentiteVerso">Carte d'identité (verso)</Label>
+                          <AutofillInput
+                            id="carteIdentiteVerso"
+                            value={formData.carteIdentiteVersoUrl}
+                            onChange={(e) => updateField('carteIdentiteVersoUrl', e.target.value)}
+                            placeholder="URL de l'image verso"
+                            autofilled={autofilledFields.has('carteIdentiteVersoUrl')}
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Téléchargement d'images à venir</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -437,7 +509,7 @@ export default function RechercheLPPPage() {
                       <Phone className="w-5 h-5 text-blue-600" />
                       Coordonnées de contact
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <Label htmlFor="email">Email *</Label>
                         <AutofillInput
@@ -451,13 +523,30 @@ export default function RechercheLPPPage() {
                       </div>
                       <div>
                         <Label htmlFor="telephone">Téléphone *</Label>
-                        <Input
+                        <AutofillInput
                           id="telephone"
                           type="tel"
                           value={formData.telephone}
                           onChange={(e) => updateField('telephone', e.target.value)}
                           placeholder="+41 21 123 45 67"
+                          autofilled={autofilledFields.has('telephone')}
                         />
+                      </div>
+                      <div>
+                        <Label htmlFor="langue">Langue *</Label>
+                        <select
+                          id="langue"
+                          value={formData.langue}
+                          onChange={(e) => updateField('langue', e.target.value)}
+                          className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${autofilledFields.has('langue') ? 'border-green-300 bg-green-50' : ''}`}
+                        >
+                          <option value="">Sélectionnez...</option>
+                          <option value="francais">Français</option>
+                          <option value="allemand">Allemand</option>
+                          <option value="italien">Italien</option>
+                          <option value="romanche">Romanche</option>
+                          <option value="anglais">Anglais</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -701,24 +790,26 @@ export default function RechercheLPPPage() {
 
                   <div className="flex gap-4">
                     <Button
-                      onClick={() => {/* Télécharger PDF */}}
+                      onClick={() => setStep('review')}
                       variant="outline"
                       className="flex-1"
                     >
-                      <Download className="w-5 h-5 mr-2" />
-                      Télécharger PDF
+                      Retour
                     </Button>
                     <Button
-                      onClick={sendToAdministration}
+                      onClick={generateDocuments}
                       disabled={isGenerating}
                       className="flex-1 bg-blue-600 hover:bg-blue-700"
                     >
                       {isGenerating ? (
-                        <>Envoi en cours...</>
+                        <>
+                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          Génération en cours...
+                        </>
                       ) : (
                         <>
-                          <Send className="w-5 h-5 mr-2" />
-                          Envoyer à l'administration
+                          <FileText className="w-5 h-5 mr-2" />
+                          Générer les documents
                         </>
                       )}
                     </Button>
@@ -727,84 +818,29 @@ export default function RechercheLPPPage() {
               </Card>
             )}
 
-            {/* ÉTAPE 4: Confirmation d'envoi */}
-            {step === 'sent' && (
-              <Card className="border-green-200 bg-gradient-to-br from-green-50 to-blue-50">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-green-700 text-2xl">
-                    <CheckCircle2 className="w-8 h-8" />
-                    Procuration envoyée avec succès !
-                  </CardTitle>
-                  <CardDescription>
-                    Votre demande de recherche d'avoirs LPP a été transmise à la Centrale du 2ème pilier
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="bg-white rounded-lg p-6 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                        <Mail className="w-6 h-6 text-green-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">Email de confirmation envoyé</h3>
-                        <p className="text-sm text-gray-600">Un récapitulatif a été envoyé à {formData.email}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <Building2 className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">Transmission à la Centrale du 2ème pilier</h3>
-                        <p className="text-sm text-gray-600">Votre procuration a été transmise par email sécurisé</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                        <Calendar className="w-6 h-6 text-purple-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">Délai de traitement</h3>
-                        <p className="text-sm text-gray-600">5 à 10 jours ouvrables pour l'identification de vos avoirs</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <div className="text-sm text-blue-700">
-                        <p className="font-semibold mb-2">Que se passe-t-il maintenant ?</p>
-                        <ul className="space-y-1">
-                          <li>• Vous recevrez une notification par email dès que vos avoirs seront identifiés</li>
-                          <li>• Nous vous indiquerons le nom des institutions détenant vos fonds</li>
-                          <li>• Vous pourrez initier le rapatriement de vos avoirs directement depuis la plateforme</li>
-                          <li>• Notre équipe reste à votre disposition pour toute question</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <Button
-                      onClick={() => {/* Télécharger PDF */}}
-                      variant="outline"
-                      className="flex-1"
-                    >
-                      <Download className="w-5 h-5 mr-2" />
-                      Télécharger la procuration
-                    </Button>
-                    <Button
-                      onClick={resetForm}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700"
-                    >
-                      Nouvelle recherche
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* ÉTAPE 4: Documents générés */}
+            {step === 'documents' && (
+              <LPPDocumentGenerator
+                formData={{
+                  prenom: formData.prenom,
+                  nom: formData.nom,
+                  dateNaissance: formData.dateNaissance,
+                  numeroAVS: formData.numeroAVS,
+                  genre: formData.genre,
+                  nationalite: formData.nationalite,
+                  rue: formData.rue,
+                  npa: formData.npa,
+                  ville: formData.ville,
+                  email: formData.email,
+                  telephone: formData.telephone,
+                  langue: formData.langue,
+                  caissePension: formData.caissePension,
+                  anciennesAdresses: formData.anciennesAdresses,
+                  anciensEmployeurs: formData.anciensEmployeurs,
+                }}
+                onBack={() => setStep('signature')}
+                onDownload={downloadDocuments}
+              />
             )}
           </div>
         </div>

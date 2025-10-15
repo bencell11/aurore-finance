@@ -448,12 +448,22 @@ export default function DashboardPage() {
                           type="date"
                         />
                         <ProfileField
-                          label="Carte d'identité"
-                          value={editMode ? editedProfile.numero_carte_identite : userProfile.numero_carte_identite}
-                          filled={!!userProfile.numero_carte_identite}
+                          label="Carte d'identité (recto)"
+                          value={userProfile.carte_identite_recto_url ? 'Image chargée' : null}
+                          filled={!!userProfile.carte_identite_recto_url}
                           editMode={editMode}
-                          fieldName="numero_carte_identite"
+                          fieldName="carte_identite_recto_url"
                           onFieldChange={handleFieldChange}
+                          type="file-image"
+                        />
+                        <ProfileField
+                          label="Carte d'identité (verso)"
+                          value={userProfile.carte_identite_verso_url ? 'Image chargée' : null}
+                          filled={!!userProfile.carte_identite_verso_url}
+                          editMode={editMode}
+                          fieldName="carte_identite_verso_url"
+                          onFieldChange={handleFieldChange}
+                          type="file-image"
                         />
                         <ProfileField
                           label="Genre"
@@ -927,6 +937,17 @@ function ProfileField({
             <option value="ZG">Zoug (ZG)</option>
             <option value="ZH">Zurich (ZH)</option>
           </select>
+        ) : type === 'file-image' ? (
+          <div className="space-y-2">
+            <input
+              type="url"
+              value={editValue || ''}
+              onChange={(e) => onFieldChange(fieldName, e.target.value)}
+              className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              placeholder="URL de l'image ou upload à venir..."
+            />
+            <p className="text-xs text-gray-500">⚠️ Upload d'images: fonctionnalité à venir. Utilisez une URL pour le moment.</p>
+          </div>
         ) : (
           <input
             type={type}
