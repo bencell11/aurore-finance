@@ -82,7 +82,7 @@ Après avoir appliqué la migration, vous pouvez vérifier que tout fonctionne:
 
 ## 📊 Colonnes ajoutées
 
-La migration ajoute **14 nouvelles colonnes** à la table `user_profiles`:
+La migration ajoute **21 nouvelles colonnes** à la table `user_profiles`:
 
 | Colonne | Type | Description |
 |---------|------|-------------|
@@ -100,6 +100,13 @@ La migration ajoute **14 nouvelles colonnes** à la table `user_profiles`:
 | `numero_avs` | TEXT | Numéro AVS (756.XXXX.XXXX.XX) |
 | `caisse_pension` | TEXT | Nom caisse de pension LPP |
 | `activite_lucrative_suisse` | BOOLEAN | Activité lucrative en Suisse |
+| `nombre_enfants` | INTEGER | Nombre d'enfants à charge |
+| `profession` | TEXT | Profession / métier |
+| `employeur` | TEXT | Nom de l'employeur |
+| `revenu_annuel` | NUMERIC | Revenu annuel brut (CHF) |
+| `revenu_mensuel` | NUMERIC | Revenu mensuel brut (CHF) |
+| `statut_logement` | TEXT | proprietaire / locataire / loge_gratuitement / autre |
+| `loyer_mensuel` | NUMERIC | Loyer mensuel (CHF) |
 
 ## 🔒 Sécurité
 
@@ -150,7 +157,14 @@ DROP COLUMN IF EXISTS telephone,
 DROP COLUMN IF EXISTS langue,
 DROP COLUMN IF EXISTS numero_avs,
 DROP COLUMN IF EXISTS caisse_pension,
-DROP COLUMN IF EXISTS activite_lucrative_suisse;
+DROP COLUMN IF EXISTS activite_lucrative_suisse,
+DROP COLUMN IF EXISTS nombre_enfants,
+DROP COLUMN IF EXISTS profession,
+DROP COLUMN IF EXISTS employeur,
+DROP COLUMN IF EXISTS revenu_annuel,
+DROP COLUMN IF EXISTS revenu_mensuel,
+DROP COLUMN IF EXISTS statut_logement,
+DROP COLUMN IF EXISTS loyer_mensuel;
 ```
 
 ⚠️ **Attention**: Le rollback supprime définitivement les données de ces colonnes!

@@ -116,6 +116,62 @@ BEGIN
     ) THEN
         ALTER TABLE user_profiles ADD COLUMN activite_lucrative_suisse BOOLEAN DEFAULT NULL;
     END IF;
+
+    -- Nombre d'enfants
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'user_profiles' AND column_name = 'nombre_enfants'
+    ) THEN
+        ALTER TABLE user_profiles ADD COLUMN nombre_enfants INTEGER DEFAULT 0;
+    END IF;
+
+    -- Profession
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'user_profiles' AND column_name = 'profession'
+    ) THEN
+        ALTER TABLE user_profiles ADD COLUMN profession TEXT;
+    END IF;
+
+    -- Employeur
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'user_profiles' AND column_name = 'employeur'
+    ) THEN
+        ALTER TABLE user_profiles ADD COLUMN employeur TEXT;
+    END IF;
+
+    -- Revenu annuel
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'user_profiles' AND column_name = 'revenu_annuel'
+    ) THEN
+        ALTER TABLE user_profiles ADD COLUMN revenu_annuel NUMERIC(12,2);
+    END IF;
+
+    -- Revenu mensuel
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'user_profiles' AND column_name = 'revenu_mensuel'
+    ) THEN
+        ALTER TABLE user_profiles ADD COLUMN revenu_mensuel NUMERIC(12,2);
+    END IF;
+
+    -- Statut logement
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'user_profiles' AND column_name = 'statut_logement'
+    ) THEN
+        ALTER TABLE user_profiles ADD COLUMN statut_logement TEXT CHECK (statut_logement IN ('proprietaire', 'locataire', 'loge_gratuitement', 'autre'));
+    END IF;
+
+    -- Loyer mensuel
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'user_profiles' AND column_name = 'loyer_mensuel'
+    ) THEN
+        ALTER TABLE user_profiles ADD COLUMN loyer_mensuel NUMERIC(10,2);
+    END IF;
 END $$;
 
 -- Commentaires pour documentation
@@ -133,6 +189,13 @@ COMMENT ON COLUMN user_profiles.langue IS 'Langue principale: francais, allemand
 COMMENT ON COLUMN user_profiles.numero_avs IS 'Numéro AVS (format: 756.XXXX.XXXX.XX)';
 COMMENT ON COLUMN user_profiles.caisse_pension IS 'Nom de la caisse de pension (LPP)';
 COMMENT ON COLUMN user_profiles.activite_lucrative_suisse IS 'A une activité lucrative en Suisse (Oui/Non)';
+COMMENT ON COLUMN user_profiles.nombre_enfants IS 'Nombre d''enfants à charge';
+COMMENT ON COLUMN user_profiles.profession IS 'Profession / métier exercé';
+COMMENT ON COLUMN user_profiles.employeur IS 'Nom de l''employeur actuel';
+COMMENT ON COLUMN user_profiles.revenu_annuel IS 'Revenu annuel brut en CHF';
+COMMENT ON COLUMN user_profiles.revenu_mensuel IS 'Revenu mensuel brut en CHF';
+COMMENT ON COLUMN user_profiles.statut_logement IS 'Statut du logement: proprietaire, locataire, loge_gratuitement, autre';
+COMMENT ON COLUMN user_profiles.loyer_mensuel IS 'Montant du loyer mensuel en CHF (si locataire)';
 
 -- Afficher les colonnes de la table après migration
 SELECT column_name, data_type, is_nullable
