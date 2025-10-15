@@ -264,13 +264,32 @@ export default function TaxSimulator2025({ autoFill = false }: TaxSimulator2025P
                   Impôt fédéral
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                      <button type="button" className="focus:outline-none">
+                        <Info className="w-3 h-3 text-gray-400 hover:text-blue-600 transition-colors" />
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p className="text-xs font-semibold mb-1">Formule:</p>
-                      <p className="text-xs mb-2">Revenu imposable × {(rates.federal * 100).toFixed(1)}%</p>
-                      <p className="text-xs mb-1">= {formatCurrency(taxableIncome)} × {(rates.federal * 100).toFixed(1)}%</p>
-                      <p className="text-xs">= {formatCurrency(federalTax)}</p>
+                    <TooltipContent className="max-w-sm" side="top">
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-blue-600">💰 Impôt Fédéral Direct (IFD)</p>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Taux appliqué:</p>
+                          <p className="text-xs text-gray-700 mb-2">
+                            {(rates.federal * 100).toFixed(1)}% - Taux progressif fédéral Suisse 2025
+                            (barème simplifié pour revenu {formatCurrency(taxableIncome)})
+                          </p>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Calcul:</p>
+                          <p className="text-xs text-gray-700">Revenu imposable × Taux fédéral</p>
+                          <p className="text-xs text-gray-700">= {formatCurrency(taxableIncome)} × {(rates.federal * 100).toFixed(1)}%</p>
+                          <p className="text-xs font-bold text-red-600 mt-1">= {formatCurrency(federalTax)}</p>
+                        </div>
+                        <div className="bg-blue-50 rounded p-2 mt-2">
+                          <p className="text-xs text-blue-700">
+                            ℹ️ Le taux fédéral est identique dans toute la Suisse et varie selon le revenu (barème progressif)
+                          </p>
+                        </div>
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -281,14 +300,37 @@ export default function TaxSimulator2025({ autoFill = false }: TaxSimulator2025P
                   Impôt cantonal
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                      <button type="button" className="focus:outline-none">
+                        <Info className="w-3 h-3 text-gray-400 hover:text-orange-600 transition-colors" />
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p className="text-xs font-semibold mb-1">Formule:</p>
-                      <p className="text-xs mb-2">Revenu imposable × {(rates.cantonal * 100).toFixed(1)}%</p>
-                      <p className="text-xs mb-1">= {formatCurrency(taxableIncome)} × {(rates.cantonal * 100).toFixed(1)}%</p>
-                      <p className="text-xs">= {formatCurrency(cantonalTax)}</p>
-                      <p className="text-xs mt-2 text-gray-500">Taux pour {canton}</p>
+                    <TooltipContent className="max-w-sm" side="top">
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-orange-600">🏛️ Impôt Cantonal ({canton})</p>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Taux appliqué:</p>
+                          <p className="text-xs text-gray-700 mb-2">
+                            {(rates.cantonal * 100).toFixed(1)}% - Taux du canton {canton} (2025)
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            Chaque canton fixe son propre taux d'imposition.
+                            {canton === 'ZG' && ' Zoug a le taux le plus bas de Suisse!'}
+                            {canton === 'GE' && ' Genève a un taux élevé en raison de services publics étendus.'}
+                            {canton === 'VD' && ' Vaud applique un taux moyen-élevé.'}
+                          </p>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Calcul:</p>
+                          <p className="text-xs text-gray-700">Revenu imposable × Taux cantonal</p>
+                          <p className="text-xs text-gray-700">= {formatCurrency(taxableIncome)} × {(rates.cantonal * 100).toFixed(1)}%</p>
+                          <p className="text-xs font-bold text-orange-600 mt-1">= {formatCurrency(cantonalTax)}</p>
+                        </div>
+                        <div className="bg-orange-50 rounded p-2 mt-2">
+                          <p className="text-xs text-orange-700">
+                            💡 Le taux varie de 4.5% (ZG) à 9.0% (GE) selon les cantons
+                          </p>
+                        </div>
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -299,14 +341,35 @@ export default function TaxSimulator2025({ autoFill = false }: TaxSimulator2025P
                   Impôt communal
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                      <button type="button" className="focus:outline-none">
+                        <Info className="w-3 h-3 text-gray-400 hover:text-purple-600 transition-colors" />
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p className="text-xs font-semibold mb-1">Formule:</p>
-                      <p className="text-xs mb-2">Revenu imposable × {(rates.communal * 100).toFixed(1)}%</p>
-                      <p className="text-xs mb-1">= {formatCurrency(taxableIncome)} × {(rates.communal * 100).toFixed(1)}%</p>
-                      <p className="text-xs">= {formatCurrency(communalTax)}</p>
-                      <p className="text-xs mt-2 text-gray-500">Moyenne commune {canton}</p>
+                    <TooltipContent className="max-w-sm" side="top">
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-purple-600">🏘️ Impôt Communal</p>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Taux appliqué:</p>
+                          <p className="text-xs text-gray-700 mb-2">
+                            {(rates.communal * 100).toFixed(1)}% - Moyenne des communes du canton {canton}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            L'impôt communal varie selon votre commune de résidence.
+                            Ce taux est une moyenne cantonale (certaines communes peuvent être plus/moins chères).
+                          </p>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Calcul:</p>
+                          <p className="text-xs text-gray-700">Revenu imposable × Taux communal</p>
+                          <p className="text-xs text-gray-700">= {formatCurrency(taxableIncome)} × {(rates.communal * 100).toFixed(1)}%</p>
+                          <p className="text-xs font-bold text-purple-600 mt-1">= {formatCurrency(communalTax)}</p>
+                        </div>
+                        <div className="bg-purple-50 rounded p-2 mt-2">
+                          <p className="text-xs text-purple-700">
+                            📍 Le taux réel dépend de votre commune spécifique (peut varier de ±1-2%)
+                          </p>
+                        </div>
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -317,13 +380,34 @@ export default function TaxSimulator2025({ autoFill = false }: TaxSimulator2025P
                   Total impôts
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                      <button type="button" className="focus:outline-none">
+                        <Info className="w-3 h-3 text-gray-400 hover:text-blue-600 transition-colors" />
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p className="text-xs font-semibold mb-1">Formule:</p>
-                      <p className="text-xs mb-2">Fédéral + Cantonal + Communal</p>
-                      <p className="text-xs mb-1">= {formatCurrency(federalTax)} + {formatCurrency(cantonalTax)} + {formatCurrency(communalTax)}</p>
-                      <p className="text-xs">= {formatCurrency(totalTax)}</p>
+                    <TooltipContent className="max-w-sm" side="top">
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-blue-600">💳 Total Impôts 2025</p>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Composition:</p>
+                          <p className="text-xs text-gray-700">Somme des 3 niveaux d'imposition suisses</p>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Calcul:</p>
+                          <div className="space-y-1">
+                            <p className="text-xs text-gray-700">Impôt fédéral: {formatCurrency(federalTax)}</p>
+                            <p className="text-xs text-gray-700">+ Impôt cantonal: {formatCurrency(cantonalTax)}</p>
+                            <p className="text-xs text-gray-700">+ Impôt communal: {formatCurrency(communalTax)}</p>
+                            <div className="border-t border-blue-200 mt-1 pt-1">
+                              <p className="text-xs font-bold text-blue-600">= Total: {formatCurrency(totalTax)}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="bg-blue-50 rounded p-2 mt-2">
+                          <p className="text-xs text-blue-700">
+                            🇨🇭 Système fiscal suisse à 3 niveaux (Confédération, Canton, Commune)
+                          </p>
+                        </div>
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -337,14 +421,35 @@ export default function TaxSimulator2025({ autoFill = false }: TaxSimulator2025P
                   Revenu net après impôts
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                      <button type="button" className="focus:outline-none">
+                        <Info className="w-3 h-3 text-gray-400 hover:text-green-600 transition-colors" />
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p className="text-xs font-semibold mb-1">Formule:</p>
-                      <p className="text-xs mb-2">Revenu brut - Total impôts</p>
-                      <p className="text-xs mb-1">= {formatCurrency(income)} - {formatCurrency(totalTax)}</p>
-                      <p className="text-xs">= {formatCurrency(netIncome)}</p>
-                      <p className="text-xs mt-2 text-gray-500">Ce qui vous reste réellement</p>
+                    <TooltipContent className="max-w-sm" side="top">
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-green-600">💰 Revenu Net Disponible</p>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Ce qui vous reste:</p>
+                          <p className="text-xs text-gray-700 mb-2">
+                            Votre revenu après déduction de tous les impôts (fédéral, cantonal, communal)
+                          </p>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Calcul:</p>
+                          <div className="space-y-1">
+                            <p className="text-xs text-gray-700">Revenu brut annuel: {formatCurrency(income)}</p>
+                            <p className="text-xs text-gray-700">- Total impôts: {formatCurrency(totalTax)}</p>
+                            <div className="border-t border-green-200 mt-1 pt-1">
+                              <p className="text-xs font-bold text-green-600">= Revenu net: {formatCurrency(netIncome)}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="bg-green-50 rounded p-2 mt-2">
+                          <p className="text-xs text-green-700">
+                            ✅ C'est votre pouvoir d'achat réel après impôts (sans AVS/LPP/assurances)
+                          </p>
+                        </div>
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -355,14 +460,38 @@ export default function TaxSimulator2025({ autoFill = false }: TaxSimulator2025P
                   Taux d'imposition effectif
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                      <button type="button" className="focus:outline-none">
+                        <Info className="w-3 h-3 text-gray-400 hover:text-blue-600 transition-colors" />
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p className="text-xs font-semibold mb-1">Formule:</p>
-                      <p className="text-xs mb-2">(Total impôts / Revenu brut) × 100</p>
-                      <p className="text-xs mb-1">= ({formatCurrency(totalTax)} / {formatCurrency(income)}) × 100</p>
-                      <p className="text-xs">= {effectiveRate.toFixed(1)}%</p>
-                      <p className="text-xs mt-2 text-gray-500">Votre charge fiscale réelle sur le revenu total</p>
+                    <TooltipContent className="max-w-sm" side="top">
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-blue-600">📊 Taux d'Imposition Effectif</p>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Définition:</p>
+                          <p className="text-xs text-gray-700 mb-2">
+                            Pourcentage réel de votre revenu brut qui part en impôts (tous niveaux confondus)
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            Différent du taux marginal car il inclut les déductions et le barème progressif.
+                          </p>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2">
+                          <p className="text-xs font-semibold mb-1">Calcul:</p>
+                          <div className="space-y-1">
+                            <p className="text-xs text-gray-700">(Total impôts ÷ Revenu brut) × 100</p>
+                            <p className="text-xs text-gray-700">= ({formatCurrency(totalTax)} ÷ {formatCurrency(income)}) × 100</p>
+                            <div className="border-t border-blue-200 mt-1 pt-1">
+                              <p className="text-xs font-bold text-blue-600">= {effectiveRate.toFixed(1)}%</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="bg-blue-50 rounded p-2 mt-2">
+                          <p className="text-xs text-blue-700">
+                            📈 Indicateur clé pour comparer différents scénarios fiscaux
+                          </p>
+                        </div>
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </div>
