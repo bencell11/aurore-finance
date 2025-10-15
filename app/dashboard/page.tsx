@@ -11,7 +11,11 @@ import {
   DollarSign,
   Target,
   Bell,
-  Loader2
+  Loader2,
+  Plus,
+  List,
+  BellRing,
+  Settings
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { UserProfileSupabaseService } from '@/lib/services/user-profile-supabase.service';
@@ -35,7 +39,6 @@ export default function DashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<any>(null);
-  const [taxCalculating, setTaxCalculating] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [showSensitive, setShowSensitive] = useState(false);
   const [profileExpanded, setProfileExpanded] = useState(true);
@@ -228,6 +231,153 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Actions rapides - Objectifs et Notifications */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Card Objectifs */}
+            <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="w-5 h-5 text-blue-600" />
+                  Mes Objectifs Financiers
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Target className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Objectifs actifs</p>
+                      <p className="text-2xl font-bold text-blue-600">
+                        {profileData?.goals?.filter((g: any) => g.statut === 'en_cours').length || 0}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      onClick={() => window.location.href = '/objectifs?action=create'}
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Ajouter
+                    </Button>
+                    <Button
+                      onClick={() => window.location.href = '/objectifs'}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <List className="w-4 h-4 mr-1" />
+                      Consulter
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Aperçu des objectifs récents */}
+                {profileData?.goals && profileData.goals.length > 0 ? (
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-gray-600 uppercase">Objectifs récents</p>
+                    {profileData.goals.slice(0, 2).map((goal: any) => (
+                      <div
+                        key={goal.id}
+                        className="p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+                        onClick={() => window.location.href = `/objectifs?id=${goal.id}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900">{goal.nom}</p>
+                            <p className="text-xs text-gray-500 capitalize">{goal.type?.replace('_', ' ')}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-bold text-blue-600">
+                              {goal.montant_cible ? formatCurrency(goal.montant_cible) : 'N/A'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center p-4 bg-white rounded-lg border-2 border-dashed border-gray-300">
+                    <Target className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-600">Aucun objectif pour le moment</p>
+                    <p className="text-xs text-gray-500 mt-1">Créez votre premier objectif financier</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Card Notifications */}
+            <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-orange-600" />
+                  Notifications & Alertes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                      <BellRing className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Notifications actives</p>
+                      <p className="text-2xl font-bold text-orange-600">0</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      onClick={() => window.location.href = '/notifications?action=create'}
+                      size="sm"
+                      className="bg-orange-600 hover:bg-orange-700"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Créer
+                    </Button>
+                    <Button
+                      onClick={() => window.location.href = '/notifications'}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <Settings className="w-4 h-4 mr-1" />
+                      Gérer
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Aperçu des notifications */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-gray-600 uppercase">Notifications récentes</p>
+                  <div className="text-center p-6 bg-white rounded-lg border-2 border-dashed border-gray-300">
+                    <Bell className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-600">Aucune notification</p>
+                    <p className="text-xs text-gray-500 mt-1">Toutes vos alertes apparaîtront ici</p>
+                  </div>
+                </div>
+
+                {/* Statistiques supplémentaires */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-white rounded-lg text-center">
+                    <DollarSign className="w-5 h-5 text-green-600 mx-auto mb-1" />
+                    <p className="text-xs text-gray-600">Économies</p>
+                    <p className="text-lg font-bold text-gray-900">
+                      {hasFinancialData ? formatCurrency(profileData.financial.patrimoine_liquide || 0) : 'N/A'}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg text-center">
+                    <TrendingUp className="w-5 h-5 text-purple-600 mx-auto mb-1" />
+                    <p className="text-xs text-gray-600">Revenu mensuel</p>
+                    <p className="text-lg font-bold text-gray-900">
+                      {hasFinancialData ? formatCurrency((profileData.financial.revenu_brut_annuel || 0) / 12) : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* KPIs principaux */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -611,16 +761,6 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {hasFinancialData && taxCalculating && (
-            <Card className="mb-6 border-blue-200">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-center gap-3 text-blue-600">
-                  <Loader2 className="animate-spin w-5 h-5" />
-                  <span>Calcul de vos impôts en cours...</span>
-                </div>
-              </CardContent>
-            </Card>
-          )}
 
           {/* Section informative */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
