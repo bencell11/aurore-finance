@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import UserMenu from '@/components/auth/UserMenu';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -28,8 +28,10 @@ import {
   Phone,
   Mail,
   Shield,
-  AlertCircle
+  Loader2,
+  Sparkles
 } from 'lucide-react';
+import { UserProfileSupabaseService } from '@/lib/services/user-profile-supabase.service';
 
 interface LPPSearchForm {
   // Informations personnelles
@@ -80,9 +82,62 @@ export default function RechercheLPPPage() {
   const [step, setStep] = useState<'form' | 'review' | 'signature' | 'sent'>('form');
   const [signatureData, setSignatureData] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [autofilledFields, setAutofilledFields] = useState<Set<string>>(new Set());
+
+  // Charger le profil utilisateur au montage et auto-remplir le formulaire
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      setIsLoadingProfile(true);
+      console.log('🔄 Chargement du profil utilisateur pour autocomplétion LPP...');
+
+      // Mapping entre les champs du formulaire et du profil Supabase
+      const fieldMapping = {
+        prenom: 'prenom' as const,
+        nom: 'nom' as const,
+        dateNaissance: 'date_naissance' as const,
+        rue: 'adresse' as const,
+        npa: 'npa' as const,
+        ville: 'ville' as const,
+        email: 'email' as const,
+        // Note: telephone n'est pas dans UserProfile, on ne peut pas l'auto-remplir
+      };
+
+      const autofilledData = await UserProfileSupabaseService.autofillForm(fieldMapping);
+
+      if (Object.keys(autofilledData).length > 0) {
+        console.log('✅ Auto-remplissage réussi:', Object.keys(autofilledData));
+
+        // Mettre à jour le formulaire avec les données
+        setFormData(prev => ({
+          ...prev,
+          ...autofilledData
+        }));
+
+        // Marquer les champs comme auto-remplis
+        setAutofilledFields(new Set(Object.keys(autofilledData)));
+      } else {
+        console.log('ℹ️ Aucune donnée à auto-remplir');
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors du chargement du profil:', error);
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
 
   const updateField = (field: keyof LPPSearchForm, value: string | boolean) => {
     setFormData({ ...formData, [field]: value });
+    // Si l'utilisateur modifie un champ auto-rempli, le retirer de la liste
+    if (autofilledFields.has(field as string)) {
+      const newSet = new Set(autofilledFields);
+      newSet.delete(field as string);
+      setAutofilledFields(newSet);
+    }
   };
 
   const isFormValid = () => {
@@ -241,6 +296,32 @@ export default function RechercheLPPPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Message d'autocomplétion */}
+                  {isLoadingProfile ? (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-center gap-3">
+                        <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                        <p className="text-sm text-blue-700">
+                          Chargement de vos informations depuis votre profil...
+                        </p>
+                      </div>
+                    </div>
+                  ) : autofilledFields.size > 0 && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <Sparkles className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium text-green-900 mb-1">
+                            Formulaire pré-rempli automatiquement
+                          </p>
+                          <p className="text-sm text-green-700">
+                            {autofilledFields.size} champ{autofilledFields.size > 1 ? 's ont été remplis' : ' a été rempli'} automatiquement depuis votre profil dashboard.
+                            Vérifiez et complétez les informations manquantes.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {/* Informations personnelles */}
                   <div className="space-y-4">
                     <h3 className="font-semibold text-lg flex items-center gap-2">
@@ -250,20 +331,22 @@ export default function RechercheLPPPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="prenom">Prénom *</Label>
-                        <Input
+                        <AutofillInput
                           id="prenom"
                           value={formData.prenom}
                           onChange={(e) => updateField('prenom', e.target.value)}
                           placeholder="Jean"
+                          autofilled={autofilledFields.has('prenom')}
                         />
                       </div>
                       <div>
                         <Label htmlFor="nom">Nom *</Label>
-                        <Input
+                        <AutofillInput
                           id="nom"
                           value={formData.nom}
                           onChange={(e) => updateField('nom', e.target.value)}
                           placeholder="Dupont"
+                          autofilled={autofilledFields.has('nom')}
                         />
                       </div>
                       <div>
@@ -278,11 +361,12 @@ export default function RechercheLPPPage() {
                             </TooltipContent>
                           </Tooltip>
                         </Label>
-                        <Input
+                        <AutofillInput
                           id="dateNaissance"
                           type="date"
                           value={formData.dateNaissance}
                           onChange={(e) => updateField('dateNaissance', e.target.value)}
+                          autofilled={autofilledFields.has('dateNaissance')}
                         />
                       </div>
                       <div>
@@ -316,29 +400,32 @@ export default function RechercheLPPPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="md:col-span-2">
                         <Label htmlFor="rue">Rue et numéro *</Label>
-                        <Input
+                        <AutofillInput
                           id="rue"
                           value={formData.rue}
                           onChange={(e) => updateField('rue', e.target.value)}
                           placeholder="Rue de la Gare 15"
+                          autofilled={autofilledFields.has('rue')}
                         />
                       </div>
                       <div>
                         <Label htmlFor="npa">NPA *</Label>
-                        <Input
+                        <AutofillInput
                           id="npa"
                           value={formData.npa}
                           onChange={(e) => updateField('npa', e.target.value)}
                           placeholder="1000"
+                          autofilled={autofilledFields.has('npa')}
                         />
                       </div>
                       <div className="md:col-span-3">
                         <Label htmlFor="ville">Ville *</Label>
-                        <Input
+                        <AutofillInput
                           id="ville"
                           value={formData.ville}
                           onChange={(e) => updateField('ville', e.target.value)}
                           placeholder="Lausanne"
+                          autofilled={autofilledFields.has('ville')}
                         />
                       </div>
                     </div>
@@ -353,12 +440,13 @@ export default function RechercheLPPPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="email">Email *</Label>
-                        <Input
+                        <AutofillInput
                           id="email"
                           type="email"
                           value={formData.email}
                           onChange={(e) => updateField('email', e.target.value)}
                           placeholder="jean.dupont@example.com"
+                          autofilled={autofilledFields.has('email')}
                         />
                       </div>
                       <div>
@@ -722,5 +810,47 @@ export default function RechercheLPPPage() {
         </div>
       </TooltipProvider>
     </ProtectedRoute>
+  );
+}
+
+// Composant helper pour les champs avec indicateur d'autocomplétion
+function AutofillInput({
+  id,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+  autofilled,
+}: {
+  id: string;
+  type?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  autofilled?: boolean;
+}) {
+  return (
+    <div className="relative">
+      <Input
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={autofilled ? 'border-green-300 bg-green-50 pr-10' : ''}
+      />
+      {autofilled && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <Sparkles className="w-4 h-4 text-green-600" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">Auto-rempli depuis votre profil</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
+    </div>
   );
 }
