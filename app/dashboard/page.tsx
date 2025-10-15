@@ -448,6 +448,31 @@ export default function DashboardPage() {
                           type="date"
                         />
                         <ProfileField
+                          label="Carte d'identité"
+                          value={editMode ? editedProfile.numero_carte_identite : userProfile.numero_carte_identite}
+                          filled={!!userProfile.numero_carte_identite}
+                          editMode={editMode}
+                          fieldName="numero_carte_identite"
+                          onFieldChange={handleFieldChange}
+                        />
+                        <ProfileField
+                          label="Genre"
+                          value={editMode ? editedProfile.genre : userProfile.genre}
+                          filled={!!userProfile.genre}
+                          editMode={editMode}
+                          fieldName="genre"
+                          onFieldChange={handleFieldChange}
+                          type="select-genre"
+                        />
+                        <ProfileField
+                          label="Nationalité"
+                          value={editMode ? editedProfile.nationalite : userProfile.nationalite}
+                          filled={!!userProfile.nationalite}
+                          editMode={editMode}
+                          fieldName="nationalite"
+                          onFieldChange={handleFieldChange}
+                        />
+                        <ProfileField
                           label="Situation familiale"
                           value={editMode ? editedProfile.situation_familiale : userProfile.situation_familiale}
                           filled={!!userProfile.situation_familiale}
@@ -468,11 +493,11 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    {/* Localisation & Professionnel */}
+                    {/* Localisation & Contact */}
                     <div className="bg-white rounded-lg p-4 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
                         <MapPin className="w-5 h-5 text-green-600" />
-                        <h4 className="font-semibold text-gray-900">Localisation</h4>
+                        <h4 className="font-semibold text-gray-900">Localisation & Contact</h4>
                       </div>
                       <div className="space-y-2 mb-4">
                         <ProfileField
@@ -508,6 +533,24 @@ export default function DashboardPage() {
                           onFieldChange={handleFieldChange}
                           type="select-canton"
                         />
+                        <ProfileField
+                          label="Téléphone"
+                          value={editMode ? editedProfile.telephone : userProfile.telephone}
+                          filled={!!userProfile.telephone}
+                          editMode={editMode}
+                          fieldName="telephone"
+                          onFieldChange={handleFieldChange}
+                          type="tel"
+                        />
+                        <ProfileField
+                          label="Langue"
+                          value={editMode ? editedProfile.langue : userProfile.langue}
+                          filled={!!userProfile.langue}
+                          editMode={editMode}
+                          fieldName="langue"
+                          onFieldChange={handleFieldChange}
+                          type="select-langue"
+                        />
                       </div>
                       <div className="flex items-center gap-2 mb-2 mt-4 pt-3 border-t border-gray-200">
                         <Briefcase className="w-5 h-5 text-purple-600" />
@@ -538,6 +581,39 @@ export default function DashboardPage() {
                           editMode={editMode}
                           fieldName="employeur"
                           onFieldChange={handleFieldChange}
+                        />
+                        <ProfileField
+                          label="Numéro AVS"
+                          value={editMode ? editedProfile.numero_avs : userProfile.numero_avs}
+                          filled={!!userProfile.numero_avs}
+                          editMode={editMode}
+                          fieldName="numero_avs"
+                          onFieldChange={handleFieldChange}
+                        />
+                        <ProfileField
+                          label="Caisse de pension"
+                          value={editMode ? editedProfile.caisse_pension : userProfile.caisse_pension}
+                          filled={!!userProfile.caisse_pension}
+                          editMode={editMode}
+                          fieldName="caisse_pension"
+                          onFieldChange={handleFieldChange}
+                        />
+                        <ProfileField
+                          label="Activité lucrative en Suisse"
+                          value={
+                            editMode
+                              ? editedProfile.activite_lucrative_suisse !== undefined
+                                ? editedProfile.activite_lucrative_suisse ? 'Oui' : 'Non'
+                                : ''
+                              : userProfile.activite_lucrative_suisse !== undefined
+                              ? userProfile.activite_lucrative_suisse ? 'Oui' : 'Non'
+                              : null
+                          }
+                          filled={userProfile.activite_lucrative_suisse !== undefined}
+                          editMode={editMode}
+                          fieldName="activite_lucrative_suisse"
+                          onFieldChange={handleFieldChange}
+                          type="select-boolean"
                         />
                       </div>
                     </div>
@@ -782,6 +858,40 @@ function ProfileField({
             <option value="locataire">Locataire</option>
             <option value="proprietaire">Propriétaire</option>
             <option value="heberge">Hébergé</option>
+          </select>
+        ) : type === 'select-genre' ? (
+          <select
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, e.target.value)}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Sélectionner...</option>
+            <option value="homme">Homme</option>
+            <option value="femme">Femme</option>
+            <option value="autre">Autre</option>
+          </select>
+        ) : type === 'select-langue' ? (
+          <select
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, e.target.value)}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Sélectionner...</option>
+            <option value="francais">Français</option>
+            <option value="allemand">Allemand</option>
+            <option value="italien">Italien</option>
+            <option value="romanche">Romanche</option>
+            <option value="anglais">Anglais</option>
+          </select>
+        ) : type === 'select-boolean' ? (
+          <select
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, e.target.value === 'true')}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Sélectionner...</option>
+            <option value="true">Oui</option>
+            <option value="false">Non</option>
           </select>
         ) : type === 'select-canton' ? (
           <select

@@ -17,6 +17,9 @@ export interface UserProfile {
   nom?: string;
   prenom?: string;
   date_naissance?: string;
+  numero_carte_identite?: string;
+  genre?: 'homme' | 'femme' | 'autre';
+  nationalite?: string;
 
   // Informations fiscales
   revenu_annuel?: number;
@@ -24,16 +27,21 @@ export interface UserProfile {
   situation_familiale?: 'celibataire' | 'marie' | 'divorce' | 'veuf' | 'concubinage';
   nombre_enfants?: number;
 
-  // Localisation
+  // Localisation & Contact
   adresse?: string;
   npa?: string;
   ville?: string;
   canton?: string;
+  telephone?: string;
+  langue?: 'francais' | 'allemand' | 'italien' | 'romanche' | 'anglais';
 
   // Informations professionnelles
   statut_professionnel?: 'salarie' | 'independant' | 'retraite' | 'etudiant' | 'sans_emploi';
   employeur?: string;
   profession?: string;
+  numero_avs?: string;
+  caisse_pension?: string;
+  activite_lucrative_suisse?: boolean;
 
   // Informations bancaires
   iban?: string;
