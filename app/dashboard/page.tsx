@@ -11,19 +11,11 @@ import {
   DollarSign,
   Target,
   Bell,
-  Loader2,
-  Receipt,
-  Percent,
-  Info
+  Loader2
 } from 'lucide-react';
-import {
-  TooltipProvider,
-} from '@/components/ui/tooltip';
-import { MobileFriendlyTooltip } from '@/components/ui/mobile-friendly-tooltip';
 import { createClient } from '@/lib/supabase/client';
-import { TaxCalculationService } from '@/lib/services/tax-calculation.service';
-import type { TaxCalculationResult } from '@/lib/utils/swiss-tax-formulas';
 import { UserProfileSupabaseService } from '@/lib/services/user-profile-supabase.service';
+import TaxSimulator2025 from '@/components/TaxSimulator2025';
 import {
   User,
   MapPin,
@@ -43,7 +35,6 @@ export default function DashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<any>(null);
-  const [taxCalculation, setTaxCalculation] = useState<TaxCalculationResult | null>(null);
   const [taxCalculating, setTaxCalculating] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [showSensitive, setShowSensitive] = useState(false);
@@ -102,63 +93,11 @@ export default function DashboardPage() {
       setUserProfile(enrichedProfile);
       console.log('📋 Profil enrichi chargé:', enrichedProfile);
 
-      // Calculer les impôts si on a les données nécessaires
-      if (profile && financial) {
-        calculateTaxes(profile, financial);
-      }
+      // Les impôts sont maintenant calculés par le composant TaxSimulator2025
     } catch (error) {
       console.error('❌ Erreur lors du chargement du dashboard:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const calculateTaxes = async (profile: any, financial: any) => {
-    if (!profile?.canton || !financial?.revenu_brut_annuel) {
-      console.log('⚠️ Données insuffisantes pour calcul fiscal');
-      return;
-    }
-
-    try {
-      setTaxCalculating(true);
-      console.log('💰 Dashboard - Calcul fiscal démarré:', {
-        salaireBrut: financial.revenu_brut_annuel,
-        canton: profile.canton,
-        situation: profile.situation_familiale
-      });
-
-      const taxResult = TaxCalculationService.calculateTax({
-        salaireBrut: financial.revenu_brut_annuel || 0,
-        autresRevenus: financial.autres_revenus || 0,
-        canton: profile.canton || 'VD',
-        situationFamiliale: profile.situation_familiale || 'celibataire',
-        nombreEnfants: profile.nombre_enfants || 0,
-        fortuneBrute: financial.patrimoine_total || 0,
-        dettes: financial.dettes_totales || 0,
-        deductions: {
-          pilier3a: financial.pilier_3a || 0,
-          primes: financial.charges_assurances || 0,
-          fraisPro: financial.frais_professionnels || 0,
-          gardeEnfants: financial.frais_garde || 0,
-          formation: financial.frais_formation || 0,
-          dons: financial.dons || 0,
-          interetsHypothecaires: financial.interets_hypoth || 0,
-          pensionAlimentaire: financial.pension_alim || 0,
-          fraisMedicaux: financial.frais_medicaux || 0,
-          autres: 0,
-        },
-      });
-
-      console.log('✅ Dashboard - Résultats fiscaux:', {
-        revenuImposable: taxResult.revenuImposable,
-        totalImpots: taxResult.impots.total,
-        tauxEffectif: taxResult.taux.effectif
-      });
-      setTaxCalculation(taxResult);
-    } catch (error) {
-      console.error('❌ Dashboard - Erreur calcul fiscal:', error);
-    } finally {
-      setTaxCalculating(false);
     }
   };
 
@@ -464,6 +403,7 @@ export default function DashboardPage() {
                               ? new Date(userProfile.date_naissance).toLocaleDateString('fr-CH')
                               : null
                           }
+                          rawValue={editMode ? editedProfile.date_naissance : userProfile.date_naissance}
                           filled={!!userProfile.date_naissance}
                           editMode={editMode}
                           fieldName="date_naissance"
@@ -664,301 +604,11 @@ export default function DashboardPage() {
             </Card>
           )}
 
-          {/* Calcul fiscal */}
-          {hasFinancialData && taxCalculation && (
-            <TooltipProvider>
-              <Card className="mb-6 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Receipt className="w-5 h-5 text-blue-600" />
-                    Impôts estimés 2025
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Colonne gauche : Détails des impôts */}
-                    <div className="space-y-3">
-                      <div className="bg-white rounded-lg p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-2">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-medium text-gray-600">Impôt fédéral direct (IFD)</span>
-                            <MobileFriendlyTooltip
-                              content={
-                                <>
-                                  <p className="text-xs font-semibold mb-1">Formule IFD (Art. 36 LIFD)</p>
-                                  <p className="text-xs">Barème progressif fédéral identique pour tous les cantons.</p>
-                                  <p className="text-xs mt-1">Tranche: {taxCalculation.details.trancheFederale}</p>
-                                </>
-                              }
-                            >
-                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                                <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
-                              </button>
-                            </MobileFriendlyTooltip>
-                          </div>
-                          <span className="font-semibold text-gray-900">
-                            {formatCurrency(taxCalculation.impots.federal)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center mb-2">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-medium text-gray-600">Impôt cantonal</span>
-                            <MobileFriendlyTooltip
-                              content={
-                                <>
-                                  <p className="text-xs font-semibold mb-1">Formule cantonale</p>
-                                  <p className="text-xs">Impôt simple × Coefficient cantonal (100%)</p>
-                                  <p className="text-xs mt-1">Barème: {taxCalculation.details.baremeApplique}</p>
-                                </>
-                              }
-                            >
-                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                                <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
-                              </button>
-                            </MobileFriendlyTooltip>
-                          </div>
-                          <span className="font-semibold text-gray-900">
-                            {formatCurrency(taxCalculation.impots.cantonal)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center mb-2">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-medium text-gray-600">Impôt communal</span>
-                            <MobileFriendlyTooltip
-                              content={
-                                <>
-                                  <p className="text-xs font-semibold mb-1">Formule communale</p>
-                                  <p className="text-xs">Impôt simple × Coefficient communal</p>
-                                  <p className="text-xs mt-1">Coefficient: {taxCalculation.details.coefficientCommunal}%</p>
-                                </>
-                              }
-                            >
-                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                                <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
-                              </button>
-                            </MobileFriendlyTooltip>
-                          </div>
-                          <span className="font-semibold text-gray-900">
-                            {formatCurrency(taxCalculation.impots.communal)}
-                          </span>
-                        </div>
-                        {taxCalculation.impots.fortune > 0 && (
-                          <div className="flex justify-between items-center mb-2">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-sm font-medium text-gray-600">Impôt sur la fortune</span>
-                              <MobileFriendlyTooltip
-                                content={
-                                  <>
-                                    <p className="text-xs font-semibold mb-1">Impôt sur la fortune</p>
-                                    <p className="text-xs">Taux en pour mille (‰) appliqué sur fortune nette</p>
-                                    <p className="text-xs mt-1">Fortune imposable: {formatCurrency(taxCalculation.fortuneImposable)}</p>
-                                  </>
-                                }
-                              >
-                                <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                                  <Info className="w-5 h-5 md:w-3.5 md:h-3.5 text-blue-500 cursor-pointer" />
-                                </button>
-                              </MobileFriendlyTooltip>
-                            </div>
-                            <span className="font-semibold text-gray-900">
-                              {formatCurrency(taxCalculation.impots.fortune)}
-                            </span>
-                          </div>
-                        )}
-                        <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                          <span className="text-base font-bold text-gray-900">Total impôts</span>
-                          <span className="text-xl font-bold text-blue-600">
-                            {formatCurrency(taxCalculation.impots.total)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                  {/* Colonne droite : Taux et informations */}
-                  <div className="space-y-3">
-                    <div className="bg-white rounded-lg p-4 shadow-sm">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Percent className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm font-semibold text-gray-700">Taux d'imposition</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3 mb-3">
-                        <div className="bg-blue-50 rounded p-3">
-                          <div className="flex items-center gap-1 mb-1">
-                            <p className="text-xs text-gray-600">Taux effectif</p>
-                            <MobileFriendlyTooltip
-                              content={
-                                <>
-                                  <p className="text-xs font-semibold mb-1">Taux effectif</p>
-                                  <p className="text-xs">= (Total impôts / Revenu brut) × 100</p>
-                                  <p className="text-xs mt-1">C'est le pourcentage réel d'impôt payé sur votre revenu total.</p>
-                                </>
-                              }
-                            >
-                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                                <Info className="w-5 h-5 md:w-3 md:h-3 text-blue-500 cursor-pointer" />
-                              </button>
-                            </MobileFriendlyTooltip>
-                          </div>
-                          <p className="text-2xl font-bold text-blue-600">
-                            {taxCalculation.taux.effectif.toFixed(2)}%
-                          </p>
-                        </div>
-                        <div className="bg-purple-50 rounded p-3">
-                          <div className="flex items-center gap-1 mb-1">
-                            <p className="text-xs text-gray-600">Taux marginal</p>
-                            <MobileFriendlyTooltip
-                              content={
-                                <>
-                                  <p className="text-xs font-semibold mb-1">Taux marginal</p>
-                                  <p className="text-xs">Taux appliqué sur le dernier franc gagné.</p>
-                                  <p className="text-xs mt-1">Important pour évaluer l'impact fiscal d'une augmentation de salaire.</p>
-                                </>
-                              }
-                            >
-                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                                <Info className="w-5 h-5 md:w-3 md:h-3 text-purple-500 cursor-pointer" />
-                              </button>
-                            </MobileFriendlyTooltip>
-                          </div>
-                          <p className="text-2xl font-bold text-purple-600">
-                            {taxCalculation.taux.marginal.toFixed(2)}%
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-600 space-y-1">
-                        <div className="flex items-center gap-1">
-                          <p>• Revenu brut: {formatCurrency(taxCalculation.revenuBrut)}</p>
-                          <MobileFriendlyTooltip
-                            content={
-                              <>
-                                <p className="text-xs">Salaire brut + Autres revenus (avant déductions)</p>
-                              </>
-                            }
-                          >
-                            <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                              <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
-                            </button>
-                          </MobileFriendlyTooltip>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <p>• Revenu net: {formatCurrency(taxCalculation.revenuNet)}</p>
-                          <MobileFriendlyTooltip
-                            content={
-                              <>
-                                <p className="text-xs">= Revenu brut - Cotisations sociales (AVS/AC/LPP/LAA)</p>
-                                <p className="text-xs mt-1">Cotisations: {formatCurrency(taxCalculation.cotisationsSociales)}</p>
-                              </>
-                            }
-                          >
-                            <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                              <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
-                            </button>
-                          </MobileFriendlyTooltip>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <p>• Revenu imposable: {formatCurrency(taxCalculation.revenuImposable)}</p>
-                          <MobileFriendlyTooltip
-                            content={
-                              <>
-                                <p className="text-xs">= Revenu net - Déductions fiscales</p>
-                                <p className="text-xs mt-1">Déductions totales: {formatCurrency(taxCalculation.totalDeductions)}</p>
-                              </>
-                            }
-                          >
-                            <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                              <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
-                            </button>
-                          </MobileFriendlyTooltip>
-                        </div>
-                        <p className="text-blue-600 font-medium mt-2">
-                          Canton: {taxCalculation.details.baremeApplique}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => window.location.href = '/assistant-fiscal'}
-                      className="w-full bg-blue-600 hover:bg-blue-700"
-                      size="sm"
-                    >
-                      Optimiser mes impôts
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Breakdown des déductions */}
-                <div className="mt-4 bg-white rounded-lg p-4 shadow-sm">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-3">📊 Détail des déductions</h4>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-1">
-                        <span className="text-gray-600">Cotisations sociales:</span>
-                        <MobileFriendlyTooltip
-                          content={
-                            <>
-                              <p className="text-xs font-semibold mb-1">Cotisations obligatoires</p>
-                              <p className="text-xs">AVS/AI/APG (5.3%) + AC (1.1%) + LPP (7-18%) + LAA (~1.5%)</p>
-                              <p className="text-xs mt-1 text-amber-600">⚠️ Non déductibles du revenu imposable en Suisse</p>
-                            </>
-                          }
-                        >
-                          <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                            <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
-                          </button>
-                        </MobileFriendlyTooltip>
-                      </div>
-                      <span className="font-medium">{formatCurrency(taxCalculation.cotisationsSociales)}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-1">
-                        <span className="text-gray-600">Total déductions:</span>
-                        <MobileFriendlyTooltip
-                          content={
-                            <>
-                              <p className="text-xs font-semibold mb-1">Déductions fiscales</p>
-                              <p className="text-xs">Déduction personnelle + 3e pilier + Primes assurance + Frais pro + etc.</p>
-                              <p className="text-xs mt-1 text-green-600">✓ Déductibles du revenu imposable</p>
-                            </>
-                          }
-                        >
-                          <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                            <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
-                          </button>
-                        </MobileFriendlyTooltip>
-                      </div>
-                      <span className="font-medium">{formatCurrency(taxCalculation.totalDeductions)}</span>
-                    </div>
-                    {taxCalculation.fortuneImposable > 0 && (
-                      <>
-                        <div className="flex justify-between items-center col-span-2 pt-2 border-t">
-                          <div className="flex items-center gap-1">
-                            <span className="text-gray-600">Fortune imposable:</span>
-                            <MobileFriendlyTooltip
-                              content={
-                                <>
-                                  <p className="text-xs font-semibold mb-1">Fortune nette</p>
-                                  <p className="text-xs">= Fortune brute - Dettes - Déduction personnelle</p>
-                                  <p className="text-xs mt-1">Taxée en pour mille (‰) selon barème cantonal</p>
-                                </>
-                              }
-                            >
-                              <button type="button" className="inline-flex items-center justify-center min-w-[24px] min-h-[24px] md:min-w-0 md:min-h-0">
-                                <Info className="w-5 h-5 md:w-3 md:h-3 text-gray-400 cursor-pointer" />
-                              </button>
-                            </MobileFriendlyTooltip>
-                          </div>
-                          <span className="font-medium">{formatCurrency(taxCalculation.fortuneImposable)}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <p className="text-xs text-gray-500 mt-3">
-                  ℹ️ Estimation basée sur les barèmes fiscaux 2025. Pour un calcul précis, consultez l'assistant fiscal.
-                </p>
-              </CardContent>
-            </Card>
-          </TooltipProvider>
+          {/* Simulateur fiscal 2025 */}
+          {hasFinancialData && (
+            <div className="mb-6">
+              <TaxSimulator2025 autoFill={true} />
+            </div>
           )}
 
           {hasFinancialData && taxCalculating && (
@@ -1038,6 +688,7 @@ export default function DashboardPage() {
 function ProfileField({
   label,
   value,
+  rawValue,
   filled,
   sensitive = false,
   showSensitive = true,
@@ -1048,6 +699,7 @@ function ProfileField({
 }: {
   label: string;
   value: string | null | undefined;
+  rawValue?: string | null | undefined;
   filled: boolean;
   sensitive?: boolean;
   showSensitive?: boolean;
@@ -1059,6 +711,9 @@ function ProfileField({
   const displayValue = sensitive && !showSensitive ? '••••••••' : value || 'Non renseigné';
   const textColor = filled ? 'text-gray-900 font-medium' : 'text-gray-400 italic';
   const bgColor = filled ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200';
+
+  // Pour les champs date, utiliser rawValue en mode édition (format YYYY-MM-DD)
+  const editValue = type === 'date' && rawValue ? rawValue : value;
 
   if (editMode && fieldName && onFieldChange) {
     return (
@@ -1138,7 +793,7 @@ function ProfileField({
         ) : (
           <input
             type={type}
-            value={value || ''}
+            value={editValue || ''}
             onChange={(e) => onFieldChange(fieldName, type === 'number' ? parseFloat(e.target.value) : e.target.value)}
             className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder={label}
