@@ -8,11 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Target, 
-  Plus, 
-  TrendingUp, 
-  Clock, 
+import {
+  Target,
+  Plus,
+  TrendingUp,
+  Clock,
   AlertTriangle,
   CheckCircle,
   Calendar,
@@ -24,7 +24,8 @@ import {
   Eye,
   Edit,
   Trash2,
-  DollarSign
+  DollarSign,
+  AlertCircle
 } from 'lucide-react';
 import { FinancialGoal } from '@/types/user';
 // TODO: Migrate to Supabase - goals.service deleted
@@ -51,6 +52,16 @@ export default function ObjectifsPage() {
       loadGoals();
     }
   }, [user]);
+
+  // Détecter le paramètre ?action=create dans l'URL pour ouvrir le modal
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('action') === 'create') {
+      setShowCreateModal(true);
+      // Nettoyer l'URL après ouverture du modal
+      window.history.replaceState({}, '', '/objectifs');
+    }
+  }, []);
 
   const loadGoals = async () => {
     if (!user?.id) return;
