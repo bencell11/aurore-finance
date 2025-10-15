@@ -498,13 +498,39 @@ export default function DashboardPage() {
                         <h4 className="font-semibold text-gray-900">Localisation</h4>
                       </div>
                       <div className="space-y-2 mb-4">
-                        <ProfileField label="Adresse" value={userProfile.adresse} filled={!!userProfile.adresse} />
+                        <ProfileField
+                          label="Adresse"
+                          value={editMode ? editedProfile.adresse : userProfile.adresse}
+                          filled={!!userProfile.adresse}
+                          editMode={editMode}
+                          fieldName="adresse"
+                          onFieldChange={handleFieldChange}
+                        />
+                        <ProfileField
+                          label="NPA"
+                          value={editMode ? editedProfile.npa : userProfile.npa}
+                          filled={!!userProfile.npa}
+                          editMode={editMode}
+                          fieldName="npa"
+                          onFieldChange={handleFieldChange}
+                        />
                         <ProfileField
                           label="Ville"
-                          value={userProfile.npa && userProfile.ville ? `${userProfile.npa} ${userProfile.ville}` : null}
-                          filled={!!(userProfile.npa && userProfile.ville)}
+                          value={editMode ? editedProfile.ville : userProfile.ville}
+                          filled={!!userProfile.ville}
+                          editMode={editMode}
+                          fieldName="ville"
+                          onFieldChange={handleFieldChange}
                         />
-                        <ProfileField label="Canton" value={userProfile.canton} filled={!!userProfile.canton} />
+                        <ProfileField
+                          label="Canton"
+                          value={editMode ? editedProfile.canton : userProfile.canton}
+                          filled={!!userProfile.canton}
+                          editMode={editMode}
+                          fieldName="canton"
+                          onFieldChange={handleFieldChange}
+                          type="select-canton"
+                        />
                       </div>
                       <div className="flex items-center gap-2 mb-2 mt-4 pt-3 border-t border-gray-200">
                         <Briefcase className="w-5 h-5 text-purple-600" />
@@ -513,15 +539,29 @@ export default function DashboardPage() {
                       <div className="space-y-2">
                         <ProfileField
                           label="Statut"
-                          value={userProfile.statut_professionnel}
+                          value={editMode ? editedProfile.statut_professionnel : userProfile.statut_professionnel}
                           filled={!!userProfile.statut_professionnel}
+                          editMode={editMode}
+                          fieldName="statut_professionnel"
+                          onFieldChange={handleFieldChange}
+                          type="select-statut-pro"
                         />
                         <ProfileField
                           label="Profession"
-                          value={userProfile.profession}
+                          value={editMode ? editedProfile.profession : userProfile.profession}
                           filled={!!userProfile.profession}
+                          editMode={editMode}
+                          fieldName="profession"
+                          onFieldChange={handleFieldChange}
                         />
-                        <ProfileField label="Employeur" value={userProfile.employeur} filled={!!userProfile.employeur} />
+                        <ProfileField
+                          label="Employeur"
+                          value={editMode ? editedProfile.employeur : userProfile.employeur}
+                          filled={!!userProfile.employeur}
+                          editMode={editMode}
+                          fieldName="employeur"
+                          onFieldChange={handleFieldChange}
+                        />
                       </div>
                     </div>
 
@@ -535,24 +575,36 @@ export default function DashboardPage() {
                         <ProfileField
                           label="Revenu annuel"
                           value={
-                            userProfile.revenu_annuel
+                            editMode
+                              ? editedProfile.revenu_annuel?.toString() || ''
+                              : userProfile.revenu_annuel
                               ? formatCurrency(userProfile.revenu_annuel)
                               : null
                           }
                           filled={!!userProfile.revenu_annuel}
                           sensitive
                           showSensitive={showSensitive}
+                          editMode={editMode}
+                          fieldName="revenu_annuel"
+                          onFieldChange={handleFieldChange}
+                          type="number"
                         />
                         <ProfileField
                           label="Revenu mensuel"
                           value={
-                            userProfile.revenu_mensuel
+                            editMode
+                              ? editedProfile.revenu_mensuel?.toString() || ''
+                              : userProfile.revenu_mensuel
                               ? formatCurrency(userProfile.revenu_mensuel)
                               : null
                           }
                           filled={!!userProfile.revenu_mensuel}
                           sensitive
                           showSensitive={showSensitive}
+                          editMode={editMode}
+                          fieldName="revenu_mensuel"
+                          onFieldChange={handleFieldChange}
+                          type="number"
                         />
                       </div>
                       <div className="flex items-center gap-2 mb-2 mt-4 pt-3 border-t border-gray-200">
@@ -562,19 +614,29 @@ export default function DashboardPage() {
                       <div className="space-y-2">
                         <ProfileField
                           label="Statut"
-                          value={userProfile.statut_logement}
+                          value={editMode ? editedProfile.statut_logement : userProfile.statut_logement}
                           filled={!!userProfile.statut_logement}
+                          editMode={editMode}
+                          fieldName="statut_logement"
+                          onFieldChange={handleFieldChange}
+                          type="select-statut-logement"
                         />
                         <ProfileField
                           label="Loyer mensuel"
                           value={
-                            userProfile.loyer_mensuel
+                            editMode
+                              ? editedProfile.loyer_mensuel?.toString() || ''
+                              : userProfile.loyer_mensuel
                               ? formatCurrency(userProfile.loyer_mensuel)
                               : null
                           }
                           filled={!!userProfile.loyer_mensuel}
                           sensitive
                           showSensitive={showSensitive}
+                          editMode={editMode}
+                          fieldName="loyer_mensuel"
+                          onFieldChange={handleFieldChange}
+                          type="number"
                         />
                       </div>
                     </div>
@@ -1038,6 +1100,40 @@ function ProfileField({
             <option value="locataire">Locataire</option>
             <option value="proprietaire">Propriétaire</option>
             <option value="heberge">Hébergé</option>
+          </select>
+        ) : type === 'select-canton' ? (
+          <select
+            value={value || ''}
+            onChange={(e) => onFieldChange(fieldName, e.target.value)}
+            className="px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Sélectionner...</option>
+            <option value="AG">Argovie (AG)</option>
+            <option value="AI">Appenzell Rhodes-Intérieures (AI)</option>
+            <option value="AR">Appenzell Rhodes-Extérieures (AR)</option>
+            <option value="BE">Berne (BE)</option>
+            <option value="BL">Bâle-Campagne (BL)</option>
+            <option value="BS">Bâle-Ville (BS)</option>
+            <option value="FR">Fribourg (FR)</option>
+            <option value="GE">Genève (GE)</option>
+            <option value="GL">Glaris (GL)</option>
+            <option value="GR">Grisons (GR)</option>
+            <option value="JU">Jura (JU)</option>
+            <option value="LU">Lucerne (LU)</option>
+            <option value="NE">Neuchâtel (NE)</option>
+            <option value="NW">Nidwald (NW)</option>
+            <option value="OW">Obwald (OW)</option>
+            <option value="SG">Saint-Gall (SG)</option>
+            <option value="SH">Schaffhouse (SH)</option>
+            <option value="SO">Soleure (SO)</option>
+            <option value="SZ">Schwyz (SZ)</option>
+            <option value="TG">Thurgovie (TG)</option>
+            <option value="TI">Tessin (TI)</option>
+            <option value="UR">Uri (UR)</option>
+            <option value="VD">Vaud (VD)</option>
+            <option value="VS">Valais (VS)</option>
+            <option value="ZG">Zoug (ZG)</option>
+            <option value="ZH">Zurich (ZH)</option>
           </select>
         ) : (
           <input
