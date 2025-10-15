@@ -223,35 +223,149 @@ export default function TaxSimulator2025({ autoFill = false }: TaxSimulator2025P
 
           {/* Résultats */}
           <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
-            <h4 className="font-semibold text-lg">Calcul des impôts 2025</h4>
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-lg">Calcul des impôts 2025</h4>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                    <Info className="w-4 h-4 mr-1" />
+                    Voir le détail des calculs
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-md p-4">
+                  <div className="space-y-3">
+                    <p className="text-xs font-semibold">Calcul du revenu imposable:</p>
+                    <div className="text-xs space-y-1 pl-2 border-l-2 border-blue-200">
+                      <p>1. Revenu brut: {formatCurrency(income)}</p>
+                      <p>2. Déductions:</p>
+                      <p className="pl-3">- Déduction de base: CHF 2'000</p>
+                      {maritalStatus === 'marie' && <p className="pl-3">- Couple marié: CHF 2'600</p>}
+                      {children > 0 && <p className="pl-3">- Enfants ({children}×): {formatCurrency(children * 6700)}</p>}
+                      {thirdPillar > 0 && <p className="pl-3">- 3e pilier: {formatCurrency(thirdPillar)}</p>}
+                      <p className="font-semibold border-t pt-1 mt-1">Total déductions: {formatCurrency(deductions)}</p>
+                      <p className="font-semibold">Revenu imposable: {formatCurrency(taxableIncome)}</p>
+                    </div>
+                    <p className="text-xs font-semibold mt-3">Application des taux ({canton}):</p>
+                    <div className="text-xs space-y-1 pl-2 border-l-2 border-green-200">
+                      <p>• Fédéral {(rates.federal * 100).toFixed(1)}%: {formatCurrency(federalTax)}</p>
+                      <p>• Cantonal {(rates.cantonal * 100).toFixed(1)}%: {formatCurrency(cantonalTax)}</p>
+                      <p>• Communal {(rates.communal * 100).toFixed(1)}%: {formatCurrency(communalTax)}</p>
+                      <p className="font-semibold border-t pt-1 mt-1">Total: {formatCurrency(totalTax)}</p>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-3 bg-red-50 rounded-lg border border-red-200">
                 <div className="text-lg font-bold text-red-600">{formatCurrency(federalTax)}</div>
-                <div className="text-xs text-gray-600">Impôt fédéral</div>
+                <div className="text-xs text-gray-600 flex items-center justify-center gap-1">
+                  Impôt fédéral
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs font-semibold mb-1">Formule:</p>
+                      <p className="text-xs mb-2">Revenu imposable × {(rates.federal * 100).toFixed(1)}%</p>
+                      <p className="text-xs mb-1">= {formatCurrency(taxableIncome)} × {(rates.federal * 100).toFixed(1)}%</p>
+                      <p className="text-xs">= {formatCurrency(federalTax)}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
               <div className="text-center p-3 bg-orange-50 rounded-lg border border-orange-200">
                 <div className="text-lg font-bold text-orange-600">{formatCurrency(cantonalTax)}</div>
-                <div className="text-xs text-gray-600">Impôt cantonal</div>
+                <div className="text-xs text-gray-600 flex items-center justify-center gap-1">
+                  Impôt cantonal
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs font-semibold mb-1">Formule:</p>
+                      <p className="text-xs mb-2">Revenu imposable × {(rates.cantonal * 100).toFixed(1)}%</p>
+                      <p className="text-xs mb-1">= {formatCurrency(taxableIncome)} × {(rates.cantonal * 100).toFixed(1)}%</p>
+                      <p className="text-xs">= {formatCurrency(cantonalTax)}</p>
+                      <p className="text-xs mt-2 text-gray-500">Taux pour {canton}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
               <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
                 <div className="text-lg font-bold text-purple-600">{formatCurrency(communalTax)}</div>
-                <div className="text-xs text-gray-600">Impôt communal</div>
+                <div className="text-xs text-gray-600 flex items-center justify-center gap-1">
+                  Impôt communal
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs font-semibold mb-1">Formule:</p>
+                      <p className="text-xs mb-2">Revenu imposable × {(rates.communal * 100).toFixed(1)}%</p>
+                      <p className="text-xs mb-1">= {formatCurrency(taxableIncome)} × {(rates.communal * 100).toFixed(1)}%</p>
+                      <p className="text-xs">= {formatCurrency(communalTax)}</p>
+                      <p className="text-xs mt-2 text-gray-500">Moyenne commune {canton}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
               <div className="text-center p-3 bg-blue-50 rounded-lg border-2 border-blue-300">
                 <div className="text-lg font-bold text-blue-600">{formatCurrency(totalTax)}</div>
-                <div className="text-xs text-gray-600">Total impôts</div>
+                <div className="text-xs text-gray-600 flex items-center justify-center gap-1">
+                  Total impôts
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs font-semibold mb-1">Formule:</p>
+                      <p className="text-xs mb-2">Fédéral + Cantonal + Communal</p>
+                      <p className="text-xs mb-1">= {formatCurrency(federalTax)} + {formatCurrency(cantonalTax)} + {formatCurrency(communalTax)}</p>
+                      <p className="text-xs">= {formatCurrency(totalTax)}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
                 <div className="text-2xl font-bold text-green-700">{formatCurrency(netIncome)}</div>
-                <div className="text-sm text-green-600">Revenu net après impôts</div>
+                <div className="text-sm text-green-600 flex items-center justify-center gap-1">
+                  Revenu net après impôts
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs font-semibold mb-1">Formule:</p>
+                      <p className="text-xs mb-2">Revenu brut - Total impôts</p>
+                      <p className="text-xs mb-1">= {formatCurrency(income)} - {formatCurrency(totalTax)}</p>
+                      <p className="text-xs">= {formatCurrency(netIncome)}</p>
+                      <p className="text-xs mt-2 text-gray-500">Ce qui vous reste réellement</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
               <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="text-2xl font-bold text-blue-700">{effectiveRate.toFixed(1)}%</div>
-                <div className="text-sm text-blue-600">Taux d'imposition effectif</div>
+                <div className="text-sm text-blue-600 flex items-center justify-center gap-1">
+                  Taux d'imposition effectif
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs font-semibold mb-1">Formule:</p>
+                      <p className="text-xs mb-2">(Total impôts / Revenu brut) × 100</p>
+                      <p className="text-xs mb-1">= ({formatCurrency(totalTax)} / {formatCurrency(income)}) × 100</p>
+                      <p className="text-xs">= {effectiveRate.toFixed(1)}%</p>
+                      <p className="text-xs mt-2 text-gray-500">Votre charge fiscale réelle sur le revenu total</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
             </div>
 
