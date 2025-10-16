@@ -31,138 +31,32 @@ export class DynamicTemplateGeneratorService {
     try {
       const openai = this.getOpenAI();
 
-      const systemPrompt = `Tu es un expert en rédaction de documents administratifs et juridiques suisses.
-Ton rôle est de créer un template de document professionnel en JSON.
+      const systemPrompt = `Tu génères des documents administratifs suisses en JSON.
 
-Le template doit contenir:
-1. requiredFields: Liste des champs nécessaires (nom, prénom, adresse, etc.)
-2. contentBlocks: Blocs de contenu du document avec variables {{nom_variable}}
+RÈGLE ABSOLUE: Tu dois ÉCRIRE le texte complet du document. Jamais de placeholders [OBJET] ou {{objet}}.
 
-Types de champs disponibles:
-- text: Texte simple
-- date: Date (format ISO)
-- email: Email
-- phone: Téléphone
-- address: Adresse
-- postal_code: Code postal
-- select: Liste de choix
-
-Types de blocs de contenu:
-- address: Bloc d'adresse (expéditeur/destinataire)
-- header: Titre/En-tête
-- paragraph: Paragraphe de texte complet (pas de placeholder)
-- signature: Bloc de signature
-- list: Liste à puces
-
-Variables disponibles dans le contenu:
-{{prenom}}, {{nom}}, {{adresse}}, {{npa}}, {{ville}}, {{email}}, {{telephone}}, {{date_envoi}}
-Et toutes les variables des champs que tu définis
-
-RÈGLES CRITIQUES:
-- NE CRÉE JAMAIS de champ "contenu_principal", "contenu_courrier", "objet", ou autres champs génériques de contenu
-- ÉCRIS le texte complet directement dans les contentBlocks (paragraphes)
-- L'objet et le contenu doivent être écrits EN DUR dans les contentBlocks, pas demandés à l'utilisateur
-- Utilise le format suisse (vouvoiement, formules de politesse)
-- Sois professionnel et respectueux des normes juridiques
-- Inclus les références légales suisses pertinentes
-- Le document doit être complet et prêt à l'envoi
-- Les paragraphes doivent contenir le texte complet réel, PAS de variables {{contenu_principal}} ou {{objet}}
-
-Retourne UNIQUEMENT un JSON valide (sans markdown) avec cette structure:
+Exemple résiliation assurance:
 {
-  "id": "nom-du-document",
-  "type": "type_document",
-  "category": "categorie",
-  "title": "Titre du document",
-  "description": "Description courte",
+  "id": "resiliation-assurance",
   "requiredFields": [
-    {
-      "key": "nom_variable",
-      "label": "Label affiché",
-      "type": "text|date|email|etc",
-      "required": true,
-      "source": "manual_input",
-      "placeholder": "Exemple de valeur",
-      "helpText": "Aide pour l'utilisateur"
-    }
+    {"key": "numero_police", "label": "Numéro de police", "type": "text", "required": true},
+    {"key": "nom_assurance", "label": "Nom de l'assurance", "type": "text", "required": true},
+    {"key": "date_resiliation", "label": "Date de résiliation", "type": "date", "required": true}
   ],
   "contentBlocks": [
-    {
-      "type": "address",
-      "content": "{{prenom}} {{nom}}\\n{{adresse}}\\n{{npa}} {{ville}}",
-      "style": { "align": "left" }
-    },
-    {
-      "type": "paragraph",
-      "content": "Contenu avec {{variables}}"
-    },
-    {
-      "type": "signature",
-      "content": "{{prenom}} {{nom}}\\n\\n_________________________\\nSignature"
-    }
-  ],
-  "metadata": {
-    "language": "fr",
-    "legalCompliance": true,
-    "swissLawReference": "Référence légale si applicable"
-  }
-}`;
-
-      const userPrompt = `Demande de l'utilisateur: "${userInput}"
-Type de document: ${documentType}
-Catégorie: ${category}
-
-🚨 ATTENTION: TU DOIS ÉCRIRE LE CONTENU COMPLET DU DOCUMENT, PAS DES PLACEHOLDERS ! 🚨
-
-❌ MAUVAIS EXEMPLE (À NE JAMAIS FAIRE):
-{
-  "contentBlocks": [
-    {"type": "header", "content": "Objet: [OBJET]"},
+    {"type": "header", "content": "Objet: Résiliation de contrat d'assurance maladie", "style": {"bold": true}},
     {"type": "paragraph", "content": "Madame, Monsieur,"},
-    {"type": "paragraph", "content": "[CONTENU_PRINCIPAL]"},
-    {"type": "paragraph", "content": "Je vous prie d'agréer..."}
+    {"type": "paragraph", "content": "Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie numéro {{numero_police}} auprès de {{nom_assurance}}, avec effet au {{date_resiliation}}, conformément à la LAMal (Art. 7)."},
+    {"type": "paragraph", "content": "Je vous prie d'agréer, Madame, Monsieur, mes salutations distinguées."}
   ]
 }
 
-✅ BON EXEMPLE (CE QU'IL FAUT FAIRE - résiliation assurance maladie):
-{
-  "contentBlocks": [
-    {"type": "header", "content": "Objet: Résiliation de contrat d'assurance maladie de base", "style": {"bold": true}},
-    {"type": "paragraph", "content": "Madame, Monsieur,"},
-    {"type": "paragraph", "content": "Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie de base numéro {{numero_police}} auprès de votre établissement, avec effet au {{date_resiliation}}, conformément aux dispositions de la Loi fédérale sur l'assurance-maladie (LAMal, Art. 7)."},
-    {"type": "paragraph", "content": "Je vous prie de bien vouloir m'adresser une confirmation écrite de cette résiliation dans les meilleurs délais, ainsi que le décompte final de mes cotisations."},
-    {"type": "paragraph", "content": "Je vous remercie de votre compréhension et vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées."}
-  ]
-}
+Génère TOUJOURS du texte complet comme l'exemple ci-dessus.`;
 
-✅ AUTRE BON EXEMPLE (réclamation retard paiement):
-{
-  "contentBlocks": [
-    {"type": "header", "content": "Objet: Réclamation pour retard de paiement - Facture N° {{numero_facture}}", "style": {"bold": true}},
-    {"type": "paragraph", "content": "Madame, Monsieur,"},
-    {"type": "paragraph", "content": "Je me permets de vous contacter concernant la facture N° {{numero_facture}} d'un montant de {{montant_facture}} CHF, émise le {{date_facture}}, dont le règlement devait intervenir dans un délai de {{delai_paiement}} jours."},
-    {"type": "paragraph", "content": "À ce jour, malgré l'expiration du délai de paiement convenu, je n'ai pas reçu le règlement de cette facture. Cette situation m'oblige à vous adresser une mise en demeure formelle."},
-    {"type": "paragraph", "content": "Je vous prie donc de bien vouloir procéder au règlement de cette facture dans un délai de 10 jours à compter de la réception de ce courrier, faute de quoi je me verrais contraint d'entreprendre les démarches juridiques nécessaires."},
-    {"type": "paragraph", "content": "Je vous remercie de votre compréhension et reste à votre disposition pour tout renseignement complémentaire."},
-    {"type": "paragraph", "content": "Je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées."}
-  ]
-}
+      const userPrompt = `Crée un document pour: "${userInput}"
 
-MAINTENANT, POUR LA DEMANDE "${userInput}", TU DOIS:
-
-1. Identifier le TYPE de document (résiliation, réclamation, demande, etc.)
-2. Rédiger un OBJET SPÉCIFIQUE et complet (pas un placeholder)
-3. Rédiger des PARAGRAPHES COMPLETS avec le contenu réel professionnel
-4. Utiliser {{variables}} UNIQUEMENT pour les données qui changent (numéros, montants, dates, noms)
-5. Respecter le style formel suisse (vouvoiement, formules de politesse)
-
-RÈGLES ABSOLUES:
-✅ L'objet doit être écrit en toutes lettres: "Objet: Résiliation de..." pas "Objet: {{objet}}"
-✅ Les paragraphes doivent contenir le texte complet, pas [CONTENU_PRINCIPAL] ou {{contenu_principal}}
-✅ Créer des champs spécifiques: numero_police, date_resiliation, montant_facture, etc.
-❌ INTERDICTION TOTALE d'utiliser: [OBJET], [CONTENU_PRINCIPAL], {{objet}}, {{contenu_principal}}, {{contenu_courrier}}
-
-GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
+Génère un JSON avec la même structure que l'exemple (résiliation assurance).
+ÉCRIS le texte complet du document. PAS de [OBJET] ou {{objet}}.`;
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
