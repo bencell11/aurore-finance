@@ -206,10 +206,6 @@ export default function RechercheLPPPage() {
     }, 1500);
   };
 
-  const downloadDocuments = () => {
-    // TODO: Implémenter la génération PDF réelle avec jsPDF ou similaire
-    alert('Téléchargement des documents... (À implémenter)');
-  };
 
   return (
     <ProtectedRoute>
@@ -881,7 +877,6 @@ export default function RechercheLPPPage() {
                 }}
                 signatureData={signatureData}
                 onBack={() => setStep('signature')}
-                onDownload={downloadDocuments}
               />
             )}
           </div>

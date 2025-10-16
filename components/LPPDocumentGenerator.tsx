@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, CheckCircle2, Info, Check } from 'lucide-react';
+import { generateDemandeRecherchePDF, generateProcurationPDF } from '@/lib/utils/pdf-generator';
 
 interface LPPFormData {
   prenom: string;
@@ -26,16 +27,25 @@ interface LPPDocumentGeneratorProps {
   formData: LPPFormData;
   signatureData?: string;
   onBack: () => void;
-  onDownload: () => void;
 }
 
-export default function LPPDocumentGenerator({ formData, signatureData, onBack, onDownload }: LPPDocumentGeneratorProps) {
+export default function LPPDocumentGenerator({ formData, signatureData, onBack }: LPPDocumentGeneratorProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
   const today = new Date().toLocaleDateString('fr-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  const handleDownloadPDF = () => {
+    // Générer la demande de recherche
+    generateDemandeRecherchePDF(formData);
+
+    // Générer la procuration avec signature après un court délai
+    setTimeout(() => {
+      generateProcurationPDF(formData, signatureData);
+    }, 500);
+  };
 
   return (
     <Card>
@@ -256,7 +266,7 @@ export default function LPPDocumentGenerator({ formData, signatureData, onBack, 
             Modifier les informations
           </Button>
           <Button
-            onClick={onDownload}
+            onClick={handleDownloadPDF}
             className="flex-1 bg-green-600 hover:bg-green-700"
           >
             <Download className="w-5 h-5 mr-2" />

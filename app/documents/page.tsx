@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,16 +10,20 @@ import { Badge } from '@/components/ui/badge';
 import DigitalSignature from '@/components/documents/DigitalSignature';
 import DocumentPreview from '@/components/documents/DocumentPreview';
 import TemplatePreview from '@/components/documents/TemplatePreview';
+import { UserProfileSupabaseService } from '@/lib/services/user-profile-supabase.service';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import {
   FileText,
-  Send,
   Loader2,
   CheckCircle2,
   AlertCircle,
-  Download,
   Sparkles,
   MessageSquare,
-  Edit2,
   Eye
 } from 'lucide-react';
 
@@ -46,6 +50,64 @@ export default function DocumentsPage() {
 
   // Prévisualisation
   const [previewHtml, setPreviewHtml] = useState<string>('');
+
+  // Auto-complétion depuis le profil utilisateur
+  const [autofilledFields, setAutofilledFields] = useState<Set<string>>(new Set());
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+
+  // Charger le profil utilisateur au montage
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      setIsLoadingProfile(true);
+      console.log('🔄 Chargement du profil utilisateur pour auto-complétion documents...');
+
+      // Mapping des champs communs utilisés dans les documents
+      const fieldMapping = {
+        prenom: 'prenom' as const,
+        nom: 'nom' as const,
+        dateNaissance: 'date_naissance' as const,
+        numeroAVS: 'numero_avs' as const,
+        genre: 'genre' as const,
+        nationalite: 'nationalite' as const,
+        adresse: 'adresse' as const,
+        rue: 'adresse' as const,
+        npa: 'npa' as const,
+        ville: 'ville' as const,
+        email: 'email' as const,
+        telephone: 'telephone' as const,
+        langue: 'langue' as const,
+        caissePension: 'caisse_pension' as const,
+      };
+
+      const autofilledData = await UserProfileSupabaseService.autofillForm(fieldMapping);
+
+      if (Object.keys(autofilledData).length > 0) {
+        console.log('✅ Auto-remplissage réussi:', Object.keys(autofilledData));
+
+        // Stocker les données auto-remplies
+        setGatheredData(autofilledData);
+
+        // Pré-remplir manualData avec ces valeurs
+        setManualData(prev => ({
+          ...prev,
+          ...autofilledData
+        }));
+
+        // Marquer les champs comme auto-remplis
+        setAutofilledFields(new Set(Object.keys(autofilledData)));
+      } else {
+        console.log('ℹ️ Aucune donnée à auto-remplir');
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors du chargement du profil:', error);
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
 
   /**
    * Étape 1: Analyser la demande utilisateur
@@ -161,17 +223,18 @@ export default function DocumentsPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 pb-24 md:pb-6 max-w-4xl">
-      {/* En-tête */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <FileText className="h-10 w-10" />
-          <h1 className="text-3xl font-bold">Générateur de Documents IA</h1>
+    <TooltipProvider>
+      <div className="container mx-auto p-6 pb-24 md:pb-6 max-w-4xl">
+        {/* En-tête */}
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <FileText className="h-10 w-10" />
+            <h1 className="text-3xl font-bold">Générateur de Documents IA</h1>
+          </div>
+          <p className="text-purple-100">
+            Créez des documents officiels suisses en quelques secondes grâce à l'intelligence artificielle
+          </p>
         </div>
-        <p className="text-purple-100">
-          Créez des documents officiels suisses en quelques secondes grâce à l'intelligence artificielle
-        </p>
-      </div>
 
       {error && (
         <Alert variant="destructive" className="mb-6">
@@ -180,78 +243,246 @@ export default function DocumentsPage() {
         </Alert>
       )}
 
-      {/* Étape 1: Saisie de la demande */}
+      {/* Étape 1: Saisie de la demande + Informations personnelles */}
       {step === 'input' && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
-              Décrivez le document que vous souhaitez créer
-            </CardTitle>
-            <CardDescription>
-              Exemple: "Je veux résilier mon assurance maladie Helsana" ou "Je souhaite faire une réclamation pour un retard de paiement"
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="userInput">Votre demande</Label>
-              <Input
-                id="userInput"
-                placeholder="Ex: Je veux résilier mon contrat d'assurance maladie..."
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && !loading && handleAnalyze()}
-                className="text-base"
-              />
-            </div>
-
-            <Button
-              onClick={handleAnalyze}
-              disabled={loading || !userInput.trim()}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyse en cours...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Analyser ma demande
-                </>
-              )}
-            </Button>
-
-            {/* Exemples rapides */}
-            <div className="pt-4 border-t">
-              <p className="text-sm text-gray-600 mb-2">Exemples rapides:</p>
-              <div className="flex flex-wrap gap-2">
-                <Badge
-                  variant="outline"
-                  className="cursor-pointer hover:bg-gray-100"
-                  onClick={() => setUserInput("Je veux résilier mon assurance maladie")}
-                >
-                  Résiliation assurance maladie
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="cursor-pointer hover:bg-gray-100"
-                  onClick={() => setUserInput("Je souhaite résilier mon bail de location")}
-                >
-                  Résiliation bail
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="cursor-pointer hover:bg-gray-100"
-                  onClick={() => setUserInput("Je veux faire une réclamation")}
-                >
-                  Réclamation
-                </Badge>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Colonne gauche: Votre demande */}
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Votre demande
+              </CardTitle>
+              <CardDescription>
+                Décrivez le document que vous souhaitez créer en une phrase
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="userInput">Description du document *</Label>
+                <textarea
+                  id="userInput"
+                  placeholder="Ex: Je veux résilier mon contrat d'assurance maladie Helsana pour fin décembre 2024..."
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  className="w-full min-h-[120px] p-3 text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
               </div>
-            </div>
-          </CardContent>
-        </Card>
+
+              {/* Exemples rapides */}
+              <div className="pt-2 border-t">
+                <p className="text-sm text-gray-600 mb-2">Exemples rapides:</p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge
+                    variant="outline"
+                    className="cursor-pointer hover:bg-purple-50"
+                    onClick={() => setUserInput("Je veux résilier mon assurance maladie")}
+                  >
+                    Résiliation assurance
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="cursor-pointer hover:bg-purple-50"
+                    onClick={() => setUserInput("Je souhaite résilier mon bail")}
+                  >
+                    Résiliation bail
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="cursor-pointer hover:bg-purple-50"
+                    onClick={() => setUserInput("Je veux faire une réclamation")}
+                  >
+                    Réclamation
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Colonne droite: Informations personnelles */}
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                Vos informations personnelles
+              </CardTitle>
+              <CardDescription>
+                {isLoadingProfile ? (
+                  <div className="flex items-center gap-2 text-blue-600">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Chargement de votre profil...</span>
+                  </div>
+                ) : Object.keys(gatheredData || {}).length > 0 ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <Sparkles className="w-3 h-3" />
+                    <span>{Object.keys(gatheredData).length} donnée(s) récupérée(s) depuis votre profil</span>
+                  </div>
+                ) : (
+                  <span>Remplissez vos informations pour les utiliser dans vos documents</span>
+                )}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label htmlFor="prenom" className="text-xs">Prénom</Label>
+                  <AutofillInput
+                    id="prenom"
+                    value={manualData.prenom || ''}
+                    onChange={(e) => {
+                      setManualData({ ...manualData, prenom: e.target.value });
+                      if (autofilledFields.has('prenom')) {
+                        const newSet = new Set(autofilledFields);
+                        newSet.delete('prenom');
+                        setAutofilledFields(newSet);
+                      }
+                    }}
+                    placeholder="Jean"
+                    autofilled={autofilledFields.has('prenom')}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="nom" className="text-xs">Nom</Label>
+                  <AutofillInput
+                    id="nom"
+                    value={manualData.nom || ''}
+                    onChange={(e) => {
+                      setManualData({ ...manualData, nom: e.target.value });
+                      if (autofilledFields.has('nom')) {
+                        const newSet = new Set(autofilledFields);
+                        newSet.delete('nom');
+                        setAutofilledFields(newSet);
+                      }
+                    }}
+                    placeholder="Dupont"
+                    autofilled={autofilledFields.has('nom')}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="email" className="text-xs">Email</Label>
+                <AutofillInput
+                  id="email"
+                  type="email"
+                  value={manualData.email || ''}
+                  onChange={(e) => {
+                    setManualData({ ...manualData, email: e.target.value });
+                    if (autofilledFields.has('email')) {
+                      const newSet = new Set(autofilledFields);
+                      newSet.delete('email');
+                      setAutofilledFields(newSet);
+                    }
+                  }}
+                  placeholder="jean.dupont@exemple.ch"
+                  autofilled={autofilledFields.has('email')}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="adresse" className="text-xs">Adresse complète</Label>
+                <AutofillInput
+                  id="adresse"
+                  value={manualData.adresse || manualData.rue || ''}
+                  onChange={(e) => {
+                    setManualData({ ...manualData, adresse: e.target.value, rue: e.target.value });
+                    if (autofilledFields.has('adresse')) {
+                      const newSet = new Set(autofilledFields);
+                      newSet.delete('adresse');
+                      setAutofilledFields(newSet);
+                    }
+                  }}
+                  placeholder="Rue de la Gare 15"
+                  autofilled={autofilledFields.has('adresse') || autofilledFields.has('rue')}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <Label htmlFor="npa" className="text-xs">NPA</Label>
+                  <AutofillInput
+                    id="npa"
+                    value={manualData.npa || ''}
+                    onChange={(e) => {
+                      setManualData({ ...manualData, npa: e.target.value });
+                      if (autofilledFields.has('npa')) {
+                        const newSet = new Set(autofilledFields);
+                        newSet.delete('npa');
+                        setAutofilledFields(newSet);
+                      }
+                    }}
+                    placeholder="1000"
+                    autofilled={autofilledFields.has('npa')}
+                  />
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <Label htmlFor="ville" className="text-xs">Ville</Label>
+                  <AutofillInput
+                    id="ville"
+                    value={manualData.ville || ''}
+                    onChange={(e) => {
+                      setManualData({ ...manualData, ville: e.target.value });
+                      if (autofilledFields.has('ville')) {
+                        const newSet = new Set(autofilledFields);
+                        newSet.delete('ville');
+                        setAutofilledFields(newSet);
+                      }
+                    }}
+                    placeholder="Lausanne"
+                    autofilled={autofilledFields.has('ville')}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="telephone" className="text-xs">Téléphone</Label>
+                <AutofillInput
+                  id="telephone"
+                  value={manualData.telephone || ''}
+                  onChange={(e) => {
+                    setManualData({ ...manualData, telephone: e.target.value });
+                    if (autofilledFields.has('telephone')) {
+                      const newSet = new Set(autofilledFields);
+                      newSet.delete('telephone');
+                      setAutofilledFields(newSet);
+                    }
+                  }}
+                  placeholder="+41 21 xxx xx xx"
+                  autofilled={autofilledFields.has('telephone')}
+                />
+              </div>
+
+              {Object.keys(gatheredData || {}).length === 0 && !isLoadingProfile && (
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700">
+                  💡 Complétez votre profil dans le dashboard pour auto-remplir ces champs automatiquement
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Bouton de génération - Affiché uniquement sur l'étape input */}
+      {step === 'input' && (
+        <div className="mt-6">
+          <Button
+            onClick={handleAnalyze}
+            disabled={loading || !userInput.trim()}
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 h-12 text-base"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Génération du document en cours...
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                Générer mon document
+              </>
+            )}
+          </Button>
+        </div>
       )}
 
       {/* Nouvelle étape 1.5: Prévisualisation du template */}
@@ -299,16 +530,22 @@ export default function DocumentsPage() {
 
           {/* Données récupérées */}
           {gatheredData && Object.keys(gatheredData).length > 0 && (
-            <Card>
+            <Card className="border-green-200 bg-green-50">
               <CardHeader>
-                <CardTitle className="text-lg">Données récupérées de votre profil</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-green-600" />
+                  Données récupérées de votre profil
+                </CardTitle>
+                <CardDescription>
+                  {Object.keys(gatheredData).length} champ(s) ont été automatiquement pré-remplis
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                   {Object.entries(gatheredData).map(([key, value]) => (
-                    <div key={key} className="flex justify-between p-2 bg-gray-50 rounded">
-                      <span className="text-gray-600">{key}:</span>
-                      <span className="font-medium">{String(value)}</span>
+                    <div key={key} className="flex justify-between p-3 bg-white border border-green-200 rounded">
+                      <span className="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+                      <span className="font-medium text-gray-900">{String(value)}</span>
                     </div>
                   ))}
                 </div>
@@ -340,9 +577,17 @@ export default function DocumentsPage() {
                       {field.type === 'select' && field.options ? (
                         <select
                           id={field.key}
-                          className="w-full p-2 border rounded"
+                          className={`w-full p-2 border rounded ${autofilledFields.has(field.key) ? 'border-green-300 bg-green-50' : ''}`}
                           value={manualData[field.key] || ''}
-                          onChange={(e) => setManualData({ ...manualData, [field.key]: e.target.value })}
+                          onChange={(e) => {
+                            setManualData({ ...manualData, [field.key]: e.target.value });
+                            // Retirer le champ des auto-remplis si modifié
+                            if (autofilledFields.has(field.key)) {
+                              const newSet = new Set(autofilledFields);
+                              newSet.delete(field.key);
+                              setAutofilledFields(newSet);
+                            }
+                          }}
                         >
                           <option value="">Sélectionnez...</option>
                           {field.options.map((opt: string) => (
@@ -350,12 +595,21 @@ export default function DocumentsPage() {
                           ))}
                         </select>
                       ) : (
-                        <Input
+                        <AutofillInput
                           id={field.key}
                           type={field.type === 'date' ? 'date' : 'text'}
                           placeholder={field.placeholder || field.helpText}
                           value={manualData[field.key] || field.defaultValue || ''}
-                          onChange={(e) => setManualData({ ...manualData, [field.key]: e.target.value })}
+                          onChange={(e) => {
+                            setManualData({ ...manualData, [field.key]: e.target.value });
+                            // Retirer le champ des auto-remplis si modifié
+                            if (autofilledFields.has(field.key)) {
+                              const newSet = new Set(autofilledFields);
+                              newSet.delete(field.key);
+                              setAutofilledFields(newSet);
+                            }
+                          }}
+                          autofilled={autofilledFields.has(field.key)}
                         />
                       )}
 
@@ -456,6 +710,49 @@ export default function DocumentsPage() {
             </Button>
           </CardContent>
         </Card>
+      )}
+      </div>
+    </TooltipProvider>
+  );
+}
+
+// Composant pour les champs avec auto-complétion
+function AutofillInput({
+  id,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+  autofilled,
+}: {
+  id: string;
+  type?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  autofilled?: boolean;
+}) {
+  return (
+    <div className="relative">
+      <Input
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={autofilled ? 'border-green-300 bg-green-50 pr-10' : ''}
+      />
+      {autofilled && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <Sparkles className="w-4 h-4 text-green-600" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">Auto-rempli depuis votre profil</p>
+          </TooltipContent>
+        </Tooltip>
       )}
     </div>
   );
