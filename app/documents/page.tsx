@@ -122,10 +122,14 @@ export default function DocumentsPage() {
     setError(null);
 
     try {
+      // Envoyer à la fois le prompt ET les données du profil déjà remplies
       const response = await fetch('/api/documents/analyze-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userInput })
+        body: JSON.stringify({
+          userInput,
+          profileData: manualData // Envoyer les données du profil
+        })
       });
 
       const data = await response.json();
@@ -138,15 +142,25 @@ export default function DocumentsPage() {
       setTemplate(data.template);
 
       if (data.template) {
-        // Pré-remplir les champs avec les données extraites du message
-        if (data.extractedData && Object.keys(data.extractedData).length > 0) {
-          console.log('Pré-remplissage avec:', data.extractedData);
-          setManualData(data.extractedData);
-        }
+        // Fusionner les données: priorité aux données du profil (manualData),
+        // puis compléter avec les données extraites du prompt
+        const mergedData = {
+          ...data.extractedData, // Données extraites du prompt (priorité basse)
+          ...manualData, // Données du profil (priorité haute - écrase les précédentes)
+        };
+
+        // Filtrer les champs "objet" et "contenu" qui ne devraient pas être là
+        const filteredData = Object.fromEntries(
+          Object.entries(mergedData).filter(([key]) =>
+            !['objet', 'contenu', 'contenu_principal', 'contenu_courrier'].includes(key.toLowerCase())
+          )
+        );
+
+        console.log('✅ Données finales après fusion:', filteredData);
+        setManualData(filteredData);
 
         // Passer à l'étape de prévisualisation du template
         setStep('template-preview');
-        setGatheredData({});
       } else {
         setError('Template non trouvé. Veuillez reformuler votre demande.');
       }

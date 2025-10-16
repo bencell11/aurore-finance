@@ -13,7 +13,7 @@ import { ContentGeneratorService } from '@/lib/services/documents/content-genera
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userInput } = body;
+    const { userInput, profileData } = body;
 
     if (!userInput || typeof userInput !== 'string') {
       return NextResponse.json(
@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('[API analyze-request] User input:', userInput);
+    console.log('[API analyze-request] Profile data received:', profileData);
 
     // Analyser la demande avec OpenAI
     const routing = await DocumentRoutingService.analyzeRequest(userInput);
@@ -71,23 +72,49 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // NOUVEAU: Extraire automatiquement les données du message utilisateur
+    // Extraire automatiquement les données du message utilisateur
     console.log('[API analyze-request] Extracting data from user input...');
     const extractedData = await DataExtractionService.extractDataCombined(
       userInput,
       template.requiredFields
     );
-    console.log('[API analyze-request] Extracted data:', extractedData);
+    console.log('[API analyze-request] Extracted data from prompt:', extractedData);
+
+    // Fusionner les données: profileData prioritaire, puis extractedData pour compléter
+    const mergedData = {
+      ...extractedData, // Données du prompt (priorité basse)
+      ...profileData,   // Données du profil (priorité haute)
+    };
+
+    // Filtrer les champs interdits (objet, contenu, etc.)
+    const forbiddenFields = ['objet', 'contenu', 'contenu_principal', 'contenu_courrier'];
+    const finalData = Object.fromEntries(
+      Object.entries(mergedData).filter(([key]) =>
+        !forbiddenFields.includes(key.toLowerCase())
+      )
+    );
+
+    console.log('[API analyze-request] Final merged data:', finalData);
+
+    // Filtrer également les champs interdits du template lui-même
+    const cleanedTemplate = {
+      ...template,
+      requiredFields: template.requiredFields.filter((field: any) =>
+        !forbiddenFields.includes(field.key.toLowerCase())
+      )
+    };
+
+    console.log('[API analyze-request] Cleaned template fields:', cleanedTemplate.requiredFields.map((f: any) => f.key));
 
     // Note: Le contenu du document est maintenant écrit directement dans les contentBlocks
     // par le DynamicTemplateGeneratorService, donc pas besoin de ContentGeneratorService ici
 
-    // Retourner l'analyse, le template ET les données extraites (avec contenu généré)
+    // Retourner l'analyse, le template nettoyé ET les données finales fusionnées
     return NextResponse.json({
       success: true,
       routing,
-      template,
-      extractedData, // NOUVEAU: Données pré-remplies + contenu généré
+      template: cleanedTemplate, // Template avec champs filtrés
+      extractedData: finalData, // Données fusionnées et filtrées
       dynamicallyGenerated: template.metadata?.dynamicallyGenerated || false,
       message: template.metadata?.dynamicallyGenerated
         ? 'Template généré dynamiquement avec succès'
