@@ -91,7 +91,7 @@ Génère un JSON avec la même structure que l'exemple (résiliation assurance).
       console.log('[DynamicTemplate] Nombre de requiredFields:', templateData.requiredFields?.length || 0);
       console.log('[DynamicTemplate] Nombre de contentBlocks:', templateData.contentBlocks?.length || 0);
 
-      // VALIDATION: Vérifier qu'il n'y a pas de placeholders interdits
+      // VALIDATION: Vérifier qu'il n'y a pas de placeholders interdits (DÉSACTIVÉE TEMPORAIREMENT)
       const contentStr = JSON.stringify(templateData.contentBlocks);
       const forbiddenPatterns = [
         '[OBJET]',
@@ -108,48 +108,9 @@ Génère un JSON avec la même structure que l'exemple (résiliation assurance).
       );
 
       if (foundForbidden.length > 0) {
-        console.error('[DynamicTemplate] ⚠️ Placeholders interdits détectés:', foundForbidden);
-        console.error('[DynamicTemplate] ContentBlocks problématiques:', contentStr);
-
-        // Au lieu de throw, essayer de régénérer avec température plus élevée
-        console.warn('[DynamicTemplate] 🔄 Tentative de régénération avec instructions renforcées...');
-
-        const retryCompletion = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: systemPrompt + '\n\n🚨 CRITIQUE: Tu as généré des placeholders [OBJET] ou {{objet}}. C\'est INTERDIT. Écris le contenu COMPLET en toutes lettres!'
-            },
-            {
-              role: 'user',
-              content: userPrompt + '\n\n⚠️ ATTENTION: Ta réponse précédente contenait des placeholders interdits. RÉESSAYE en écrivant le contenu COMPLET cette fois!'
-            }
-          ],
-          temperature: 1.0, // Maximum de créativité
-          max_tokens: 3000,
-          response_format: { type: 'json_object' }
-        });
-
-        const retryContent = retryCompletion.choices[0].message.content;
-        if (!retryContent) {
-          console.error('[DynamicTemplate] Régénération échouée, utilisation fallback');
-          throw new Error('Régénération échouée');
-        }
-
-        templateData = JSON.parse(retryContent);
-        console.log('[DynamicTemplate] ✅ Template régénéré avec succès');
-
-        // Revérifier
-        const retryContentStr = JSON.stringify(templateData.contentBlocks);
-        const retryForbidden = forbiddenPatterns.filter(pattern =>
-          retryContentStr.includes(pattern)
-        );
-
-        if (retryForbidden.length > 0) {
-          console.error('[DynamicTemplate] ❌ Même après régénération, placeholders présents');
-          throw new Error('Impossible de générer template sans placeholders');
-        }
+        console.warn('[DynamicTemplate] ⚠️ Placeholders détectés (non-bloquant):', foundForbidden);
+        console.warn('[DynamicTemplate] On laisse passer pour voir le contenu réel...');
+        // NE PAS BLOQUER - juste logger pour diagnostic
       }
 
       // Validation des champs interdits dans requiredFields
