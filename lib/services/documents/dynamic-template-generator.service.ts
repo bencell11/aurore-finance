@@ -28,8 +28,15 @@ export class DynamicTemplateGeneratorService {
     documentType: string,
     category: string
   ): Promise<DocumentTemplate> {
+    console.log('[DynamicTemplate] 🚀 DÉBUT generateTemplate');
+    console.log('[DynamicTemplate] UserInput:', userInput);
+    console.log('[DynamicTemplate] DocumentType:', documentType);
+    console.log('[DynamicTemplate] Category:', category);
+
     try {
+      console.log('[DynamicTemplate] 🔑 Initialisation OpenAI...');
       const openai = this.getOpenAI();
+      console.log('[DynamicTemplate] ✅ OpenAI initialisé');
 
       const systemPrompt = `Tu génères des documents administratifs suisses en JSON.
 
@@ -58,6 +65,10 @@ Génère TOUJOURS du texte complet comme l'exemple ci-dessus.`;
 Génère un JSON avec la même structure que l'exemple (résiliation assurance).
 ÉCRIS le texte complet du document. PAS de [OBJET] ou {{objet}}.`;
 
+      console.log('[DynamicTemplate] 📤 Envoi requête à OpenAI...');
+      console.log('[DynamicTemplate] Model: gpt-4o-mini');
+      console.log('[DynamicTemplate] Temperature: 0.9');
+
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
@@ -69,13 +80,17 @@ Génère un JSON avec la même structure que l'exemple (résiliation assurance).
         response_format: { type: 'json_object' }
       });
 
+      console.log('[DynamicTemplate] ✅ Réponse reçue d\'OpenAI');
+
       const content = completion.choices[0].message.content;
       if (!content) {
         console.error('[DynamicTemplate] ❌ Pas de contenu dans la réponse OpenAI');
+        console.error('[DynamicTemplate] Completion object:', JSON.stringify(completion, null, 2));
         throw new Error('No response from OpenAI');
       }
 
       console.log('[DynamicTemplate] 📥 Réponse brute OpenAI (premiers 500 chars):', content.substring(0, 500));
+      console.log('[DynamicTemplate] Longueur totale:', content.length);
 
       let templateData;
       try {
