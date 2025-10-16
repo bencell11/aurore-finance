@@ -177,12 +177,25 @@ GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
 
       const content = completion.choices[0].message.content;
       if (!content) {
+        console.error('[DynamicTemplate] ❌ Pas de contenu dans la réponse OpenAI');
         throw new Error('No response from OpenAI');
       }
 
-      let templateData = JSON.parse(content);
+      console.log('[DynamicTemplate] 📥 Réponse brute OpenAI (premiers 500 chars):', content.substring(0, 500));
 
-      console.log('[DynamicTemplate] 📄 Template reçu d\'OpenAI:', JSON.stringify(templateData, null, 2));
+      let templateData;
+      try {
+        templateData = JSON.parse(content);
+      } catch (parseError: any) {
+        console.error('[DynamicTemplate] ❌ Erreur de parsing JSON:', parseError.message);
+        console.error('[DynamicTemplate] Contenu reçu:', content);
+        throw new Error(`Erreur de parsing JSON: ${parseError.message}`);
+      }
+
+      console.log('[DynamicTemplate] 📄 Template parsé avec succès');
+      console.log('[DynamicTemplate] ID:', templateData.id);
+      console.log('[DynamicTemplate] Nombre de requiredFields:', templateData.requiredFields?.length || 0);
+      console.log('[DynamicTemplate] Nombre de contentBlocks:', templateData.contentBlocks?.length || 0);
 
       // VALIDATION: Vérifier qu'il n'y a pas de placeholders interdits
       const contentStr = JSON.stringify(templateData.contentBlocks);
