@@ -112,42 +112,57 @@ Retourne UNIQUEMENT un JSON valide (sans markdown) avec cette structure:
 Type de document: ${documentType}
 Catégorie: ${category}
 
-Génère un template de document professionnel complet pour cette demande SPÉCIFIQUE.
+🚨 ATTENTION: TU DOIS ÉCRIRE LE CONTENU COMPLET DU DOCUMENT, PAS DES PLACEHOLDERS ! 🚨
 
-RÈGLES ABSOLUMENT CRITIQUES - À RESPECTER IMPÉRATIVEMENT:
+❌ MAUVAIS EXEMPLE (À NE JAMAIS FAIRE):
+{
+  "contentBlocks": [
+    {"type": "header", "content": "Objet: [OBJET]"},
+    {"type": "paragraph", "content": "Madame, Monsieur,"},
+    {"type": "paragraph", "content": "[CONTENU_PRINCIPAL]"},
+    {"type": "paragraph", "content": "Je vous prie d'agréer..."}
+  ]
+}
 
-1. TU DOIS ÉCRIRE TOI-MÊME LE CONTENU COMPLET DU DOCUMENT
-   - L'OBJET doit être rédigé par toi, adapté à la demande
-   - Le CONTENU (paragraphes) doit être rédigé par toi, professionnel et complet
-   - Inspire-toi du style formel suisse comme dans l'exemple de résiliation d'assurance maladie
+✅ BON EXEMPLE (CE QU'IL FAUT FAIRE - résiliation assurance maladie):
+{
+  "contentBlocks": [
+    {"type": "header", "content": "Objet: Résiliation de contrat d'assurance maladie de base", "style": {"bold": true}},
+    {"type": "paragraph", "content": "Madame, Monsieur,"},
+    {"type": "paragraph", "content": "Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie de base numéro {{numero_police}} auprès de votre établissement, avec effet au {{date_resiliation}}, conformément aux dispositions de la Loi fédérale sur l'assurance-maladie (LAMal, Art. 7)."},
+    {"type": "paragraph", "content": "Je vous prie de bien vouloir m'adresser une confirmation écrite de cette résiliation dans les meilleurs délais, ainsi que le décompte final de mes cotisations."},
+    {"type": "paragraph", "content": "Je vous remercie de votre compréhension et vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées."}
+  ]
+}
 
-2. EXEMPLE PARFAIT DE CE QUI EST ATTENDU (résiliation assurance maladie):
-   contentBlocks: [
-     {"type": "header", "content": "Objet: Résiliation de contrat d'assurance maladie", "style": {"bold": true}},
-     {"type": "paragraph", "content": "Madame, Monsieur,"},
-     {"type": "paragraph", "content": "Par la présente, je vous informe de ma décision de résilier mon contrat d'assurance maladie de base numéro {{numero_police}} auprès de {{nom_assurance}}, avec effet au {{date_resiliation}}, conformément aux dispositions de la LAMal (Art. 7)."},
-     {"type": "paragraph", "content": "Je vous remercie de bien vouloir m'adresser une confirmation écrite de cette résiliation..."}
-   ]
+✅ AUTRE BON EXEMPLE (réclamation retard paiement):
+{
+  "contentBlocks": [
+    {"type": "header", "content": "Objet: Réclamation pour retard de paiement - Facture N° {{numero_facture}}", "style": {"bold": true}},
+    {"type": "paragraph", "content": "Madame, Monsieur,"},
+    {"type": "paragraph", "content": "Je me permets de vous contacter concernant la facture N° {{numero_facture}} d'un montant de {{montant_facture}} CHF, émise le {{date_facture}}, dont le règlement devait intervenir dans un délai de {{delai_paiement}} jours."},
+    {"type": "paragraph", "content": "À ce jour, malgré l'expiration du délai de paiement convenu, je n'ai pas reçu le règlement de cette facture. Cette situation m'oblige à vous adresser une mise en demeure formelle."},
+    {"type": "paragraph", "content": "Je vous prie donc de bien vouloir procéder au règlement de cette facture dans un délai de 10 jours à compter de la réception de ce courrier, faute de quoi je me verrais contraint d'entreprendre les démarches juridiques nécessaires."},
+    {"type": "paragraph", "content": "Je vous remercie de votre compréhension et reste à votre disposition pour tout renseignement complémentaire."},
+    {"type": "paragraph", "content": "Je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées."}
+  ]
+}
 
-3. POUR LA DEMANDE ACTUELLE, RÉDIGE UN CONTENU SIMILAIRE:
-   - Écris l'objet spécifique (pas "Objet: {{objet}}" mais "Objet: [titre adapté]")
-   - Écris des paragraphes complets et professionnels
-   - Utilise le vouvoiement et les formules suisses
-   - Intègre les variables {{}} UNIQUEMENT pour les données spécifiques (montants, noms, dates)
-   - NE METS JAMAIS {{objet}} ou {{contenu_principal}}
+MAINTENANT, POUR LA DEMANDE "${userInput}", TU DOIS:
 
-4. Crée des champs SPÉCIFIQUES pour les données variables:
-   Exemples:
-   - Contrat web: montant_creation, tarif_maintenance_mensuel, description_services, delai_livraison
-   - Location: montant_loyer, charges_mensuelles, duree_bail, date_debut_location
-   - Vente: prix_vente, conditions_paiement, garanties
+1. Identifier le TYPE de document (résiliation, réclamation, demande, etc.)
+2. Rédiger un OBJET SPÉCIFIQUE et complet (pas un placeholder)
+3. Rédiger des PARAGRAPHES COMPLETS avec le contenu réel professionnel
+4. Utiliser {{variables}} UNIQUEMENT pour les données qui changent (numéros, montants, dates, noms)
+5. Respecter le style formel suisse (vouvoiement, formules de politesse)
 
-5. INTERDIT ABSOLU:
-   ❌ NE JAMAIS créer de champ "objet" dans requiredFields
-   ❌ NE JAMAIS créer de champ "contenu_principal" dans requiredFields
-   ❌ NE JAMAIS utiliser {{objet}} ou {{contenu_principal}} dans les contentBlocks
+RÈGLES ABSOLUES:
+✅ L'objet doit être écrit en toutes lettres: "Objet: Résiliation de..." pas "Objet: {{objet}}"
+✅ Les paragraphes doivent contenir le texte complet, pas [CONTENU_PRINCIPAL] ou {{contenu_principal}}
+✅ Créer des champs spécifiques: numero_police, date_resiliation, montant_facture, etc.
+❌ INTERDICTION TOTALE d'utiliser: [OBJET], [CONTENU_PRINCIPAL], {{objet}}, {{contenu_principal}}, {{contenu_courrier}}
 
-GÉNÈRE MAINTENANT UN DOCUMENT PROFESSIONNEL COMPLET COMME CELUI DE L'ASSURANCE MALADIE !`;
+GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
@@ -155,8 +170,8 @@ GÉNÈRE MAINTENANT UN DOCUMENT PROFESSIONNEL COMPLET COMME CELUI DE L'ASSURANCE
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.7,
-        max_tokens: 2000,
+        temperature: 0.9, // Augmenté pour plus de créativité
+        max_tokens: 3000, // Augmenté pour contenu plus long
         response_format: { type: 'json_object' }
       });
 
@@ -166,6 +181,42 @@ GÉNÈRE MAINTENANT UN DOCUMENT PROFESSIONNEL COMPLET COMME CELUI DE L'ASSURANCE
       }
 
       const templateData = JSON.parse(content);
+
+      // VALIDATION: Vérifier qu'il n'y a pas de placeholders interdits
+      const contentStr = JSON.stringify(templateData.contentBlocks);
+      const forbiddenPatterns = [
+        '[OBJET]',
+        '[CONTENU_PRINCIPAL]',
+        '[CONTENU]',
+        '{{objet}}',
+        '{{contenu_principal}}',
+        '{{contenu_courrier}}',
+        '{{contenu}}'
+      ];
+
+      const foundForbidden = forbiddenPatterns.filter(pattern =>
+        contentStr.includes(pattern)
+      );
+
+      if (foundForbidden.length > 0) {
+        console.error('[DynamicTemplate] ⚠️ Placeholders interdits détectés:', foundForbidden);
+        console.error('[DynamicTemplate] Template généré:', contentStr);
+        throw new Error(`Template contient des placeholders interdits: ${foundForbidden.join(', ')}`);
+      }
+
+      // Validation des champs interdits dans requiredFields
+      const forbiddenFields = ['objet', 'contenu', 'contenu_principal', 'contenu_courrier'];
+      const invalidFields = templateData.requiredFields?.filter((field: any) =>
+        forbiddenFields.includes(field.key.toLowerCase())
+      );
+
+      if (invalidFields && invalidFields.length > 0) {
+        console.error('[DynamicTemplate] ⚠️ Champs interdits détectés:', invalidFields.map((f: any) => f.key));
+        // Filtrer ces champs automatiquement
+        templateData.requiredFields = templateData.requiredFields.filter((field: any) =>
+          !forbiddenFields.includes(field.key.toLowerCase())
+        );
+      }
 
       // Enrichir avec des métadonnées
       const template: DocumentTemplate = {
@@ -181,7 +232,8 @@ GÉNÈRE MAINTENANT UN DOCUMENT PROFESSIONNEL COMPLET COMME CELUI DE L'ASSURANCE
         }
       };
 
-      console.log('[DynamicTemplate] Generated template:', template.id);
+      console.log('[DynamicTemplate] ✅ Template validé et généré:', template.id);
+      console.log('[DynamicTemplate] Champs requis:', template.requiredFields.map(f => f.key).join(', '));
       return template;
 
     } catch (error) {
