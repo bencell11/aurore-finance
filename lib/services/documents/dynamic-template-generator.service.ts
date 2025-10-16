@@ -236,9 +236,21 @@ GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
       console.log('[DynamicTemplate] Champs requis:', template.requiredFields.map(f => f.key).join(', '));
       return template;
 
-    } catch (error) {
-      console.error('[DynamicTemplate] Error:', error);
-      throw new Error('Erreur lors de la génération du template');
+    } catch (error: any) {
+      console.error('[DynamicTemplate] ❌ ERREUR lors de la génération:', error);
+      console.error('[DynamicTemplate] Type d\'erreur:', error.constructor.name);
+      console.error('[DynamicTemplate] Message:', error.message);
+      console.error('[DynamicTemplate] Stack:', error.stack);
+
+      // Si c'est une erreur OpenAI, logger plus de détails
+      if (error.response) {
+        console.error('[DynamicTemplate] OpenAI Response Status:', error.response.status);
+        console.error('[DynamicTemplate] OpenAI Response Data:', error.response.data);
+      }
+
+      // Ne pas throw, retourner le fallback à la place
+      console.warn('[DynamicTemplate] Utilisation du fallback template...');
+      return this.generateFallbackTemplate(userInput);
     }
   }
 
@@ -247,15 +259,19 @@ GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
    * DEPRECATED: Ne devrait jamais être utilisé car l'IA génère toujours un template complet
    */
   static generateFallbackTemplate(userInput: string): DocumentTemplate {
-    console.warn('[DynamicTemplate] Using fallback template - AI generation should have succeeded');
-    const templateId = `document-${Date.now()}`;
+    console.error('[DynamicTemplate] 🚨 FALLBACK TEMPLATE UTILISÉ - L\'IA OpenAI a échoué!');
+    console.error('[DynamicTemplate] Demande utilisateur:', userInput);
+    const templateId = `fallback-${Date.now()}`;
+
+    // Générer un contenu de base à partir de la demande utilisateur
+    const cleanedInput = userInput.trim();
 
     return {
       id: templateId,
       type: 'courrier_formel',
       category: 'administrative',
       title: 'Courrier formel',
-      description: 'Courrier formel généré automatiquement',
+      description: `Document généré pour: ${cleanedInput.substring(0, 100)}`,
 
       requiredFields: [
         {
@@ -307,22 +323,6 @@ GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
           type: 'address',
           required: true,
           source: 'manual_input'
-        },
-        {
-          key: 'objet',
-          label: 'Objet du courrier',
-          type: 'text',
-          required: true,
-          source: 'manual_input',
-          placeholder: 'Ex: Demande d\'information'
-        },
-        {
-          key: 'contenu_principal',
-          label: 'Contenu du courrier',
-          type: 'text',
-          required: true,
-          source: 'manual_input',
-          helpText: 'Décrivez votre demande en détail'
         }
       ],
 
@@ -344,7 +344,7 @@ GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
         },
         {
           type: 'header',
-          content: 'Objet: {{objet}}',
+          content: `Objet: ${cleanedInput.substring(0, 80)}`,
           style: { bold: true }
         },
         {
@@ -353,11 +353,15 @@ GÉNÈRE UN DOCUMENT COMPLET MAINTENANT !`;
         },
         {
           type: 'paragraph',
-          content: '{{contenu_principal}}'
+          content: `Par la présente, je me permets de vous contacter concernant la demande suivante : ${cleanedInput}`
         },
         {
           type: 'paragraph',
-          content: 'Je reste à votre disposition pour toute information complémentaire et vous prie d\'agréer, Madame, Monsieur, l\'expression de mes salutations distinguées.'
+          content: 'Je vous remercie de bien vouloir traiter cette demande dans les meilleurs délais et reste à votre disposition pour tout renseignement complémentaire.'
+        },
+        {
+          type: 'paragraph',
+          content: 'Je vous prie d\'agréer, Madame, Monsieur, l\'expression de mes salutations distinguées.'
         },
         {
           type: 'signature',
