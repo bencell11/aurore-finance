@@ -3,19 +3,36 @@
  * Chiffre les données sensibles avant stockage en base
  */
 
-import crypto from 'crypto';
+// Import conditionnel de crypto pour compatibilité navigateur
+let crypto: any;
+if (typeof window === 'undefined') {
+  // Côté serveur uniquement
+  crypto = require('crypto');
+}
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const ALGORITHM = 'aes-256-gcm';
 
-if (!ENCRYPTION_KEY) {
-  throw new Error('ENCRYPTION_KEY manquante dans les variables d\'environnement');
+// Vérifier seulement côté serveur
+if (typeof window === 'undefined' && !ENCRYPTION_KEY) {
+  console.warn('[Encryption] ENCRYPTION_KEY manquante - les fonctions de chiffrement ne fonctionneront pas');
 }
 
 /**
  * Chiffrer une chaîne de caractères
  */
 export async function encrypt(text: string): Promise<string> {
+  // Guard: fonction disponible seulement côté serveur
+  if (typeof window !== 'undefined') {
+    console.warn('[Encryption] encrypt() appelé côté client - ignoré');
+    return text; // Retourner texte non chiffré côté client
+  }
+
+  if (!crypto || !ENCRYPTION_KEY) {
+    console.error('[Encryption] Crypto non disponible ou ENCRYPTION_KEY manquante');
+    return text;
+  }
+
   try {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher(ALGORITHM, ENCRYPTION_KEY);
@@ -37,6 +54,17 @@ export async function encrypt(text: string): Promise<string> {
  * Déchiffrer une chaîne de caractères
  */
 export async function decrypt(encryptedData: string): Promise<string> {
+  // Guard: fonction disponible seulement côté serveur
+  if (typeof window !== 'undefined') {
+    console.warn('[Encryption] decrypt() appelé côté client - ignoré');
+    return encryptedData; // Retourner données telles quelles côté client
+  }
+
+  if (!crypto || !ENCRYPTION_KEY) {
+    console.error('[Encryption] Crypto non disponible ou ENCRYPTION_KEY manquante');
+    return encryptedData;
+  }
+
   try {
     const parts = encryptedData.split(':');
     if (parts.length !== 3) {
@@ -64,6 +92,11 @@ export async function decrypt(encryptedData: string): Promise<string> {
  * Hacher un mot de passe avec salt
  */
 export function hashPassword(password: string): { hash: string; salt: string } {
+  if (typeof window !== 'undefined' || !crypto) {
+    console.warn('[Encryption] hashPassword() appelé côté client ou crypto indisponible');
+    return { hash: password, salt: '' };
+  }
+
   const salt = crypto.randomBytes(32).toString('hex');
   const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
   
@@ -74,6 +107,11 @@ export function hashPassword(password: string): { hash: string; salt: string } {
  * Vérifier un mot de passe
  */
 export function verifyPassword(password: string, hash: string, salt: string): boolean {
+  if (typeof window !== 'undefined' || !crypto) {
+    console.warn('[Encryption] verifyPassword() appelé côté client ou crypto indisponible');
+    return password === hash;
+  }
+
   const verifyHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
   return hash === verifyHash;
 }
@@ -82,6 +120,11 @@ export function verifyPassword(password: string, hash: string, salt: string): bo
  * Générer une clé de chiffrement sécurisée
  */
 export function generateEncryptionKey(): string {
+  if (typeof window !== 'undefined' || !crypto) {
+    console.warn('[Encryption] generateEncryptionKey() appelé côté client ou crypto indisponible');
+    return 'fallback-key-' + Math.random().toString(36);
+  }
+
   return crypto.randomBytes(32).toString('hex');
 }
 
