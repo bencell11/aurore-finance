@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { UserProfileSupabaseService } from '@/lib/services/storage/supabase-profile-storage.service';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PropertyFilters, PropertyFiltersState } from '@/components/real-estate/PropertyFilters';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,6 +60,9 @@ export default function RealEstateSearchPage() {
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [incomeAutofilled, setIncomeAutofilled] = useState(false);
+  const [filters, setFilters] = useState<PropertyFiltersState>({
+    radiusKm: 50
+  });
 
   /**
    * Charger le profil utilisateur depuis le dashboard
@@ -83,6 +87,84 @@ export default function RealEstateSearchPage() {
       console.error('[RealEstateSearch] Erreur chargement profil:', error);
       // Ne pas afficher d'erreur à l'utilisateur, juste ne pas pré-remplir
     }
+  };
+
+  /**
+   * Filtrer les propriétés côté client selon les filtres actifs
+   */
+  const filteredProperties = useMemo(() => {
+    let filtered = [...properties];
+
+    // Filtre par type de transaction
+    if (filters.transactionType && filters.transactionType !== 'all') {
+      filtered = filtered.filter(p => p.transactionType === filters.transactionType);
+    }
+
+    // Filtre par type de propriété
+    if (filters.propertyType && filters.propertyType !== 'all') {
+      filtered = filtered.filter(p => p.propertyType === filters.propertyType);
+    }
+
+    // Filtre par canton
+    if (filters.canton) {
+      filtered = filtered.filter(p => p.address.canton === filters.canton);
+    }
+
+    // Filtre par ville
+    if (filters.city) {
+      filtered = filtered.filter(p => p.address.city === filters.city);
+    }
+
+    // Filtre par prix
+    if (filters.priceMin !== undefined && filters.priceMin > 0) {
+      filtered = filtered.filter(p => p.price >= filters.priceMin!);
+    }
+    if (filters.priceMax !== undefined && filters.priceMax > 0) {
+      filtered = filtered.filter(p => p.price <= filters.priceMax!);
+    }
+
+    // Filtre par nombre de pièces
+    if (filters.roomsMin !== undefined && filters.roomsMin > 0) {
+      filtered = filtered.filter(p => p.rooms >= filters.roomsMin!);
+    }
+    if (filters.roomsMax !== undefined && filters.roomsMax > 0) {
+      filtered = filtered.filter(p => p.rooms <= filters.roomsMax!);
+    }
+
+    // Filtre par surface
+    if (filters.surfaceMin !== undefined && filters.surfaceMin > 0) {
+      filtered = filtered.filter(p => p.surface >= filters.surfaceMin!);
+    }
+    if (filters.surfaceMax !== undefined && filters.surfaceMax > 0) {
+      filtered = filtered.filter(p => p.surface <= filters.surfaceMax!);
+    }
+
+    return filtered;
+  }, [properties, filters]);
+
+  /**
+   * Compter les filtres actifs
+   */
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (filters.transactionType && filters.transactionType !== 'all') count++;
+    if (filters.propertyType && filters.propertyType !== 'all') count++;
+    if (filters.canton) count++;
+    if (filters.city) count++;
+    if (filters.priceMin) count++;
+    if (filters.priceMax) count++;
+    if (filters.roomsMin) count++;
+    if (filters.roomsMax) count++;
+    if (filters.surfaceMin) count++;
+    if (filters.surfaceMax) count++;
+    return count;
+  }, [filters]);
+
+  /**
+   * Réinitialiser les filtres
+   */
+  const resetFilters = () => {
+    setFilters({ radiusKm: 50 });
   };
 
   /**
@@ -273,6 +355,14 @@ export default function RealEstateSearchPage() {
         </CardContent>
       </Card>
 
+      {/* Filtres avancés */}
+      <PropertyFilters
+        filters={filters}
+        onFiltersChange={setFilters}
+        onReset={resetFilters}
+        activeFiltersCount={activeFiltersCount}
+      />
+
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertCircle className="h-4 w-4" />
@@ -319,7 +409,12 @@ export default function RealEstateSearchPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <h2 className="text-2xl font-bold">
-              {properties.length} {properties.length === 1 ? 'résultat trouvé' : 'résultats trouvés'}
+              {filteredProperties.length} {filteredProperties.length === 1 ? 'résultat trouvé' : 'résultats trouvés'}
+              {filteredProperties.length !== properties.length && (
+                <span className="text-base text-gray-500 ml-2">
+                  (sur {properties.length} total{properties.length > 1 ? 'aux' : ''})
+                </span>
+              )}
             </h2>
 
             <div className="flex items-center gap-3 flex-wrap">
@@ -372,7 +467,7 @@ export default function RealEstateSearchPage() {
           {viewMode === 'map' && (
             <div className="w-full">
               <PropertyMapView
-                properties={properties}
+                properties={filteredProperties}
                 selectedPropertyId={selectedPropertyId || undefined}
                 onPropertyClick={(property) => {
                   setSelectedPropertyId(property.id);
@@ -383,7 +478,7 @@ export default function RealEstateSearchPage() {
           )}
 
           {/* Vue Liste */}
-          {viewMode === 'list' && properties.map((property) => (
+          {viewMode === 'list' && filteredProperties.map((property) => (
             <Card
               key={property.id}
               className={`hover:shadow-lg transition-shadow cursor-pointer ${
