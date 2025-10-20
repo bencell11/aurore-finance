@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { UserProfileSupabaseService } from '@/lib/services/storage/supabase-profile-storage.service';
+import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Home,
   Search,
@@ -21,9 +24,27 @@ import {
   Calculator,
   Sparkles,
   Database,
-  Zap
+  Zap,
+  Map as MapIcon,
+  List
 } from 'lucide-react';
 import type { Property } from '@/lib/types/real-estate';
+
+// Import dynamique du composant carte pour éviter SSR
+const PropertyMapView = dynamic(
+  () => import('@/components/real-estate/PropertyMapView'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
+        <div className="text-center space-y-3">
+          <MapPin className="h-12 w-12 mx-auto text-gray-300 animate-pulse" />
+          <p className="text-gray-500">Chargement de la carte...</p>
+        </div>
+      </div>
+    )
+  }
+);
 
 export default function RealEstateSearchPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,6 +56,34 @@ export default function RealEstateSearchPage() {
   const [affordability, setAffordability] = useState<any>(null);
   const [searchStrategy, setSearchStrategy] = useState<'real-only' | 'ai-only' | 'hybrid' | null>(null);
   const [sources, setSources] = useState<{ real: number; ai: number; total: number } | null>(null);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [incomeAutofilled, setIncomeAutofilled] = useState(false);
+
+  /**
+   * Charger le profil utilisateur depuis le dashboard
+   */
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      const profile = await UserProfileSupabaseService.getProfile();
+
+      if (profile) {
+        // Pré-remplir le revenu mensuel si disponible
+        if (profile.revenu_mensuel && profile.revenu_mensuel > 0) {
+          setMonthlyIncome(profile.revenu_mensuel);
+          setIncomeAutofilled(true);
+          console.log('[RealEstateSearch] Revenu auto-rempli depuis le profil:', profile.revenu_mensuel);
+        }
+      }
+    } catch (error) {
+      console.error('[RealEstateSearch] Erreur chargement profil:', error);
+      // Ne pas afficher d'erreur à l'utilisateur, juste ne pas pré-remplir
+    }
+  };
 
   /**
    * Recherche de propriétés
@@ -150,17 +199,28 @@ export default function RealEstateSearchPage() {
             <Label htmlFor="income" className="flex items-center gap-2">
               <Calculator className="h-4 w-4" />
               Votre revenu mensuel (optionnel)
+              {incomeAutofilled && (
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-700 text-xs">
+                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                  Auto-rempli
+                </Badge>
+              )}
             </Label>
             <Input
               id="income"
               type="number"
               placeholder="5000"
               value={monthlyIncome || ''}
-              onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
-              className="text-base"
+              onChange={(e) => {
+                setMonthlyIncome(parseInt(e.target.value) || 0);
+                setIncomeAutofilled(false); // Désactiver l'indicateur si modifié manuellement
+              }}
+              className={`text-base ${incomeAutofilled ? 'border-green-300 bg-green-50' : ''}`}
             />
             <p className="text-xs text-gray-500">
-              Nous utiliserons votre revenu pour filtrer les biens abordables
+              {incomeAutofilled
+                ? '✓ Revenu récupéré depuis votre profil dashboard'
+                : 'Nous utiliserons votre revenu pour filtrer les biens abordables'}
             </p>
           </div>
 
@@ -262,7 +322,22 @@ export default function RealEstateSearchPage() {
               {properties.length} {properties.length === 1 ? 'résultat trouvé' : 'résultats trouvés'}
             </h2>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* Onglets Vue Liste / Carte */}
+              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'list' | 'map')} className="w-auto">
+                <TabsList>
+                  <TabsTrigger value="list" className="flex items-center gap-2">
+                    <List className="h-4 w-4" />
+                    Liste
+                  </TabsTrigger>
+                  <TabsTrigger value="map" className="flex items-center gap-2">
+                    <MapIcon className="h-4 w-4" />
+                    Carte
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              <div className="flex items-center gap-2 flex-wrap">
               {/* Badge de stratégie de recherche */}
               {searchStrategy === 'real-only' && (
                 <Badge variant="secondary" className="bg-green-100 text-green-700">
@@ -289,11 +364,33 @@ export default function RealEstateSearchPage() {
                   ({sources.real} réelles, {sources.ai} générées)
                 </span>
               )}
+              </div>
             </div>
           </div>
 
-          {properties.map((property) => (
-            <Card key={property.id} className="hover:shadow-lg transition-shadow">
+          {/* Vue Carte */}
+          {viewMode === 'map' && (
+            <div className="w-full">
+              <PropertyMapView
+                properties={properties}
+                selectedPropertyId={selectedPropertyId || undefined}
+                onPropertyClick={(property) => {
+                  setSelectedPropertyId(property.id);
+                  // Scroll vers la propriété dans la liste (optionnel)
+                }}
+              />
+            </div>
+          )}
+
+          {/* Vue Liste */}
+          {viewMode === 'list' && properties.map((property) => (
+            <Card
+              key={property.id}
+              className={`hover:shadow-lg transition-shadow cursor-pointer ${
+                selectedPropertyId === property.id ? 'ring-2 ring-blue-500' : ''
+              }`}
+              onClick={() => setSelectedPropertyId(property.id)}
+            >
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Image placeholder */}

@@ -7,6 +7,7 @@ import { Property, PropertySearchCriteria } from '@/lib/types/real-estate';
 import { ApifyIntegrationService } from './apify-integration.service';
 import { AIPropertyGeneratorService } from './ai-property-generator.service';
 import { AffordabilityService } from './affordability.service';
+import { GeocodingService } from './geocoding.service';
 
 export interface EnrichedSearchResult {
   properties: Property[];
@@ -100,6 +101,9 @@ export class DataEnrichmentService {
     // Combiner les résultats
     let allProperties = [...realProperties, ...aiProperties];
 
+    // Enrichir avec les coordonnées GPS (géocodage)
+    allProperties = await this.enrichWithCoordinates(allProperties);
+
     // Enrichir avec les scores d'affordabilité si revenu fourni
     if (userIncome && userIncome > 0) {
       allProperties = this.enrichWithAffordability(allProperties, userIncome);
@@ -121,6 +125,77 @@ export class DataEnrichmentService {
       searchStrategy,
       timestamp: new Date().toISOString()
     };
+  }
+
+  /**
+   * Enrichit les propriétés avec les coordonnées GPS via géocodage
+   */
+  private static async enrichWithCoordinates(
+    properties: Property[]
+  ): Promise<Property[]> {
+    const enriched: Property[] = [];
+
+    for (const property of properties) {
+      // Si les coordonnées existent déjà, on garde la propriété telle quelle
+      if (property.address.coordinates?.lat && property.address.coordinates?.lng) {
+        enriched.push(property);
+        continue;
+      }
+
+      // Sinon, essayer le géocodage
+      try {
+        let geocoded = await GeocodingService.geocodeAddress(
+          property.address.city,
+          property.address.postalCode,
+          property.address.street
+        );
+
+        // Fallback: essayer avec approximation canton/ville
+        if (!geocoded) {
+          const cityApprox = GeocodingService.getCityApproximateCoords(property.address.city);
+          if (cityApprox) {
+            geocoded = {
+              lat: cityApprox.lat,
+              lng: cityApprox.lng,
+              displayName: `${property.address.city}, Switzerland (approximative)`,
+              confidence: 0.5
+            };
+          } else {
+            const cantonApprox = GeocodingService.getCantonApproximateCoords(property.address.canton);
+            if (cantonApprox) {
+              geocoded = {
+                lat: cantonApprox.lat,
+                lng: cantonApprox.lng,
+                displayName: `${property.address.canton}, Switzerland (approximative)`,
+                confidence: 0.3
+              };
+            }
+          }
+        }
+
+        if (geocoded) {
+          enriched.push({
+            ...property,
+            address: {
+              ...property.address,
+              coordinates: {
+                lat: geocoded.lat,
+                lng: geocoded.lng
+              }
+            }
+          });
+        } else {
+          // Si tout échoue, garder la propriété sans coordonnées
+          console.warn(`[DataEnrichment] Could not geocode: ${property.address.city}`);
+          enriched.push(property);
+        }
+      } catch (error) {
+        console.error('[DataEnrichment] Geocoding error:', error);
+        enriched.push(property);
+      }
+    }
+
+    return enriched;
   }
 
   /**
