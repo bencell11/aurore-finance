@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { UserProfileSupabaseService } from '@/lib/services/storage/supabase-profile-storage.service';
+import { SupabaseProfileStorageService } from '@/lib/services/storage/supabase-profile-storage.service';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PropertyFilters, PropertyFiltersState } from '@/components/real-estate/PropertyFilters';
@@ -73,7 +73,7 @@ export default function RealEstateSearchPage() {
 
   const loadUserProfile = async () => {
     try {
-      const profile = await UserProfileSupabaseService.getProfile();
+      const profile = await SupabaseProfileStorageService.getProfile();
 
       if (profile) {
         // Pré-remplir le revenu mensuel si disponible
