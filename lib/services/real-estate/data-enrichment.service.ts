@@ -138,8 +138,8 @@ export class DataEnrichmentService {
     for (const property of properties) {
       // Vérifier que l'adresse existe
       if (!property.address) {
-        console.warn('[DataEnrichment] Property missing address:', property.id || property.title);
-        enriched.push(property);
+        console.warn('[DataEnrichment] Skipping property without address:', property.id || property.title);
+        // Ne PAS ajouter les propriétés sans adresse
         continue;
       }
 

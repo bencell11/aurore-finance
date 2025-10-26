@@ -80,12 +80,12 @@ export default function RealEstateSearchPage() {
 
     // Filtre par canton
     if (filters.canton) {
-      filtered = filtered.filter(p => p.address.canton === filters.canton);
+      filtered = filtered.filter(p => p.address?.canton === filters.canton);
     }
 
     // Filtre par ville
     if (filters.city) {
-      filtered = filtered.filter(p => p.address.city === filters.city);
+      filtered = filtered.filter(p => p.address?.city === filters.city);
     }
 
     // Filtre par prix
@@ -488,10 +488,12 @@ export default function RealEstateSearchPage() {
                             </Badge>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <MapPin className="h-4 w-4" />
-                          <span>{property.address.city}, {property.address.canton}</span>
-                        </div>
+                        {property.address && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <MapPin className="h-4 w-4" />
+                            <span>{property.address.city}, {property.address.canton}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="text-right">
                         <p className="text-2xl font-bold text-blue-600">
