@@ -40,6 +40,7 @@ const getNavigationItems = (t: any) => [
     submenu: [
       { name: 'Simulateurs', href: '/simulateurs', icon: Calculator },
       { name: 'Recherche Immobilière', href: '/recherche-immobiliere', icon: Home },
+      { name: 'Recherche Biens IA', href: '/recherche-biens', icon: Sparkles },
       { name: 'Recherche LPP', href: '/recherche-lpp', icon: Search },
       { name: 'Générateur Documents IA', href: '/documents', icon: FileText },
       { name: 'Objectifs', href: '/objectifs', icon: PiggyBank },
