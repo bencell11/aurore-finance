@@ -121,11 +121,16 @@ Assure-toi que les prix sont COHÉRENTS avec le marché suisse actuel.`;
       }
 
       const response = JSON.parse(content);
-      let properties: Property[] = response.properties || response.result || response;
+      let properties: Property[] = response.properties || response.result || response.annonces || response;
 
       // S'assurer que c'est un array
       if (!Array.isArray(properties)) {
         properties = [properties];
+      }
+
+      // DEBUG: Log first property structure
+      if (properties.length > 0) {
+        console.log('[AIPropertyGenerator] First property structure:', JSON.stringify(properties[0], null, 2));
       }
 
       // Calculer le score d'affordabilité si revenu fourni
