@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { SupabaseProfileStorageService } from '@/lib/services/storage/supabase-profile-storage.service';
+import { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PropertyFilters, PropertyFiltersState } from '@/components/real-estate/PropertyFilters';
@@ -59,35 +58,9 @@ export default function RealEstateSearchPage() {
   const [sources, setSources] = useState<{ real: number; ai: number; total: number } | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
-  const [incomeAutofilled, setIncomeAutofilled] = useState(false);
   const [filters, setFilters] = useState<PropertyFiltersState>({
     radiusKm: 50
   });
-
-  /**
-   * Charger le profil utilisateur depuis le dashboard
-   */
-  useEffect(() => {
-    loadUserProfile();
-  }, []);
-
-  const loadUserProfile = async () => {
-    try {
-      const profile = await SupabaseProfileStorageService.getProfile();
-
-      if (profile) {
-        // Pré-remplir le revenu mensuel si disponible
-        if (profile.revenu_mensuel && profile.revenu_mensuel > 0) {
-          setMonthlyIncome(profile.revenu_mensuel);
-          setIncomeAutofilled(true);
-          console.log('[RealEstateSearch] Revenu auto-rempli depuis le profil:', profile.revenu_mensuel);
-        }
-      }
-    } catch (error) {
-      console.error('[RealEstateSearch] Erreur chargement profil:', error);
-      // Ne pas afficher d'erreur à l'utilisateur, juste ne pas pré-remplir
-    }
-  };
 
   /**
    * Filtrer les propriétés côté client selon les filtres actifs
@@ -281,28 +254,17 @@ export default function RealEstateSearchPage() {
             <Label htmlFor="income" className="flex items-center gap-2">
               <Calculator className="h-4 w-4" />
               Votre revenu mensuel (optionnel)
-              {incomeAutofilled && (
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-700 text-xs">
-                  <CheckCircle2 className="h-3 w-3 mr-1" />
-                  Auto-rempli
-                </Badge>
-              )}
             </Label>
             <Input
               id="income"
               type="number"
               placeholder="5000"
               value={monthlyIncome || ''}
-              onChange={(e) => {
-                setMonthlyIncome(parseInt(e.target.value) || 0);
-                setIncomeAutofilled(false); // Désactiver l'indicateur si modifié manuellement
-              }}
-              className={`text-base ${incomeAutofilled ? 'border-green-300 bg-green-50' : ''}`}
+              onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
+              className="text-base"
             />
             <p className="text-xs text-gray-500">
-              {incomeAutofilled
-                ? '✓ Revenu récupéré depuis votre profil dashboard'
-                : 'Nous utiliserons votre revenu pour filtrer les biens abordables'}
+              Nous utiliserons votre revenu pour filtrer les biens abordables
             </p>
           </div>
 
