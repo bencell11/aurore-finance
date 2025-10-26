@@ -136,6 +136,13 @@ export class DataEnrichmentService {
     const enriched: Property[] = [];
 
     for (const property of properties) {
+      // Vérifier que l'adresse existe
+      if (!property.address) {
+        console.warn('[DataEnrichment] Property missing address:', property.id || property.title);
+        enriched.push(property);
+        continue;
+      }
+
       // Si les coordonnées existent déjà, on garde la propriété telle quelle
       if (property.address.coordinates?.lat && property.address.coordinates?.lng) {
         enriched.push(property);

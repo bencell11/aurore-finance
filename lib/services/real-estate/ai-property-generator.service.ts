@@ -121,7 +121,7 @@ Assure-toi que les prix sont COHÉRENTS avec le marché suisse actuel.`;
       }
 
       const response = JSON.parse(content);
-      let properties: Property[] = response.properties || response;
+      let properties: Property[] = response.properties || response.result || response;
 
       // S'assurer que c'est un array
       if (!Array.isArray(properties)) {
