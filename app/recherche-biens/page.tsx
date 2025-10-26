@@ -159,7 +159,8 @@ export default function RealEstateSearchPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: searchQuery,
-          userIncome: monthlyIncome > 0 ? monthlyIncome : undefined
+          userIncome: monthlyIncome > 0 ? monthlyIncome : undefined,
+          useCache: false // TEMPORAIRE: désactivé pour éviter l'ancien cache
         })
       });
 
