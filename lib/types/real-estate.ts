@@ -74,6 +74,7 @@ export interface Property {
 
   // Metadata
   source?: 'ai-generated' | 'immoscout24' | 'homegate' | 'comparis';
+  sourceUrl?: string; // URL de l'annonce originale (si données réelles)
   publishedDate?: string;
   availability?: string;
 

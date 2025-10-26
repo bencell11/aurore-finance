@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PropertyFilters, PropertyFiltersState } from '@/components/real-estate/PropertyFilters';
+import { PropertyDetailsModal } from '@/components/real-estate/PropertyDetailsModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -57,6 +58,8 @@ export default function RealEstateSearchPage() {
   const [searchStrategy, setSearchStrategy] = useState<'real-only' | 'ai-only' | 'hybrid' | null>(null);
   const [sources, setSources] = useState<{ real: number; ai: number; total: number } | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [filters, setFilters] = useState<PropertyFiltersState>({
     radiusKm: 50
@@ -138,6 +141,15 @@ export default function RealEstateSearchPage() {
    */
   const resetFilters = () => {
     setFilters({ radiusKm: 50 });
+  };
+
+  /**
+   * Ouvrir les détails d'une propriété
+   */
+  const handlePropertyClick = (property: Property) => {
+    setSelectedProperty(property);
+    setSelectedPropertyId(property.id);
+    setDetailsModalOpen(true);
   };
 
   /**
@@ -447,7 +459,7 @@ export default function RealEstateSearchPage() {
               className={`hover:shadow-lg transition-shadow cursor-pointer ${
                 selectedPropertyId === property.id ? 'ring-2 ring-blue-500' : ''
               }`}
-              onClick={() => setSelectedPropertyId(property.id)}
+              onClick={() => handlePropertyClick(property)}
             >
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row gap-6">
@@ -593,6 +605,16 @@ export default function RealEstateSearchPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Modale de détails */}
+      <PropertyDetailsModal
+        property={selectedProperty}
+        open={detailsModalOpen}
+        onClose={() => {
+          setDetailsModalOpen(false);
+          setSelectedProperty(null);
+        }}
+      />
     </div>
   );
 }
