@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PropertyFilters, PropertyFiltersState } from '@/components/real-estate/PropertyFilters';
 import { PropertyDetailsModal } from '@/components/real-estate/PropertyDetailsModal';
+import { PropertyComparator } from '@/components/real-estate/PropertyComparator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,7 +28,9 @@ import {
   Database,
   Zap,
   Map as MapIcon,
-  List
+  List,
+  GitCompare,
+  Heart
 } from 'lucide-react';
 import type { Property } from '@/lib/types/real-estate';
 
@@ -64,6 +67,11 @@ export default function RealEstateSearchPage() {
   const [filters, setFilters] = useState<PropertyFiltersState>({
     radiusKm: 50
   });
+
+  // Comparateur et favoris
+  const [compareList, setCompareList] = useState<Property[]>([]);
+  const [comparatorOpen, setComparatorOpen] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   /**
    * Filtrer les propriétés côté client selon les filtres actifs
@@ -150,6 +158,36 @@ export default function RealEstateSearchPage() {
     setSelectedProperty(property);
     setSelectedPropertyId(property.id);
     setDetailsModalOpen(true);
+  };
+
+  /**
+   * Ajouter/retirer une propriété du comparateur
+   */
+  const toggleCompare = (property: Property, event?: React.MouseEvent) => {
+    event?.stopPropagation(); // Empêcher l'ouverture des détails
+    const isInList = compareList.some(p => p.id === property.id);
+    if (isInList) {
+      setCompareList(compareList.filter(p => p.id !== property.id));
+    } else {
+      if (compareList.length >= 4) {
+        alert('Vous pouvez comparer maximum 4 propriétés');
+        return;
+      }
+      setCompareList([...compareList, property]);
+    }
+  };
+
+  /**
+   * Ajouter/retirer des favoris
+   */
+  const toggleFavorite = (propertyId: string, event?: React.MouseEvent) => {
+    event?.stopPropagation();
+    const isFavorite = favorites.includes(propertyId);
+    if (isFavorite) {
+      setFavorites(favorites.filter(id => id !== propertyId));
+    } else {
+      setFavorites([...favorites, propertyId]);
+    }
   };
 
   /**
@@ -393,6 +431,34 @@ export default function RealEstateSearchPage() {
             </h2>
 
             <div className="flex items-center gap-3 flex-wrap">
+              {/* Bouton Comparateur */}
+              {compareList.length > 0 && (
+                <Button
+                  onClick={() => setComparatorOpen(true)}
+                  variant="outline"
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                >
+                  <GitCompare className="h-4 w-4 mr-2" />
+                  Comparer ({compareList.length})
+                </Button>
+              )}
+
+              {/* Bouton Favoris */}
+              {favorites.length > 0 && (
+                <Button
+                  variant="outline"
+                  className="border-red-600 text-red-600 hover:bg-red-50"
+                  onClick={() => {
+                    const favProps = properties.filter(p => favorites.includes(p.id));
+                    setCompareList(favProps.slice(0, 4));
+                    setComparatorOpen(true);
+                  }}
+                >
+                  <Heart className="h-4 w-4 mr-2 fill-red-600" />
+                  Favoris ({favorites.length})
+                </Button>
+              )}
+
               {/* Onglets Vue Liste / Carte */}
               <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'list' | 'map')} className="w-auto">
                 <TabsList>
@@ -571,6 +637,27 @@ export default function RealEstateSearchPage() {
                         </div>
                       </div>
                     )}
+
+                    {/* Boutons d'actions */}
+                    <div className="flex gap-2 pt-3 border-t">
+                      <Button
+                        variant={compareList.some(p => p.id === property.id) ? "default" : "outline"}
+                        size="sm"
+                        onClick={(e) => toggleCompare(property, e)}
+                        className="flex-1"
+                      >
+                        <GitCompare className="h-4 w-4 mr-2" />
+                        {compareList.some(p => p.id === property.id) ? 'En comparaison' : 'Comparer'}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => toggleFavorite(property.id, e)}
+                        className={favorites.includes(property.id) ? 'border-red-600 text-red-600' : ''}
+                      >
+                        <Heart className={`h-4 w-4 ${favorites.includes(property.id) ? 'fill-red-600' : ''}`} />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -614,6 +701,14 @@ export default function RealEstateSearchPage() {
           setDetailsModalOpen(false);
           setSelectedProperty(null);
         }}
+      />
+
+      {/* Comparateur de propriétés */}
+      <PropertyComparator
+        properties={compareList}
+        open={comparatorOpen}
+        onClose={() => setComparatorOpen(false)}
+        onRemoveProperty={(id) => setCompareList(compareList.filter(p => p.id !== id))}
       />
     </div>
   );
