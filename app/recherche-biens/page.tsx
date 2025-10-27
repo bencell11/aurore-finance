@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PropertyFilters, PropertyFiltersState } from '@/components/real-estate/PropertyFilters';
 import { PropertyDetailsModal } from '@/components/real-estate/PropertyDetailsModal';
 import { PropertyComparator } from '@/components/real-estate/PropertyComparator';
+import { FavoritesService } from '@/lib/services/real-estate/favorites.service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -72,6 +73,17 @@ export default function RealEstateSearchPage() {
   const [compareList, setCompareList] = useState<Property[]>([]);
   const [comparatorOpen, setComparatorOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
+
+  /**
+   * Charger les favoris au montage du composant
+   */
+  useEffect(() => {
+    const loadFavorites = async () => {
+      const favoriteIds = await FavoritesService.getFavoriteIds();
+      setFavorites(favoriteIds);
+    };
+    loadFavorites();
+  }, []);
 
   /**
    * Filtrer les propriétés côté client selon les filtres actifs
@@ -180,13 +192,22 @@ export default function RealEstateSearchPage() {
   /**
    * Ajouter/retirer des favoris
    */
-  const toggleFavorite = (propertyId: string, event?: React.MouseEvent) => {
+  const toggleFavorite = async (property: Property, event?: React.MouseEvent) => {
     event?.stopPropagation();
-    const isFavorite = favorites.includes(propertyId);
+    const isFavorite = favorites.includes(property.id);
+
     if (isFavorite) {
-      setFavorites(favorites.filter(id => id !== propertyId));
+      // Retirer des favoris
+      const success = await FavoritesService.removeFavorite(property.id);
+      if (success) {
+        setFavorites(favorites.filter(id => id !== property.id));
+      }
     } else {
-      setFavorites([...favorites, propertyId]);
+      // Ajouter aux favoris
+      const success = await FavoritesService.addFavorite(property);
+      if (success) {
+        setFavorites([...favorites, property.id]);
+      }
     }
   };
 
@@ -652,7 +673,7 @@ export default function RealEstateSearchPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={(e) => toggleFavorite(property.id, e)}
+                        onClick={(e) => toggleFavorite(property, e)}
                         className={favorites.includes(property.id) ? 'border-red-600 text-red-600' : ''}
                       >
                         <Heart className={`h-4 w-4 ${favorites.includes(property.id) ? 'fill-red-600' : ''}`} />

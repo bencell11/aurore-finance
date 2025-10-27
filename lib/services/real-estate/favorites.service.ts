@@ -1,17 +1,173 @@
 /**
- * Service de gestion des favoris et alertes (stockage localStorage pour MVP)
+ * Service de gestion des favoris et alertes immobiliers
+ * Supporte à la fois localStorage (utilisateurs non connectés) et Supabase (utilisateurs connectés)
  */
 
+import { createClient } from '@/lib/supabase/client';
 import type { Property, PropertyAlert } from '@/lib/types/real-estate';
+import type { RealEstateFavorite } from '@/lib/supabase/client';
 
 export class FavoritesService {
   private static readonly FAVORITES_KEY = 'aurore_real_estate_favorites';
   private static readonly ALERTS_KEY = 'aurore_real_estate_alerts';
 
   /**
-   * Récupère tous les favoris
+   * Obtenir l'utilisateur courant
    */
-  static getFavorites(): Property[] {
+  private static async getCurrentUser() {
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Récupère tous les favoris (localStorage ou Supabase selon l'authentification)
+   */
+  static async getFavorites(): Promise<Property[]> {
+    const user = await this.getCurrentUser();
+
+    if (user) {
+      // Utilisateur connecté: récupérer depuis Supabase
+      return this.getSupabaseFavorites(user.id);
+    } else {
+      // Utilisateur non connecté: utiliser localStorage
+      return this.getLocalStorageFavorites();
+    }
+  }
+
+  /**
+   * Récupère les IDs des favoris (pour un affichage rapide)
+   */
+  static async getFavoriteIds(): Promise<string[]> {
+    const favorites = await this.getFavorites();
+    return favorites.map(f => f.id);
+  }
+
+  /**
+   * Ajoute une propriété aux favoris
+   */
+  static async addFavorite(property: Property): Promise<boolean> {
+    const user = await this.getCurrentUser();
+
+    if (user) {
+      return this.addSupabaseFavorite(user.id, property);
+    } else {
+      return this.addLocalStorageFavorite(property);
+    }
+  }
+
+  /**
+   * Retire une propriété des favoris
+   */
+  static async removeFavorite(propertyId: string): Promise<boolean> {
+    const user = await this.getCurrentUser();
+
+    if (user) {
+      return this.removeSupabaseFavorite(user.id, propertyId);
+    } else {
+      return this.removeLocalStorageFavorite(propertyId);
+    }
+  }
+
+  /**
+   * Vérifie si une propriété est en favoris
+   */
+  static async isFavorite(propertyId: string): Promise<boolean> {
+    const favorites = await this.getFavorites();
+    return favorites.some(f => f.id === propertyId);
+  }
+
+  // ============= SUPABASE METHODS =============
+
+  private static async getSupabaseFavorites(userId: string): Promise<Property[]> {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('real_estate_favorites')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('[FavoritesService] Error fetching Supabase favorites:', error);
+        return [];
+      }
+
+      return (data || []).map((f: RealEstateFavorite) => f.property_data);
+    } catch (error) {
+      console.error('[FavoritesService] Exception in getSupabaseFavorites:', error);
+      return [];
+    }
+  }
+
+  private static async addSupabaseFavorite(userId: string, property: Property): Promise<boolean> {
+    try {
+      const supabase = createClient();
+
+      // Vérifier si déjà en favoris
+      const { data: existing } = await supabase
+        .from('real_estate_favorites')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('property_id', property.id)
+        .single();
+
+      if (existing) {
+        console.log('[FavoritesService] Property already in Supabase favorites');
+        return true;
+      }
+
+      const { error } = await supabase
+        .from('real_estate_favorites')
+        .insert({
+          user_id: userId,
+          property_id: property.id,
+          property_data: property,
+          tags: [],
+        });
+
+      if (error) {
+        console.error('[FavoritesService] Error adding Supabase favorite:', error);
+        return false;
+      }
+
+      console.log('[FavoritesService] Supabase favorite added successfully');
+      return true;
+    } catch (error) {
+      console.error('[FavoritesService] Exception in addSupabaseFavorite:', error);
+      return false;
+    }
+  }
+
+  private static async removeSupabaseFavorite(userId: string, propertyId: string): Promise<boolean> {
+    try {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from('real_estate_favorites')
+        .delete()
+        .eq('user_id', userId)
+        .eq('property_id', propertyId);
+
+      if (error) {
+        console.error('[FavoritesService] Error removing Supabase favorite:', error);
+        return false;
+      }
+
+      console.log('[FavoritesService] Supabase favorite removed successfully');
+      return true;
+    } catch (error) {
+      console.error('[FavoritesService] Exception in removeSupabaseFavorite:', error);
+      return false;
+    }
+  }
+
+  // ============= LOCAL STORAGE METHODS =============
+
+  private static getLocalStorageFavorites(): Property[] {
     if (typeof window === 'undefined') return [];
 
     try {
@@ -22,31 +178,30 @@ export class FavoritesService {
     }
   }
 
-  /**
-   * Ajoute une propriété aux favoris
-   */
-  static addFavorite(property: Property): void {
-    const favorites = this.getFavorites();
-    if (!favorites.find(f => f.id === property.id)) {
-      favorites.push(property);
-      localStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favorites));
+  private static addLocalStorageFavorite(property: Property): boolean {
+    try {
+      const favorites = this.getLocalStorageFavorites();
+      if (!favorites.find(f => f.id === property.id)) {
+        favorites.push(property);
+        localStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favorites));
+      }
+      return true;
+    } catch {
+      return false;
     }
   }
 
-  /**
-   * Retire une propriété des favoris
-   */
-  static removeFavorite(propertyId: string): void {
-    const favorites = this.getFavorites().filter(f => f.id !== propertyId);
-    localStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favorites));
+  private static removeLocalStorageFavorite(propertyId: string): boolean {
+    try {
+      const favorites = this.getLocalStorageFavorites().filter(f => f.id !== propertyId);
+      localStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favorites));
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  /**
-   * Vérifie si une propriété est en favoris
-   */
-  static isFavorite(propertyId: string): boolean {
-    return this.getFavorites().some(f => f.id === propertyId);
-  }
+  // ============= ALERTS METHODS (localStorage only for now) =============
 
   /**
    * Récupère toutes les alertes
@@ -123,5 +278,31 @@ export class FavoritesService {
     }
 
     return true;
+  }
+
+  /**
+   * Migrer les favoris de localStorage vers Supabase lors de la connexion
+   */
+  static async migrateLocalFavoritesToSupabase(userId: string): Promise<void> {
+    try {
+      const localFavorites = this.getLocalStorageFavorites();
+
+      if (localFavorites.length === 0) {
+        console.log('[FavoritesService] No local favorites to migrate');
+        return;
+      }
+
+      console.log(`[FavoritesService] Migrating ${localFavorites.length} local favorites to Supabase`);
+
+      for (const property of localFavorites) {
+        await this.addSupabaseFavorite(userId, property);
+      }
+
+      // Vider le localStorage après migration
+      localStorage.removeItem(this.FAVORITES_KEY);
+      console.log('[FavoritesService] Migration completed and localStorage cleared');
+    } catch (error) {
+      console.error('[FavoritesService] Error during migration:', error);
+    }
   }
 }
