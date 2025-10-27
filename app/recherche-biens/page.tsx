@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { PropertyFilters, PropertyFiltersState } from '@/components/real-estate/PropertyFilters';
 import { PropertyDetailsModal } from '@/components/real-estate/PropertyDetailsModal';
 import { PropertyComparator } from '@/components/real-estate/PropertyComparator';
+import { MortgageSimulatorModal } from '@/components/real-estate/MortgageSimulatorModal';
 import { FavoritesService } from '@/lib/services/real-estate/favorites.service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -73,6 +74,8 @@ export default function RealEstateSearchPage() {
   const [compareList, setCompareList] = useState<Property[]>([]);
   const [comparatorOpen, setComparatorOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [mortgageSimulatorOpen, setMortgageSimulatorOpen] = useState(false);
+  const [mortgageProperty, setMortgageProperty] = useState<Property | null>(null);
 
   /**
    * Charger les favoris au montage du composant
@@ -209,6 +212,15 @@ export default function RealEstateSearchPage() {
         setFavorites([...favorites, property.id]);
       }
     }
+  };
+
+  /**
+   * Ouvrir le simulateur de crédit
+   */
+  const openMortgageSimulator = (property: Property, event?: React.MouseEvent) => {
+    event?.stopPropagation();
+    setMortgageProperty(property);
+    setMortgageSimulatorOpen(true);
   };
 
   /**
@@ -660,24 +672,38 @@ export default function RealEstateSearchPage() {
                     )}
 
                     {/* Boutons d'actions */}
-                    <div className="flex gap-2 pt-3 border-t">
+                    <div className="space-y-2 pt-3 border-t">
+                      {/* Bouton simulateur de crédit */}
                       <Button
-                        variant={compareList.some(p => p.id === property.id) ? "default" : "outline"}
+                        variant="default"
                         size="sm"
-                        onClick={(e) => toggleCompare(property, e)}
-                        className="flex-1"
+                        onClick={(e) => openMortgageSimulator(property, e)}
+                        className="w-full bg-blue-600 hover:bg-blue-700"
                       >
-                        <GitCompare className="h-4 w-4 mr-2" />
-                        {compareList.some(p => p.id === property.id) ? 'En comparaison' : 'Comparer'}
+                        <Calculator className="h-4 w-4 mr-2" />
+                        Simuler un crédit
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={(e) => toggleFavorite(property, e)}
-                        className={favorites.includes(property.id) ? 'border-red-600 text-red-600' : ''}
-                      >
-                        <Heart className={`h-4 w-4 ${favorites.includes(property.id) ? 'fill-red-600' : ''}`} />
-                      </Button>
+
+                      {/* Boutons secondaires */}
+                      <div className="flex gap-2">
+                        <Button
+                          variant={compareList.some(p => p.id === property.id) ? "default" : "outline"}
+                          size="sm"
+                          onClick={(e) => toggleCompare(property, e)}
+                          className="flex-1"
+                        >
+                          <GitCompare className="h-4 w-4 mr-2" />
+                          {compareList.some(p => p.id === property.id) ? 'En comparaison' : 'Comparer'}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => toggleFavorite(property, e)}
+                          className={favorites.includes(property.id) ? 'border-red-600 text-red-600' : ''}
+                        >
+                          <Heart className={`h-4 w-4 ${favorites.includes(property.id) ? 'fill-red-600' : ''}`} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -730,6 +756,16 @@ export default function RealEstateSearchPage() {
         open={comparatorOpen}
         onClose={() => setComparatorOpen(false)}
         onRemoveProperty={(id) => setCompareList(compareList.filter(p => p.id !== id))}
+      />
+
+      {/* Simulateur de crédit hypothécaire */}
+      <MortgageSimulatorModal
+        property={mortgageProperty}
+        open={mortgageSimulatorOpen}
+        onClose={() => {
+          setMortgageSimulatorOpen(false);
+          setMortgageProperty(null);
+        }}
       />
     </div>
   );
