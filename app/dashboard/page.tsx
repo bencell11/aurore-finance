@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import UserMenu from '@/components/auth/UserMenu';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   TrendingUp,
@@ -735,59 +735,166 @@ export default function DashboardPage() {
           )}
 
 
-          {/* Section informative */}
+          {/* Section outils et actions */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>📊 Prochainement disponible</CardTitle>
+                <CardTitle>🛠️ Outils disponibles</CardTitle>
+                <CardDescription>
+                  Explorez tous nos outils pour optimiser vos finances
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-gray-700">
-                  <li>✅ Système d'authentification sécurisé (Supabase)</li>
-                  <li>✅ Chiffrement des données sensibles</li>
-                  <li>✅ Conformité RGPD/LPD Suisse</li>
-                  <li>✅ Calcul fiscal avec formules officielles</li>
-                  <li>🔄 Analyse détaillée de ton patrimoine</li>
-                  <li>🔄 Recommandations personnalisées</li>
-                  <li>🔄 Suivi des objectifs financiers</li>
-                  <li>🔄 Assistant IA avec accès à tes données</li>
-                </ul>
+                <div className="grid grid-cols-1 gap-3">
+                  <Button
+                    onClick={() => window.location.href = '/assistant-fiscal'}
+                    className="w-full justify-start h-auto py-3 px-4"
+                    variant="outline"
+                  >
+                    <div className="flex items-start gap-3 text-left">
+                      <span className="text-2xl">💬</span>
+                      <div>
+                        <div className="font-semibold">Assistant Fiscal IA</div>
+                        <div className="text-xs text-gray-500">Posez vos questions fiscales à Aurore</div>
+                      </div>
+                    </div>
+                  </Button>
+
+                  <Button
+                    onClick={() => window.location.href = '/recherche-biens'}
+                    className="w-full justify-start h-auto py-3 px-4"
+                    variant="outline"
+                  >
+                    <div className="flex items-start gap-3 text-left">
+                      <span className="text-2xl">🏠</span>
+                      <div>
+                        <div className="font-semibold">Recherche Immobilière IA</div>
+                        <div className="text-xs text-gray-500">Trouvez votre bien idéal avec l'IA</div>
+                      </div>
+                    </div>
+                  </Button>
+
+                  <Button
+                    onClick={() => window.location.href = '/simulateurs'}
+                    className="w-full justify-start h-auto py-3 px-4"
+                    variant="outline"
+                  >
+                    <div className="flex items-start gap-3 text-left">
+                      <span className="text-2xl">🧮</span>
+                      <div>
+                        <div className="font-semibold">Simulateurs Financiers</div>
+                        <div className="text-xs text-gray-500">Hypothèque, impôts, retraite...</div>
+                      </div>
+                    </div>
+                  </Button>
+
+                  <Button
+                    onClick={() => window.location.href = '/recherche-lpp'}
+                    className="w-full justify-start h-auto py-3 px-4"
+                    variant="outline"
+                  >
+                    <div className="flex items-start gap-3 text-left">
+                      <span className="text-2xl">🔍</span>
+                      <div>
+                        <div className="font-semibold">Recherche LPP</div>
+                        <div className="text-xs text-gray-500">Retrouvez vos avoirs de prévoyance</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>🎯 Actions rapides</CardTitle>
+                <CardTitle>📈 Votre progression</CardTitle>
+                <CardDescription>
+                  Complétez votre profil pour des recommandations personnalisées
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <Button
-                  onClick={() => window.location.href = '/onboarding'}
-                  className="w-full justify-start"
-                  variant="outline"
-                >
-                  📝 Compléter mon profil financier
-                </Button>
-                <Button
-                  onClick={() => window.location.href = '/objectifs'}
-                  className="w-full justify-start"
-                  variant="outline"
-                >
-                  🎯 Créer un objectif financier
-                </Button>
-                <Button
-                  onClick={() => window.location.href = '/simulateurs'}
-                  className="w-full justify-start"
-                  variant="outline"
-                >
-                  🧮 Utiliser les simulateurs
-                </Button>
-                <Button
-                  onClick={() => window.location.href = '/assistant-fiscal'}
-                  className="w-full justify-start"
-                  variant="outline"
-                >
-                  💬 Parler à Aurore (IA)
-                </Button>
+              <CardContent className="space-y-4">
+                {/* Barre de progression globale */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="font-medium">Profil complété</span>
+                    <span className="text-gray-600">{completionPercentage}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className={`h-2.5 rounded-full transition-all ${
+                        completionPercentage >= 80 ? 'bg-green-600' :
+                        completionPercentage >= 50 ? 'bg-blue-600' : 'bg-orange-600'
+                      }`}
+                      style={{ width: `${completionPercentage}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Actions recommandées */}
+                <div className="space-y-2 pt-2">
+                  <h4 className="font-semibold text-sm text-gray-700 mb-3">Actions recommandées:</h4>
+
+                  {completionPercentage < 100 && (
+                    <Button
+                      onClick={() => window.location.href = '/onboarding'}
+                      className="w-full justify-start"
+                      variant="outline"
+                      size="sm"
+                    >
+                      <span className="mr-2">📝</span>
+                      Compléter mon profil ({100 - completionPercentage}% restant)
+                    </Button>
+                  )}
+
+                  {hasFinancialData && (
+                    <Button
+                      onClick={() => window.location.href = '/objectifs'}
+                      className="w-full justify-start"
+                      variant="outline"
+                      size="sm"
+                    >
+                      <span className="mr-2">🎯</span>
+                      Définir mes objectifs financiers
+                    </Button>
+                  )}
+
+                  {profile?.revenu_mensuel && (
+                    <Button
+                      onClick={() => window.location.href = '/recherche-biens'}
+                      className="w-full justify-start"
+                      variant="outline"
+                      size="sm"
+                    >
+                      <span className="mr-2">🏡</span>
+                      Chercher un bien immobilier
+                    </Button>
+                  )}
+
+                  <Button
+                    onClick={() => window.location.href = '/assistant-fiscal'}
+                    className="w-full justify-start"
+                    variant="outline"
+                    size="sm"
+                  >
+                    <span className="mr-2">💡</span>
+                    Obtenir des conseils fiscaux
+                  </Button>
+                </div>
+
+                {/* Message d'encouragement */}
+                {completionPercentage === 100 ? (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-4">
+                    <p className="text-sm text-green-700">
+                      🎉 Profil complet! Vous bénéficiez maintenant de toutes nos fonctionnalités.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                    <p className="text-sm text-blue-700">
+                      💡 Plus votre profil est complet, plus nos recommandations seront précises!
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
