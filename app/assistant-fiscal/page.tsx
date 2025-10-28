@@ -678,48 +678,7 @@ export default function AssistantFiscalPage() {
             </Card>
           </div>
         </TabsContent>
-
-        {/* Upload de documents */}
-        <TabsContent value="documents" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Upload className="h-5 w-5" />
-                Documents Fiscaux
-              </CardTitle>
-              <CardDescription>
-                Téléchargez vos documents pour un remplissage automatique
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <DocumentUploadZone 
-                onUpload={(file) => {
-                  // Traitement du fichier
-                  console.log('Fichier téléchargé:', file.name);
-                }}
-                onError={setError}
-              />
-              
-              <div className="mt-6">
-                <h3 className="font-semibold mb-3">Documents recommandés :</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[
-                    'Certificat de salaire annuel',
-                    'Attestation 3e pilier',
-                    'Relevés bancaires au 31.12',
-                    'Attestations d\'assurance maladie',
-                    'Justificatifs frais professionnels',
-                    'Documents immobiliers'
-                  ].map((doc, index) => (
-                    <div key={index} className="flex items-center gap-2 p-2 border rounded">
-                      <FileText className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm">{doc}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          </Tabs>
         </TabsContent>
 
         {/* Export et génération */}
@@ -949,11 +908,6 @@ export default function AssistantFiscalPage() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        {/* Panel de Debug */}
-        <TabsContent value="debug" className="space-y-4">
-          <TaxDebugPanel />
         </TabsContent>
       </Tabs>
     </div>
