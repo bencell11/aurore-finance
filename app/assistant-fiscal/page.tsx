@@ -223,43 +223,29 @@ export default function AssistantFiscalPage() {
         </Alert>
       )}
 
-      {/* Onglets principaux */}
+      {/* Onglets principaux - Simplifié */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="overflow-x-auto">
-          <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-7">
-            <TabsTrigger value="overview" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
-              <CheckCircle2 className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-              <span className="hidden sm:inline">Vue d'ensemble</span>
-              <span className="sm:hidden">Vue</span>
-            </TabsTrigger>
-            <TabsTrigger value="chat" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
-              <MessageCircle className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-              <span className="hidden sm:inline">Assistant IA</span>
-              <span className="sm:hidden">IA</span>
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
-              <User className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-              <span className="hidden sm:inline">Mon Profil</span>
-              <span className="sm:hidden">Profil</span>
-            </TabsTrigger>
-            <TabsTrigger value="calculation" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
-              <Calculator className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-              Calcul
-            </TabsTrigger>
-            <TabsTrigger value="documents" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
-              <Upload className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-              <span className="hidden sm:inline">Documents</span>
-              <span className="sm:hidden">Docs</span>
-            </TabsTrigger>
-            <TabsTrigger value="export" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
-              <Download className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-              Export
-            </TabsTrigger>
-            <TabsTrigger value="debug" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap">
-              🔧 Debug
-            </TabsTrigger>
-          </TabsList>
-        </div>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4" />
+            <span className="hidden sm:inline">Vue d'ensemble</span>
+            <span className="sm:hidden">Vue</span>
+          </TabsTrigger>
+          <TabsTrigger value="chat" className="flex items-center gap-2">
+            <MessageCircle className="h-4 w-4" />
+            <span className="hidden sm:inline">Assistant IA</span>
+            <span className="sm:hidden">IA</span>
+          </TabsTrigger>
+          <TabsTrigger value="dossier" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">Mon Dossier</span>
+            <span className="sm:hidden">Dossier</span>
+          </TabsTrigger>
+          <TabsTrigger value="export" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Export
+          </TabsTrigger>
+        </TabsList>
 
         {/* Vue d'ensemble */}
         <TabsContent value="overview" className="space-y-6">
@@ -336,6 +322,38 @@ export default function AssistantFiscalPage() {
               <CardContent className="space-y-4">
                 {calculation ? (
                   <>
+                    {/* Graphique circulaire simple */}
+                    <div className="flex flex-col items-center justify-center py-4">
+                      <div className="relative w-40 h-40">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                          {/* Cercle de fond */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="#e5e7eb"
+                            strokeWidth="10"
+                          />
+                          {/* Cercle de progression (taux effectif) */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="#3b82f6"
+                            strokeWidth="10"
+                            strokeDasharray={`${calculation.effectiveRate * 2.827} ${282.7 - calculation.effectiveRate * 2.827}`}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-2xl font-bold text-blue-600">{calculation.effectiveRate.toFixed(1)}%</span>
+                          <span className="text-xs text-gray-500">Taux effectif</span>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="space-y-3">
                       <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                         <span className="text-sm font-medium">Impôt total estimé</span>
@@ -345,13 +363,13 @@ export default function AssistantFiscalPage() {
                       </div>
 
                       <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 bg-gray-50 rounded-lg">
-                          <p className="text-xs text-muted-foreground mb-1">Taux effectif</p>
-                          <p className="text-lg font-semibold">{calculation.effectiveRate.toFixed(1)}%</p>
+                        <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                          <p className="text-xs text-purple-600 mb-1">Taux effectif</p>
+                          <p className="text-lg font-semibold text-purple-900">{calculation.effectiveRate.toFixed(1)}%</p>
                         </div>
-                        <div className="p-3 bg-gray-50 rounded-lg">
-                          <p className="text-xs text-muted-foreground mb-1">Taux marginal</p>
-                          <p className="text-lg font-semibold">{calculation.marginalRate.toFixed(1)}%</p>
+                        <div className="p-3 bg-orange-50 rounded-lg border border-orange-100">
+                          <p className="text-xs text-orange-600 mb-1">Taux marginal</p>
+                          <p className="text-lg font-semibold text-orange-900">{calculation.marginalRate.toFixed(1)}%</p>
                         </div>
                       </div>
 
@@ -521,30 +539,91 @@ export default function AssistantFiscalPage() {
           </Card>
         </TabsContent>
 
-        {/* Profil fiscal */}
-        <TabsContent value="profile" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Mon Profil Fiscal
-              </CardTitle>
-              <CardDescription>
-                Complétez vos informations pour une analyse fiscale précise
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <TaxProfileForm 
-                profile={profile} 
-                onUpdate={setProfile}
-                onError={setError}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
+        {/* Mon Dossier (fusion profil + documents + calcul) */}
+        <TabsContent value="dossier" className="space-y-6">
+          {/* Sous-onglets pour le dossier */}
+          <Tabs defaultValue="profil" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="profil">
+                <User className="h-4 w-4 mr-2" />
+                Profil
+              </TabsTrigger>
+              <TabsTrigger value="documents">
+                <Upload className="h-4 w-4 mr-2" />
+                Documents
+              </TabsTrigger>
+              <TabsTrigger value="calcul">
+                <Calculator className="h-4 w-4 mr-2" />
+                Calcul
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Calcul des impôts */}
-        <TabsContent value="calculation" className="space-y-4">
+            {/* Sous-onglet Profil */}
+            <TabsContent value="profil" className="space-y-4 mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Mon Profil Fiscal
+                  </CardTitle>
+                  <CardDescription>
+                    Complétez vos informations pour une analyse fiscale précise
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <TaxProfileForm
+                    profile={profile}
+                    onUpdate={setProfile}
+                    onError={setError}
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Sous-onglet Documents */}
+            <TabsContent value="documents" className="space-y-4 mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Upload className="h-5 w-5" />
+                    Documents Fiscaux
+                  </CardTitle>
+                  <CardDescription>
+                    Téléchargez vos documents pour un remplissage automatique
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <DocumentUploadZone
+                    onUpload={(file) => {
+                      console.log('Fichier téléchargé:', file.name);
+                    }}
+                    onError={setError}
+                  />
+
+                  <div className="mt-6">
+                    <h3 className="font-semibold mb-3 text-sm">Documents recommandés :</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {[
+                        'Certificat de salaire annuel',
+                        'Attestation 3e pilier',
+                        'Relevés bancaires au 31.12',
+                        'Attestations assurance maladie',
+                        'Justificatifs frais professionnels',
+                        'Documents immobiliers'
+                      ].map((doc, index) => (
+                        <div key={index} className="flex items-center gap-2 p-2 border rounded text-sm">
+                          <FileText className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                          <span className="truncate">{doc}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Sous-onglet Calcul */}
+            <TabsContent value="calcul" className="space-y-4 mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
