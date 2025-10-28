@@ -79,11 +79,17 @@ export default function RealEstateSearchPage() {
 
   /**
    * Charger les favoris au montage du composant
+   * Note: Table Supabase real_estate_favorites pas encore créée, utilise localStorage pour l'instant
    */
   useEffect(() => {
     const loadFavorites = async () => {
-      const favoriteIds = await FavoritesService.getFavoriteIds();
-      setFavorites(favoriteIds);
+      try {
+        const favoriteIds = await FavoritesService.getFavoriteIds();
+        setFavorites(favoriteIds);
+      } catch (error) {
+        console.log('[Recherche-Biens] Favoris non disponibles, utilisation localStorage uniquement');
+        setFavorites([]);
+      }
     };
     loadFavorites();
   }, []);

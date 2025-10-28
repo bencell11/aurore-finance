@@ -179,10 +179,37 @@ export default function DashboardPage() {
   }
 
   const hasFinancialData = profileData?.financial;
+  const profile = profileData?.profile;
   const patrimoineNet = hasFinancialData
     ? (profileData.financial.revenu_brut_annuel || 0) + (profileData.financial.autres_revenus || 0) -
       ((profileData.financial.charges_logement || 0) + (profileData.financial.charges_assurances || 0) + (profileData.financial.autres_charges || 0))
     : 0;
+
+  // Calcul du pourcentage de completion du profil
+  const calculateCompletionPercentage = () => {
+    if (!profile && !hasFinancialData) return 0;
+
+    let completedFields = 0;
+    let totalFields = 0;
+
+    // Champs du profil personnel
+    const profileFields = ['nom', 'prenom', 'date_naissance', 'canton', 'ville', 'situation_familiale', 'profession'];
+    profileFields.forEach(field => {
+      totalFields++;
+      if (profile?.[field]) completedFields++;
+    });
+
+    // Champs du profil financier
+    const financialFields = ['revenu_brut_annuel', 'statut_professionnel'];
+    financialFields.forEach(field => {
+      totalFields++;
+      if (profileData?.financial?.[field]) completedFields++;
+    });
+
+    return Math.round((completedFields / totalFields) * 100);
+  };
+
+  const completionPercentage = calculateCompletionPercentage();
 
   return (
     <ProtectedRoute>
