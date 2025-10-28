@@ -28,8 +28,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { FinancialGoal } from '@/types/user';
-// TODO: Migrate to Supabase - goals.service deleted
-// import { GoalsService } from '@/lib/services/goals.service';
+import { createClient } from '@/lib/supabase/client';
 import { GoalsRecommendationsService } from '@/lib/services/goals-recommendations.service';
 import GoalCreationWizard from '@/components/goals/GoalCreationWizard';
 import GoalDetailView from '@/components/goals/GoalDetailView';
@@ -41,9 +40,8 @@ export default function ObjectifsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<FinancialGoal | null>(null);
-  // TODO: Migrate to Supabase
-  // const goalsService = GoalsService.getInstance();
   const recommendationsService = GoalsRecommendationsService.getInstance();
+  const supabase = createClient();
 
   const { user } = useAuth();
 
@@ -65,13 +63,19 @@ export default function ObjectifsPage() {
 
   const loadGoals = async () => {
     if (!user?.id) return;
-    
+
     try {
-      await goalsService.loadFromStorage();
-      const userGoals = await goalsService.getGoalsByUser(user.id);
-      setGoals(userGoals);
+      const { data, error } = await supabase
+        .from('financial_goals')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setGoals(data || []);
     } catch (error) {
       console.error('Erreur lors du chargement des objectifs:', error);
+      setGoals([]);
     } finally {
       setLoading(false);
     }
@@ -79,17 +83,27 @@ export default function ObjectifsPage() {
 
   const handleCreateGoal = async (goalData: Partial<FinancialGoal>) => {
     if (!user?.id) return;
-    
+
     try {
-      const newGoal: FinancialGoal = {
-        ...goalData as FinancialGoal,
-        userId: user.id,
-        id: `goal-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+      const newGoal = {
+        user_id: user.id,
+        type: goalData.type || 'epargne',
+        nom: goalData.nom || 'Nouvel objectif',
+        description: goalData.description,
+        montant_cible: goalData.montantCible || 0,
+        montant_actuel: goalData.montantActuel || 0,
+        date_cible: goalData.dateCible,
+        priorite: goalData.priorite || 3,
+        statut: 'actif',
+        created_at: new Date().toISOString()
       };
-      
-      await goalsService.createGoal(newGoal);
+
+      const { error } = await supabase
+        .from('financial_goals')
+        .insert([newGoal]);
+
+      if (error) throw error;
+
       await loadGoals();
       setShowCreateModal(false);
     } catch (error) {
@@ -104,7 +118,13 @@ export default function ObjectifsPage() {
 
   const handleDeleteGoal = async (goalId: string) => {
     try {
-      await goalsService.deleteGoal(goalId);
+      const { error } = await supabase
+        .from('financial_goals')
+        .delete()
+        .eq('id', goalId);
+
+      if (error) throw error;
+
       await loadGoals();
       setShowDetailModal(false);
     } catch (error) {
@@ -114,16 +134,28 @@ export default function ObjectifsPage() {
 
   const handleAddTransaction = async (goalId: string, amount: number, type: 'deposit' | 'withdrawal') => {
     try {
-      const transaction = {
-        date: new Date().toISOString(),
-        amount,
-        type,
-        description: type === 'deposit' ? 'Dépôt manuel' : 'Retrait manuel'
-      };
-      
-      await goalsService.addTransaction(goalId, transaction);
+      // Récupérer l'objectif actuel
+      const goal = goals.find(g => g.id === goalId);
+      if (!goal) return;
+
+      // Calculer le nouveau montant
+      const newAmount = type === 'deposit'
+        ? (goal.montant_actuel || 0) + amount
+        : (goal.montant_actuel || 0) - amount;
+
+      // Mettre à jour dans Supabase
+      const { error } = await supabase
+        .from('financial_goals')
+        .update({
+          montant_actuel: newAmount,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', goalId);
+
+      if (error) throw error;
+
       await loadGoals();
-      
+
       // Mettre à jour l'objectif sélectionné si ouvert
       if (selectedGoal?.id === goalId) {
         const updatedGoal = goals.find(g => g.id === goalId);
@@ -196,15 +228,34 @@ export default function ObjectifsPage() {
 
   const handleContribution = async (goalId: string, amount: number) => {
     try {
-      await goalsService.addTransaction(goalId, {
-        montant: amount,
-        type: 'contribution',
-        description: 'Contribution manuelle'
-      });
-      await goalsService.saveToStorage();
-      await loadGoals();
+      await handleAddTransaction(goalId, amount, 'deposit');
     } catch (error) {
       console.error('Erreur lors de la contribution:', error);
+    }
+  };
+
+  // Fonctions de calcul locales pour remplacer goalsService
+  const calculateGoalProgress = (goal: FinancialGoal) => {
+    if (!goal.montant_cible || goal.montant_cible === 0) return 0;
+    const progress = ((goal.montant_actuel || 0) / goal.montant_cible) * 100;
+    return Math.min(Math.round(progress), 100);
+  };
+
+  const calculateTimeToGoal = (goal: FinancialGoal) => {
+    if (!goal.date_cible) return null;
+    const targetDate = new Date(goal.date_cible);
+    const now = new Date();
+    const diffTime = targetDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return { status: 'overdue', days: Math.abs(diffDays), message: `En retard de ${Math.abs(diffDays)} jours` };
+    } else if (diffDays < 30) {
+      return { status: 'urgent', days: diffDays, message: `${diffDays} jours restants` };
+    } else if (diffDays < 90) {
+      return { status: 'soon', days: diffDays, message: `${Math.round(diffDays / 7)} semaines restantes` };
+    } else {
+      return { status: 'ok', days: diffDays, message: `${Math.round(diffDays / 30)} mois restants` };
     }
   };
 
@@ -364,8 +415,8 @@ export default function ObjectifsPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {activeGoals.map((goal) => {
                   const Icon = getGoalIcon(goal.type);
-                  const timeAnalysis = goalsService.calculateTimeToGoal(goal);
-                  const progress = goalsService.calculateGoalProgress(goal);
+                  const timeAnalysis = calculateTimeToGoal(goal);
+                  const progress = calculateGoalProgress(goal);
                   
                   return (
                     <Card key={goal.id} className="hover:shadow-lg transition-shadow">
