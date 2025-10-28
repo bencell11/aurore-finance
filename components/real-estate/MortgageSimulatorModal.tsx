@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Euro,
@@ -44,7 +43,6 @@ export function MortgageSimulatorModal({
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
   const [simulation, setSimulation] = useState<any>(null);
 
-  // Réinitialiser les valeurs quand la propriété change
   useEffect(() => {
     if (property) {
       const initialDownPayment = Math.round(property.price * 0.20);
@@ -54,7 +52,6 @@ export function MortgageSimulatorModal({
     }
   }, [property]);
 
-  // Synchroniser l'apport en CHF et en %
   const updateDownPayment = (value: number) => {
     if (!property) return;
     setDownPayment(value);
@@ -110,7 +107,7 @@ export function MortgageSimulatorModal({
         <DialogHeader>
           <DialogTitle className="text-2xl flex items-center gap-2">
             <Calculator className="h-6 w-6 text-blue-600" />
-            Simulateur de Crédit Hypothécaire
+            Simulateur de Credit Hypothecaire
           </DialogTitle>
           <DialogDescription>
             <div className="flex items-center gap-2 mt-2">
@@ -125,9 +122,7 @@ export function MortgageSimulatorModal({
         </DialogHeader>
 
         <div className="space-y-6 mt-6">
-          {/* Formulaire de simulation */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Apport personnel (CHF) */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Euro className="h-4 w-4 text-gray-500" />
@@ -146,7 +141,6 @@ export function MortgageSimulatorModal({
               </p>
             </div>
 
-            {/* Apport personnel (%) */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Percent className="h-4 w-4 text-gray-500" />
@@ -161,15 +155,14 @@ export function MortgageSimulatorModal({
                 step={5}
               />
               <p className="text-xs text-gray-500">
-                {downPaymentPercent >= 20 ? ' Conforme' : '  Insuffisant (min 20%)'}
+                {downPaymentPercent >= 20 ? 'Conforme' : 'Insuffisant (min 20%)'}
               </p>
             </div>
 
-            {/* Taux d'intérêt */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-gray-500" />
-                Taux d'intérêt (%)
+                Taux d interet (%)
               </Label>
               <Input
                 type="number"
@@ -184,11 +177,10 @@ export function MortgageSimulatorModal({
               </p>
             </div>
 
-            {/* Durée */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-500" />
-                Durée (années)
+                Duree (annees)
               </Label>
               <Input
                 type="number"
@@ -199,11 +191,10 @@ export function MortgageSimulatorModal({
                 step={1}
               />
               <p className="text-xs text-gray-500">
-                Maximum 25 ans recommandé
+                Maximum 25 ans recommande
               </p>
             </div>
 
-            {/* Revenu mensuel (optionnel) */}
             <div className="space-y-2 md:col-span-2">
               <Label className="flex items-center gap-2">
                 <Euro className="h-4 w-4 text-gray-500" />
@@ -218,12 +209,11 @@ export function MortgageSimulatorModal({
                 placeholder="Ex: 8000"
               />
               <p className="text-xs text-gray-500">
-                Pour calculer votre capacité d'emprunt
+                Pour calculer votre capacite d emprunt
               </p>
             </div>
           </div>
 
-          {/* Bouton calculer */}
           <Button
             onClick={calculateMortgage}
             className="w-full"
@@ -231,46 +221,43 @@ export function MortgageSimulatorModal({
             disabled={downPaymentPercent < 20}
           >
             <Calculator className="h-4 w-4 mr-2" />
-            Calculer mon crédit
+            Calculer mon credit
           </Button>
 
-          {/* Résultats */}
           {simulation && (
             <div className="space-y-4 border-t pt-6">
-              <h3 className="text-lg font-semibold">Résultats de la simulation</h3>
+              <h3 className="text-lg font-semibold">Resultats de la simulation</h3>
 
-              {/* Montant du crédit */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Montant du crédit</p>
+                  <p className="text-sm text-gray-600 mb-1">Montant du credit</p>
                   <p className="text-2xl font-bold text-blue-600">
                     {simulation.loanAmount.toLocaleString()} CHF
                   </p>
                 </div>
 
                 <div className="bg-green-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Mensualité</p>
+                  <p className="text-sm text-gray-600 mb-1">Mensualite</p>
                   <p className="text-2xl font-bold text-green-600">
                     {Math.round(simulation.monthlyPayment).toLocaleString()} CHF/mois
                   </p>
                 </div>
 
                 <div className="bg-purple-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Coût total du crédit</p>
+                  <p className="text-sm text-gray-600 mb-1">Cout total du credit</p>
                   <p className="text-2xl font-bold text-purple-600">
                     {Math.round(simulation.totalCost).toLocaleString()} CHF
                   </p>
                 </div>
 
                 <div className="bg-orange-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Intérêts totaux</p>
+                  <p className="text-sm text-gray-600 mb-1">Interets totaux</p>
                   <p className="text-2xl font-bold text-orange-600">
                     {Math.round(simulation.totalInterest).toLocaleString()} CHF
                   </p>
                 </div>
               </div>
 
-              {/* Affordabilité */}
               {affordability && (
                 <Alert className={affordability.affordable ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}>
                   <div className="flex items-start gap-3">
@@ -282,16 +269,16 @@ export function MortgageSimulatorModal({
                     <div className="flex-1">
                       <h4 className={`font-semibold mb-1 ${affordability.affordable ? 'text-green-900' : 'text-red-900'}`}>
                         {affordability.affordable
-                          ? 'Crédit compatible avec vos revenus'
-                          : 'Attention: Mensualité trop élevée'}
+                          ? 'Credit compatible avec vos revenus'
+                          : 'Attention: Mensualite trop elevee'}
                       </h4>
                       <AlertDescription className={affordability.affordable ? 'text-green-700' : 'text-red-700'}>
                         <p className="text-sm">
-                          Taux d'endettement: <strong>{(affordability.ratio * 100).toFixed(1)}%</strong>
-                          {' '}(max recommandé: 33%)
+                          Taux d endettement: <strong>{(affordability.ratio * 100).toFixed(1)}%</strong>
+                          {' '}(max recommande: 33%)
                         </p>
                         <p className="text-sm mt-1">
-                          Mensualité maximale conseillée: <strong>{Math.round(affordability.maxAffordable).toLocaleString()} CHF</strong>
+                          Mensualite maximale conseillee: <strong>{Math.round(affordability.maxAffordable).toLocaleString()} CHF</strong>
                         </p>
                       </AlertDescription>
                     </div>
@@ -299,11 +286,10 @@ export function MortgageSimulatorModal({
                 </Alert>
               )}
 
-              {/* Informations additionnelles */}
               <div className="bg-gray-50 p-4 rounded-lg text-sm space-y-2">
                 <p className="font-semibold text-gray-900">Informations importantes:</p>
                 <ul className="list-disc list-inside space-y-1 text-gray-700">
-                  <li>Frais de notaire estimés: {Math.round(property.price * 0.01).toLocaleString()} CHF (1%)</li>
+                  <li>Frais de notaire estimes: {Math.round(property.price * 0.01).toLocaleString()} CHF (1%)</li>
                   <li>Frais de registre: {Math.round(property.price * 0.005).toLocaleString()} CHF (0.5%)</li>
                   <li>Amortissement direct sur {duration} ans</li>
                   <li>Ces estimations sont indicatives et peuvent varier selon la banque</li>
