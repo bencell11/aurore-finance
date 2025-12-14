@@ -444,6 +444,7 @@ export default function DashboardMaisonPage() {
                 </CardHeader>
                 <CardContent>
                   <HouseFinanceDashboard3D
+                    key={maisonData?.derniere_mise_a_jour || 'initial'}
                     data={maisonData || undefined}
                     onSectionClick={(section) => setCurrentSection(section)}
                     isDarkMode={isDarkMode}
