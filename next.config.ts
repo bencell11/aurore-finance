@@ -2,13 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   typescript: {
-    // Ignore TypeScript errors during development
     ignoreBuildErrors: true,
   },
-  eslint: {
-    // Ignore ESLint errors during build
-    ignoreDuringBuilds: true,
-  },
+  // eslint config removed (deprecated in Next.js 16)
+  // Use: npx next lint instead
 };
 
 export default nextConfig;
