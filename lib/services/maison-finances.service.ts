@@ -164,6 +164,13 @@ export class MaisonFinancesService {
     const tableName = `${section}_data`;
 
     try {
+      // Calculer le score basé sur les champs remplis
+      const score = this.calculateSectionScore(data);
+      const dataWithScore = {
+        ...data,
+        [`${section}_score`]: score
+      };
+
       // Vérifier si un enregistrement existe déjà
       const { data: existing } = await this.supabase
         .from(tableName)
@@ -175,7 +182,7 @@ export class MaisonFinancesService {
         // Update
         const { error: updateError } = await this.supabase
           .from(tableName)
-          .update(data)
+          .update(dataWithScore)
           .eq('user_id', userId);
 
         if (updateError) throw updateError;
@@ -183,7 +190,7 @@ export class MaisonFinancesService {
         // Insert
         const { error: insertError } = await this.supabase
           .from(tableName)
-          .insert([{ ...data, user_id: userId }]);
+          .insert([{ ...dataWithScore, user_id: userId }]);
 
         if (insertError) throw insertError;
       }
@@ -191,12 +198,32 @@ export class MaisonFinancesService {
       // Mettre à jour le statut de complétion
       await this.updateCompletionStatus(userId, section, 'termine');
 
-      // Optionnel: Recalculer le score global
-      // await this.updateGlobalScore(userId);
+      // Recalculer le score global
+      await this.updateGlobalScore(userId);
     } catch (error) {
       console.error(`Error saving section ${section}:`, error);
       throw error;
     }
+  }
+
+  /**
+   * Calcule un score simple basé sur le nombre de champs remplis
+   */
+  private static calculateSectionScore(data: any): number {
+    const fields = Object.entries(data).filter(([key, value]) => {
+      // Ignorer les champs système
+      if (['id', 'user_id', 'created_at', 'updated_at'].includes(key)) return false;
+      // Ignorer les scores déjà calculés
+      if (key.endsWith('_score')) return false;
+      // Compter les champs avec des valeurs
+      return value !== null && value !== undefined && value !== '';
+    });
+
+    const totalFields = Math.max(fields.length, 10); // Au moins 10 champs pour éviter division par 0
+    const filledFields = fields.length;
+
+    // Score de 0 à 100
+    return Math.min(100, Math.round((filledFields / totalFields) * 100));
   }
 
   /**
