@@ -111,13 +111,24 @@ export default function DashboardMaisonPage() {
   const handleSectionSave = async (section: string, data: any) => {
     if (!user?.id) return;
     try {
+      console.log(`[Dashboard] Saving section: ${section}`, data);
+
       // Sauvegarder la section via le service centralisé
       await MaisonFinancesService.saveSection(user.id, section, data);
 
+      console.log('[Dashboard] Section saved successfully, reloading data...');
+
       // Recharger toutes les données
       await loadDashboardData();
+
+      console.log('[Dashboard] Data reloaded, new state:', maisonData);
+
+      // Fermer le formulaire et afficher un message de succès
+      setCurrentSection(null);
+      alert(`✅ Section "${section}" sauvegardée avec succès !`);
     } catch (error) {
       console.error('Error saving section:', error);
+      alert(`❌ Erreur lors de la sauvegarde: ${error}`);
       throw error;
     }
   };
