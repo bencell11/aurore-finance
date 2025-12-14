@@ -8,6 +8,7 @@ import { TemplateLoaderService } from '@/lib/services/documents/template-loader.
 import { DocumentAssemblerService } from '@/lib/services/documents/document-assembler.service';
 import { DataGatheringService } from '@/lib/services/documents/data-gathering.service';
 import { DocumentRoutingService } from '@/lib/services/documents/document-routing.service';
+import { calculateInvoiceTotals } from '@/lib/services/documents/facture-template';
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,6 +45,13 @@ export async function POST(request: NextRequest) {
     // Ajouter des champs calculés spéciaux
     if (template.id === 'assurance-maladie' && allData['nom_assurance']) {
       allData['adresse_assurance'] = DocumentRoutingService.getInsuranceAddress(allData['nom_assurance']);
+    }
+
+    // Calculs automatiques pour les factures
+    if (template.id === 'facture_professionnelle_suisse') {
+      const totals = calculateInvoiceTotals(allData);
+      Object.assign(allData, totals);
+      console.log('[API assemble] Facture totals calculated:', totals);
     }
 
     // Valider que toutes les données requises sont présentes

@@ -289,6 +289,13 @@ export default function DocumentsPage() {
                 <div className="flex flex-wrap gap-2">
                   <Badge
                     variant="outline"
+                    className="cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                    onClick={() => setUserInput("Je veux créer une facture professionnelle pour mes prestations de conseil")}
+                  >
+                    💼 Facture
+                  </Badge>
+                  <Badge
+                    variant="outline"
                     className="cursor-pointer hover:bg-purple-50"
                     onClick={() => setUserInput("Je veux résilier mon assurance maladie")}
                   >

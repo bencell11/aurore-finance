@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSupabaseAuth } from '@/lib/contexts/SupabaseAuthContext';
@@ -19,7 +19,9 @@ import {
   PiggyBank,
   X,
   Home,
-  Search
+  Search,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 // Structure simplifiée : 4 onglets principaux
@@ -69,10 +71,35 @@ export default function MainNavigation() {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const [closeTimeout, setCloseTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const pathname = usePathname();
 
   const { user, isAuthenticated } = useSupabaseAuth();
   const t = useTranslation();
+
+  // Load theme preference from localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('aurore-theme');
+    if (savedTheme === 'dark') {
+      setIsDarkMode(true);
+    }
+  }, []);
+
+  // Apply dark class to document root for shadcn/ui components
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  // Toggle theme
+  const toggleTheme = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    localStorage.setItem('aurore-theme', newMode ? 'dark' : 'light');
+  };
 
   const handleMouseEnter = (itemKey: string) => {
     if (closeTimeout) {
@@ -102,7 +129,9 @@ export default function MainNavigation() {
   return (
     <>
       {/* Navigation Desktop - Top */}
-      <nav className="hidden md:block bg-white border-b shadow-sm sticky top-0 z-50">
+      <nav className={`hidden md:block border-b shadow-sm sticky top-0 z-50 transition-colors ${
+        isDarkMode ? 'bg-[#111113] border-gray-800' : 'bg-white border-gray-200'
+      }`}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -110,7 +139,7 @@ export default function MainNavigation() {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">Aurore Finances</span>
+              <span className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Aurore Finances</span>
             </Link>
 
             {/* Navigation Items */}
@@ -131,7 +160,9 @@ export default function MainNavigation() {
                       <button
                         className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                           isActive
-                            ? 'text-blue-600 bg-blue-50'
+                            ? 'text-blue-600 bg-blue-50 dark:bg-blue-950/30'
+                            : isDarkMode
+                            ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800'
                             : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                         }`}
                       >
@@ -144,7 +175,9 @@ export default function MainNavigation() {
                         href={item.href}
                         className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                           isActive
-                            ? 'text-blue-600 bg-blue-50'
+                            ? 'text-blue-600 bg-blue-50 dark:bg-blue-950/30'
+                            : isDarkMode
+                            ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800'
                             : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                         }`}
                       >
@@ -160,14 +193,20 @@ export default function MainNavigation() {
 
                     {/* Submenu Dropdown */}
                     {hasSubmenu && openSubmenu === item.nameKey && (
-                      <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border py-2">
+                      <div className={`absolute top-full left-0 mt-1 w-56 rounded-lg shadow-lg border py-2 ${
+                        isDarkMode ? 'bg-[#111113] border-gray-800' : 'bg-white border-gray-200'
+                      }`}>
                         {item.submenu!.map((subItem) => {
                           const SubIcon = subItem.icon;
                           return (
                             <Link
                               key={subItem.href}
                               href={subItem.href}
-                              className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors"
+                              className={`flex items-center space-x-3 px-4 py-2 text-sm transition-colors ${
+                                isDarkMode
+                                  ? 'text-gray-300 hover:bg-gray-800 hover:text-blue-400'
+                                  : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                              }`}
                             >
                               <SubIcon className="w-4 h-4" />
                               <span>{subItem.name}</span>
@@ -183,6 +222,23 @@ export default function MainNavigation() {
 
             {/* User Actions */}
             <div className="flex items-center space-x-3">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-lg transition-all ${
+                  isDarkMode
+                    ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800'
+                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                }`}
+                aria-label="Toggle theme"
+              >
+                {isDarkMode ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </button>
+
               <SimpleLanguageSelector />
               {isAuthenticated ? (
                 <UserMenu />
@@ -197,7 +253,9 @@ export default function MainNavigation() {
       </nav>
 
       {/* Navigation Mobile - Bottom */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-2xl z-50">
+      <nav className={`md:hidden fixed bottom-0 left-0 right-0 border-t shadow-2xl z-50 transition-colors ${
+        isDarkMode ? 'bg-[#111113] border-gray-800' : 'bg-white border-gray-200'
+      }`}>
         <div className="grid grid-cols-4 h-16">
           {visibleItems.map((item) => {
             const Icon = item.icon;
@@ -210,7 +268,11 @@ export default function MainNavigation() {
                   key={item.nameKey}
                   onClick={() => setMobileSubmenu(mobileSubmenu === item.nameKey ? null : item.nameKey)}
                   className={`flex flex-col items-center justify-center space-y-0.5 transition-colors relative ${
-                    isActive ? 'text-blue-600' : 'text-gray-600'
+                    isActive
+                      ? 'text-blue-600'
+                      : isDarkMode
+                      ? 'text-gray-400'
+                      : 'text-gray-600'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -227,7 +289,11 @@ export default function MainNavigation() {
                 key={item.nameKey}
                 href={item.href}
                 className={`flex flex-col items-center justify-center space-y-0.5 transition-colors relative ${
-                  isActive ? 'text-blue-600' : 'text-gray-600'
+                  isActive
+                    ? 'text-blue-600'
+                    : isDarkMode
+                    ? 'text-gray-400'
+                    : 'text-gray-600'
                 }`}
               >
                 <div className="relative">
@@ -258,15 +324,19 @@ export default function MainNavigation() {
           />
 
           {/* Sheet */}
-          <div className="md:hidden fixed bottom-16 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 animate-slide-up">
+          <div className={`md:hidden fixed bottom-16 left-0 right-0 rounded-t-2xl shadow-2xl z-50 animate-slide-up ${
+            isDarkMode ? 'bg-[#111113]' : 'bg-white'
+          }`}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Outils</h3>
+                <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Outils</h3>
                 <button
                   onClick={() => setMobileSubmenu(null)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className={`p-2 rounded-full transition-colors ${
+                    isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
+                  }`}
                 >
-                  <X className="w-5 h-5 text-gray-500" />
+                  <X className={`w-5 h-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
                 </button>
               </div>
 
@@ -280,12 +350,16 @@ export default function MainNavigation() {
                         key={subItem.href}
                         href={subItem.href}
                         onClick={() => setMobileSubmenu(null)}
-                        className="flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 transition-colors"
+                        className={`flex items-center space-x-3 p-4 rounded-lg transition-colors ${
+                          isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'
+                        }`}
                       >
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          isDarkMode ? 'bg-blue-950/30' : 'bg-blue-50'
+                        }`}>
                           <SubIcon className="w-5 h-5 text-blue-600" />
                         </div>
-                        <span className="font-medium text-gray-900">{subItem.name}</span>
+                        <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{subItem.name}</span>
                       </Link>
                     );
                   })}

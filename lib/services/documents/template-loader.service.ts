@@ -5,6 +5,7 @@
 import { DocumentTemplate } from '@/lib/types/document-templates';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { factureTemplate } from './facture-template';
 
 export class TemplateLoaderService {
   private static templateCache: Map<string, DocumentTemplate> = new Map();
@@ -17,6 +18,13 @@ export class TemplateLoaderService {
     // Vérifier le cache
     if (this.templateCache.has(templateId)) {
       return this.templateCache.get(templateId)!;
+    }
+
+    // Templates statiques importés (TypeScript)
+    if (templateId === 'facture_professionnelle_suisse') {
+      this.templateCache.set(templateId, factureTemplate);
+      console.log(`[TemplateLoader] Template loaded from static import: ${templateId}`);
+      return factureTemplate;
     }
 
     try {

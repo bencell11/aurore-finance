@@ -37,6 +37,7 @@ Types de documents disponibles:
 - demande_administrative: Demandes administratives (permis, attestations)
 - courrier_formel: Courriers formels divers
 - attestation: Attestations diverses
+- facture: Factures professionnelles avec TVA suisse
 
 Catégories:
 - insurance: Assurances
@@ -50,6 +51,7 @@ Templates disponibles:
 - assurance-maladie: Résiliation LAMal (assurance maladie de base)
 - assurance-rc: Résiliation assurance responsabilité civile
 - bail-location: Résiliation de bail de location
+- facture_professionnelle_suisse: Facture conforme aux normes suisses avec TVA
 
 IMPORTANT: Utilise UNIQUEMENT les noms de templates listés ci-dessus (sans préfixe ni suffixe).
 Si la demande correspond à "résiliation assurance maladie", retourne "assurance-maladie" comme suggestedTemplate.

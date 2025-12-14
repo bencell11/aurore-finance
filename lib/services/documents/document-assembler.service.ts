@@ -241,9 +241,22 @@ export class DocumentAssemblerService {
 
   /**
    * Remplace les variables {{variable}} par les valeurs
+   * Supporte aussi les conditionnels Handlebars: {{#if variable}}...{{/if}}
    */
   private static replaceVariables(text: string, data: Record<string, any>): string {
-    return text.replace(/\{\{([^}]+)\}\}/g, (match, variableName) => {
+    // D'abord traiter les conditionnels {{#if}}...{{/if}}
+    text = text.replace(/\{\{#if\s+([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g, (match, condition, content) => {
+      const key = condition.trim();
+      const value = data[key];
+
+      // Évaluer la condition: true si la valeur existe et n'est pas vide
+      const isTrue = value !== null && value !== undefined && value !== '' && value !== false;
+
+      return isTrue ? content : '';
+    });
+
+    // Ensuite remplacer les variables simples {{variable}}
+    return text.replace(/\{\{([^}#/]+)\}\}/g, (match, variableName) => {
       const key = variableName.trim();
       const value = data[key];
 

@@ -8,7 +8,8 @@ export type DocumentType =
   | 'reclamation'
   | 'demande_administrative'
   | 'courrier_formel'
-  | 'attestation';
+  | 'attestation'
+  | 'facture';
 
 export type DocumentCategory =
   | 'insurance'      // Assurances

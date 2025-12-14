@@ -1,21 +1,20 @@
 -- ============================================================================
--- USER PROFILES - SCHEMA avec user_id TEXT
+-- USER PROFILES - SCHEMA avec user_id UUID (Supabase Auth)
 -- ============================================================================
--- Ce script crée ou migre la table user_profiles pour utiliser user_id TEXT
--- au lieu de UUID, compatible avec le système d'authentification local
+-- Ce script crée la table user_profiles pour fonctionner avec Supabase Auth
+-- user_id est de type UUID et correspond à auth.uid()
 -- ============================================================================
 -- ⚠️ ATTENTION : Ce script supprime et recrée la table user_profiles
 -- Toutes les données existantes seront perdues !
 -- ============================================================================
 
 -- Supprimer complètement l'ancienne table avec CASCADE
--- Cela supprimera aussi toutes les dépendances (foreign keys, indexes, policies, triggers)
 DROP TABLE IF EXISTS public.user_profiles CASCADE;
 
--- Créer la nouvelle table avec user_id TEXT
+-- Créer la nouvelle table avec user_id UUID
 CREATE TABLE public.user_profiles (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id TEXT NOT NULL UNIQUE,
+  user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT,
 
   -- Informations personnelles
@@ -81,7 +80,7 @@ CREATE TRIGGER update_user_profiles_updated_at
   EXECUTE FUNCTION update_user_profiles_updated_at();
 
 -- ============================================================================
--- ROW LEVEL SECURITY (RLS)
+-- ROW LEVEL SECURITY (RLS) - ACTIVÉ pour Supabase Auth
 -- ============================================================================
 
 ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
@@ -89,29 +88,29 @@ ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
 -- Politique pour SELECT
 CREATE POLICY "Users can view their own profile"
   ON public.user_profiles FOR SELECT
-  USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
+  USING (auth.uid() = user_id);
 
 -- Politique pour INSERT
 CREATE POLICY "Users can insert their own profile"
   ON public.user_profiles FOR INSERT
-  WITH CHECK (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
+  WITH CHECK (auth.uid() = user_id);
 
 -- Politique pour UPDATE
 CREATE POLICY "Users can update their own profile"
   ON public.user_profiles FOR UPDATE
-  USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
+  USING (auth.uid() = user_id);
 
 -- Politique pour DELETE
 CREATE POLICY "Users can delete their own profile"
   ON public.user_profiles FOR DELETE
-  USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
+  USING (auth.uid() = user_id);
 
 -- ============================================================================
 -- GRANTS
 -- ============================================================================
 
 GRANT ALL ON public.user_profiles TO authenticated;
-GRANT ALL ON public.user_profiles TO anon;
+GRANT SELECT ON public.user_profiles TO anon;
 
 -- ============================================================================
 -- FIN DU SCRIPT
